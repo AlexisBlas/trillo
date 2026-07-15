@@ -1,0 +1,234 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router';
+import { Plus, Trash2, ChevronLeft } from 'lucide-react';
+import { useCreatePark } from '../../hooks/useAdminData';
+import { toast } from 'sonner';
+import { cn } from '../../components/ui/utils';
+
+interface TrailRow {
+  id: number;
+  name: string;
+  description: string;
+  difficulty: string;
+}
+
+const DIFFICULTIES = [
+  { value: '', label: 'No rating' },
+  { value: 'easy', label: 'Easy' },
+  { value: 'intermediate', label: 'Intermediate' },
+  { value: 'difficult', label: 'Difficult' },
+  { value: 'expert', label: 'Expert' },
+];
+
+const PR_MUNICIPALITIES = [
+  'Adjuntas','Aguada','Aguadilla','Aguas Buenas','Aibonito','Añasco','Arecibo','Arroyo',
+  'Barceloneta','Barranquitas','Bayamón','Cabo Rojo','Caguas','Camuy','Canóvanas',
+  'Carolina','Cataño','Cayey','Ceiba','Ciales','Cidra','Coamo','Comerío','Corozal',
+  'Culebra','Dorado','Fajardo','Florida','Guánica','Guayama','Guayanilla','Guaynabo',
+  'Gurabo','Hatillo','Hormigueros','Humacao','Isabela','Jayuya','Juana Díaz','Juncos',
+  'Lajas','Lares','Las Marías','Las Piedras','Loíza','Luquillo','Manatí','Maricao',
+  'Maunabo','Mayagüez','Moca','Morovis','Naguabo','Naranjito','Orocovis','Patillas',
+  'Peñuelas','Ponce','Quebradillas','Rincón','Río Grande','Sabana Grande','Salinas',
+  'San Germán','San Juan','San Lorenzo','San Sebastián','Santa Isabel','Toa Alta',
+  'Toa Baja','Trujillo Alto','Utuado','Vega Alta','Vega Baja','Vieques','Villalba',
+  'Yabucoa','Yauco',
+];
+
+let nextId = 1;
+
+export function AddParkPage() {
+  const navigate = useNavigate();
+  const create = useCreatePark();
+
+  const [parkName, setParkName] = useState('');
+  const [parkCity, setParkCity] = useState('');
+  const [parkDescription, setParkDescription] = useState('');
+  const [trails, setTrails] = useState<TrailRow[]>([
+    { id: nextId++, name: '', description: '', difficulty: '' },
+  ]);
+
+  const addTrail = () => {
+    setTrails((prev) => [...prev, { id: nextId++, name: '', description: '', difficulty: '' }]);
+  };
+
+  const removeTrail = (id: number) => {
+    setTrails((prev) => prev.filter((t) => t.id !== id));
+  };
+
+  const updateTrail = (id: number, field: keyof Omit<TrailRow, 'id'>, value: string) => {
+    setTrails((prev) => prev.map((t) => (t.id === id ? { ...t, [field]: value } : t)));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!parkName.trim()) { toast.error('Park name is required'); return; }
+    const validTrails = trails.filter((t) => t.name.trim());
+    try {
+      await create.mutateAsync({
+        name: parkName.trim(),
+        description: parkDescription.trim() || null,
+        city: parkCity.trim() || null,
+        trails: validTrails.map((t) => ({
+          name: t.name.trim(),
+          description: t.description.trim() || null,
+          difficulty: t.difficulty || null,
+        })),
+      });
+      toast.success('Park created');
+      navigate('/admin/parks');
+    } catch (err: any) {
+      toast.error(err.message ?? 'Failed to create park');
+    }
+  };
+
+  return (
+    <div className="p-8 max-w-2xl">
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-8">
+        <button
+          onClick={() => navigate('/admin/parks')}
+          className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#f0ede6] text-[#687588]"
+        >
+          <ChevronLeft className="size-4" />
+        </button>
+        <div>
+          <h1 className="text-[24px] font-bold text-[#1a1a1a]">New Park</h1>
+          <p className="text-[14px] text-[#687588] mt-0.5">Add a park and its trails</p>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+        {/* Park details */}
+        <div className="bg-white rounded-[16px] border border-[#e5e0d5] p-6 flex flex-col gap-4">
+          <h2 className="text-[13px] font-bold tracking-[1px] uppercase text-[#687588]">Park</h2>
+
+          <div className="grid grid-cols-[1fr_160px] gap-3">
+            <div>
+              <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Name <span className="text-red-500">*</span></label>
+              <input
+                value={parkName}
+                onChange={(e) => setParkName(e.target.value)}
+                placeholder="e.g. Cerro Gordo Trail Network"
+                className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[13px] text-[#1a1a1a] focus:outline-none focus:border-[#2c4a1e]"
+              />
+            </div>
+            <div>
+              <label className="block text-[12px] font-bold text-[#374151] mb-1.5">City</label>
+              <input
+                list="pr-municipalities"
+                value={parkCity}
+                onChange={(e) => setParkCity(e.target.value)}
+                placeholder="e.g. Vega Alta"
+                className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[13px] text-[#1a1a1a] focus:outline-none focus:border-[#2c4a1e]"
+              />
+              <datalist id="pr-municipalities">
+                {PR_MUNICIPALITIES.map((m) => <option key={m} value={m} />)}
+              </datalist>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Description <span className="text-[#687588] font-normal">(optional)</span></label>
+            <textarea
+              value={parkDescription}
+              onChange={(e) => setParkDescription(e.target.value)}
+              placeholder="Describe the park, access points, highlights…"
+              rows={3}
+              className="w-full border border-[#e5e0d5] rounded-[10px] px-3 py-2.5 text-[13px] text-[#1a1a1a] resize-none focus:outline-none focus:border-[#2c4a1e]"
+            />
+          </div>
+        </div>
+
+        {/* Trails */}
+        <div className="bg-white rounded-[16px] border border-[#e5e0d5] p-6 flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-[13px] font-bold tracking-[1px] uppercase text-[#687588]">
+              Trails <span className="text-[#2c4a1e]">{trails.filter((t) => t.name.trim()).length}</span>
+            </h2>
+            <button
+              type="button"
+              onClick={addTrail}
+              className="flex items-center gap-1.5 h-8 px-3 rounded-[8px] bg-[#f0ede6] hover:bg-[#e5e0d5] text-[#2c4a1e] text-[12px] font-bold transition-colors"
+            >
+              <Plus className="size-3.5" />
+              Add trail
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            {trails.map((trail, i) => (
+              <div key={trail.id} className="border border-[#f0ede6] rounded-[12px] p-4 flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-[#687588] tracking-[0.5px]">TRAIL {i + 1}</span>
+                  {trails.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeTrail(trail.id)}
+                      className="size-6 flex items-center justify-center rounded-[6px] hover:bg-red-50 text-[#687588] hover:text-red-500 transition-colors"
+                    >
+                      <Trash2 className="size-3.5" />
+                    </button>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-[12px] font-bold text-[#374151] mb-1">Name</label>
+                  <input
+                    value={trail.name}
+                    onChange={(e) => updateTrail(trail.id, 'name', e.target.value)}
+                    placeholder="Trail name"
+                    className="w-full border border-[#e5e0d5] rounded-[8px] px-3 h-9 text-[13px] text-[#1a1a1a] focus:outline-none focus:border-[#2c4a1e]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[12px] font-bold text-[#374151] mb-1">Difficulty</label>
+                    <select
+                      value={trail.difficulty}
+                      onChange={(e) => updateTrail(trail.id, 'difficulty', e.target.value)}
+                      className="w-full border border-[#e5e0d5] rounded-[8px] px-3 h-9 text-[13px] text-[#374151] bg-white focus:outline-none"
+                    >
+                      {DIFFICULTIES.map((d) => (
+                        <option key={d.value} value={d.value}>{d.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[12px] font-bold text-[#374151] mb-1">Description <span className="text-[#687588] font-normal">(optional)</span></label>
+                  <textarea
+                    value={trail.description}
+                    onChange={(e) => updateTrail(trail.id, 'description', e.target.value)}
+                    placeholder="Short trail description…"
+                    rows={2}
+                    className="w-full border border-[#e5e0d5] rounded-[8px] px-3 py-2 text-[13px] text-[#1a1a1a] resize-none focus:outline-none focus:border-[#2c4a1e]"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Submit */}
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={() => navigate('/admin/parks')}
+            className="flex-1 h-10 rounded-[10px] border border-[#e5e0d5] text-[13px] font-bold text-[#374151] hover:bg-[#f0ede6]"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={create.isPending || !parkName.trim()}
+            className="flex-1 h-10 rounded-[10px] bg-[#2c4a1e] text-white text-[13px] font-bold hover:bg-[#1a3010] disabled:opacity-50"
+          >
+            {create.isPending ? 'Creating…' : 'Create Park'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}

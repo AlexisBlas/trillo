@@ -1,0 +1,267 @@
+import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { FileText, Search, ChevronDown, ChevronRight } from 'lucide-react';
+import { Skeleton } from '../components/ui/skeleton';
+import { Alert, AlertDescription } from '../components/ui/alert';
+import { Input } from '../components/ui/input';
+import { BackButton } from '../components/layout/BackButton';
+import { StatusCircle } from '../components/trail/StatusCircle';
+import { useParkReports } from '../hooks/useParkReports';
+import { cleanNotes, formatUpdatedAgo, isReportFresh } from '../lib/text';
+import { useTrailReports } from '../hooks/useTrailReports';
+import { formatDistanceToNow } from 'date-fns';
+import { useLang, TranslationKey } from '../contexts/LangContext';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '../lib/supabase';
+
+const STATUS_FILTERS: { value: 'all' | 'green' | 'yellow' | 'red'; labelKey: TranslationKey; dot: string | null; bg: string; text: string }[] = [
+  { value: 'all', labelKey: 'reports_all', dot: null, bg: '#1a3010', text: '#ffffff' },
+  { value: 'green', labelKey: 'reports_filter_good', dot: '#10b981', bg: '#d1fae5', text: '#065f46' },
+  { value: 'yellow', labelKey: 'reports_filter_caution', dot: '#f59e0b', bg: '#fef3c7', text: '#92400e' },
+  { value: 'red', labelKey: 'reports_filter_closed', dot: '#ef4444', bg: '#fee2e2', text: '#991b1b' },
+];
+
+export function ReportsPage() {
+  const navigate = useNavigate();
+  const { t } = useLang();
+  const { data: reports, isLoading, error } = useTrailReports(100);
+  const { byPark } = useParkReports();
+  const [searchQuery, setSearchQuery] = useState('');
+  const { data: parksMeta } = useQuery({
+    queryKey: ['parks-meta-public'],
+    queryFn: async () => {
+      const { data } = await supabase.from('parks').select('name, city');
+      return new Map((data ?? []).map((p: { name: string; city: string | null }) => [p.name, p.city ?? null]));
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+  const [statusFilter, setStatusFilter] = useState<'all' | 'green' | 'yellow' | 'red'>('all');
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+
+  const q = searchQuery.trim().toLowerCase();
+  // When searching or filtering, expand every group so matches aren't hidden.
+  const forceOpen = !!q || statusFilter !== 'all';
+
+  const toggle = (park: string) => {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(park)) next.delete(park);
+      else next.add(park);
+      return next;
+    });
+  };
+
+  const fresh = useMemo(
+    () => (reports || []).filter((r) => isReportFresh(r.created_at, r.conditions)),
+    [reports]
+  );
+
+  // Filter reports by status, then by trail name, park, notes, or hazard tags.
+  const filtered = useMemo(() => {
+    return fresh.filter((r) => {
+      if (statusFilter !== 'all' && r.status !== statusFilter) return false;
+      if (!q) return true;
+      const haystack = [
+        r.trails?.name,
+        r.trails?.location,
+        r.notes,
+        ...(r.conditions || []),
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+      return haystack.includes(q);
+    });
+  }, [fresh, q, statusFilter]);
+
+  const grouped = useMemo(
+    () =>
+      filtered.reduce<Record<string, typeof reports>>((acc, report) => {
+        const park = report.trails?.location || 'Other';
+        (acc[park] ||= [] as typeof reports)!.push(report);
+        return acc;
+      }, {}),
+    [filtered]
+  );
+
+  return (
+    <div className="min-h-screen bg-[#F5F0E8]">
+      <div className="px-4 pt-3.5">
+        <BackButton />
+      </div>
+
+      <div className="px-5 pt-6 pb-4">
+        <h1 className="text-[24px] font-bold text-[#1a3010] mb-1">{t('reports_title')}</h1>
+        <p className="text-[14px] text-[#4b6b3a] mb-5">{t('reports_grouped_by')}</p>
+
+        <div className="relative">
+          <Search className="absolute left-[17.5px] top-1/2 -translate-y-1/2 size-[18px] text-[#4b5563]" />
+          <Input
+            type="text"
+            placeholder={t('reports_search_placeholder')}
+            className="h-[45.5px] pl-[45px] pr-4 border-[1.5px] border-[#e5e7eb] bg-white text-[16px] shadow-sm rounded-[24px]"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+
+        <div className="flex items-center gap-2 mt-3 overflow-x-auto -mx-5 px-5 pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {STATUS_FILTERS.map((filter) => {
+            const active = statusFilter === filter.value;
+            const count =
+              filter.value === 'all'
+                ? fresh.length
+                : fresh.filter((r) => r.status === filter.value).length;
+            return (
+              <button
+                key={filter.value}
+                onClick={() => setStatusFilter(filter.value)}
+                className="shrink-0 inline-flex items-center gap-1.5 h-[34px] px-3.5 rounded-full border-[1.5px] text-[13px] font-bold transition-colors"
+                style={{
+                  backgroundColor: active ? filter.bg : '#ffffff',
+                  color: active ? filter.text : '#374151',
+                  borderColor: active ? filter.text : '#e5e7eb',
+                }}
+              >
+                {filter.dot && (
+                  <span
+                    className="size-2 rounded-full"
+                    style={{ backgroundColor: filter.dot }}
+                  />
+                )}
+                {t(filter.labelKey)}
+                <span className={active ? 'opacity-70' : 'opacity-60'}>{count}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="px-5 pt-2 pb-6">
+        {error && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertDescription>{t('park_load_error')}</AlertDescription>
+          </Alert>
+        )}
+
+        {isLoading && (
+          <div className="flex flex-col gap-[10px]">
+            {[...Array(4)].map((_, i) => (
+              <Skeleton key={i} className="h-24 w-full rounded-[16px]" />
+            ))}
+          </div>
+        )}
+
+        {!isLoading && filtered.length === 0 && (
+          <div className="bg-white rounded-[16px] border-[1.5px] border-[#f0ede6] shadow-sm p-8 text-center">
+            <div className="size-12 rounded-full bg-[#f0ede6] flex items-center justify-center mx-auto mb-4">
+              {q || statusFilter !== 'all' ? (
+                <Search className="size-6 text-[#374151]" />
+              ) : (
+                <FileText className="size-6 text-[#374151]" />
+              )}
+            </div>
+            <h3 className="text-[15.5px] font-bold text-[#1a1a1a] mb-2">
+              {q || statusFilter !== 'all' ? t('reports_no_match') : t('reports_none_yet')}
+            </h3>
+            <p className="text-[13px] text-[#374151]">
+              {q || statusFilter !== 'all' ? t('reports_no_match_hint') : t('reports_none_yet_hint')}
+            </p>
+          </div>
+        )}
+
+        {!isLoading && filtered.length > 0 && (
+          <div className="flex flex-col gap-[10px]">
+            {Object.entries(grouped)
+              .sort(([a], [b]) => a.localeCompare(b))
+              .map(([park, parkReports]) => {
+                const parkTitle = park;
+                const city = parksMeta?.get(park) ?? null;
+                const isOpen = forceOpen || expanded.has(park);
+                // Reports arrive newest-first, so the first one is the latest.
+                const latestAgo = formatUpdatedAgo(parkReports![0]?.created_at);
+                return (
+                  <div
+                    key={park}
+                    className="bg-white border-[1.5px] border-[#f0ede6] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] overflow-hidden rounded-[32px]"
+                  >
+                    {/* Park header — main area opens overview, chevron toggles reports */}
+                    <div className="flex items-stretch">
+                      <button
+                        onClick={() => navigate(`/parks/${encodeURIComponent(park)}`)}
+                        className="flex-1 min-w-0 p-[15.5px] flex items-center gap-3.5 text-left hover:bg-[#faf8f4] transition-colors rounded-l-[32px] rounded-r-[0px]"
+                      >
+                        <StatusCircle status={byPark.get(park)?.status ?? null} size="md" />
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
+                            {parkTitle}
+                          </h3>
+                          <p className="text-[13px] text-[#374151] truncate">
+                            {city ?? ''}
+                          </p>
+                          <p className="text-[12px] text-[#4b5563] mt-0.5">
+                            {parkReports!.length} {parkReports!.length === 1 ? t('home_report') : t('home_reports')}
+                            {latestAgo && <span> · {latestAgo}</span>}
+                          </p>
+                        </div>
+                      </button>
+                      <button
+                        onClick={() => toggle(park)}
+                        aria-expanded={isOpen}
+                        aria-label={isOpen ? `Collapse ${parkTitle} reports` : `Expand ${parkTitle} reports`}
+                        className="shrink-0 px-4 flex items-center justify-center border-l-[1.5px] border-[#f5f2ec] hover:bg-[#faf8f4] transition-colors disabled:opacity-40"
+                        disabled={forceOpen}
+                      >
+                        <ChevronDown
+                          className={`size-5 text-[#4b5563] transition-transform ${
+                            isOpen ? 'rotate-180' : ''
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    {/* Nested reports */}
+                    {isOpen && (
+                      <div className="border-t-[1.5px] border-[#f0ede6]">
+                        {parkReports!.map((report) => {
+                          const trailName = report.trails?.name?.includes(' - ')
+                            ? report.trails.name.split(' - ').slice(1).join(' - ')
+                            : report.trails?.name || t('reports_unknown_trail');
+                          const notes = cleanNotes(report.notes);
+                          return (
+                            <button
+                              key={report.id}
+                              onClick={() => navigate(`/trails/${report.trail_id}`)}
+                              className="w-full pl-[18px] pr-[15.5px] py-3 flex items-start gap-3 text-left border-b-[1.5px] border-[#f5f2ec] last:border-b-0 hover:bg-[#faf8f4] transition-colors"
+                            >
+                              <StatusCircle status={report.status} size="sm" className="mt-0.5" />
+                              <div className="flex-1 min-w-0">
+                                <h4 className="text-[14px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
+                                  {trailName}
+                                </h4>
+                                <p className="text-[12px] text-[#4b5563]">
+                                  {formatDistanceToNow(new Date(report.created_at), {
+                                    addSuffix: true,
+                                  })}
+                                </p>
+                                {notes && (
+                                  <p className="text-[13px] text-[#374151] leading-[19px] mt-1 line-clamp-2">
+                                    {notes}
+                                  </p>
+                                )}
+                              </div>
+                              <ChevronRight className="size-4 text-[#4b5563] shrink-0 mt-1" />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

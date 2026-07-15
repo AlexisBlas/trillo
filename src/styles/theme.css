@@ -1,0 +1,240 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Typography */
+  --font-family: 'Space Grotesk', sans-serif;
+  --font-size: 16px;
+  --font-weight-bold: 700;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+
+  /* Base colors from Figma */
+  --background: #f8f4ef;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+
+  /* Primary - Forest green from Figma */
+  --primary: #2c4a1e;
+  --primary-foreground: #ffffff;
+  --primary-dark: #1a3010;
+
+  /* Secondary colors */
+  --secondary: #f0ede6;
+  --secondary-foreground: #2c4a1e;
+
+  /* Muted colors */
+  --muted: #f5f0e8;
+  /* Darkened from #6b7280 to meet WCAG 2.1 AA (4.5:1) on light/cream backgrounds */
+  --muted-foreground: #4b5563;
+
+  /* Accent */
+  --accent: #ffeac8;
+  --accent-foreground: #1a3010;
+
+  /* Destructive */
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+
+  /* Borders */
+  --border: #f0ede6;
+  --border-light: #e5e7eb;
+  --input: #e5e7eb;
+  --input-background: #ffffff;
+  --switch-background: #d5d0c8;
+
+  /* Ring */
+  --ring: #2c4a1e;
+
+  /* Status colors from Figma */
+  --status-green: #d1fae5;
+  --status-green-foreground: #065f46;
+  --status-blue: #dbeafe;
+  --status-blue-foreground: #1e40af;
+  --status-yellow: #fef3c7;
+  --status-yellow-foreground: #92400e;
+  --status-red: #fee2e2;
+  --status-red-foreground: #991b1b;
+
+  /* Trail icon backgrounds */
+  --icon-green: #3a6b35;
+  --icon-blue: #2563eb;
+  --icon-yellow: #8b6914;
+
+  /* Text colors from Figma — secondary/tertiary darkened for WCAG 2.1 AA (4.5:1) */
+  --text-primary: #1a1a1a;
+  --text-secondary: #374151;
+  --text-tertiary: #4b5563;
+
+  /* Radius */
+  --radius: 1rem;
+  --radius-sm: 0.875rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+
+  /* Sidebar */
+  --sidebar: #f8f4ef;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #2c4a1e;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f5f0e8;
+  --sidebar-accent-foreground: #2c4a1e;
+  --sidebar-border: #f0ede6;
+  --sidebar-ring: #2c4a1e;
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --status-green: oklch(0.45 0.15 145);
+  --status-green-foreground: oklch(0.98 0.05 145);
+  --status-yellow: oklch(0.65 0.15 85);
+  --status-yellow-foreground: oklch(0.98 0.02 85);
+  --status-red: oklch(0.45 0.22 25);
+  --status-red-foreground: oklch(0.98 0.05 25);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-status-green: var(--status-green);
+  --color-status-green-foreground: var(--status-green-foreground);
+  --color-status-blue: var(--status-blue);
+  --color-status-blue-foreground: var(--status-blue-foreground);
+  --color-status-yellow: var(--status-yellow);
+  --color-status-yellow-foreground: var(--status-yellow-foreground);
+  --color-status-red: var(--status-red);
+  --color-status-red-foreground: var(--status-red-foreground);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-family);
+  }
+
+  /**
+  * Default typography styles for HTML elements (h1-h4, p, label, button, input).
+  * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
+  */
+
+  html {
+    font-size: var(--font-size);
+  }
+
+  h1 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h2 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h4 {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  label {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  button {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  input {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
+  }
+}
