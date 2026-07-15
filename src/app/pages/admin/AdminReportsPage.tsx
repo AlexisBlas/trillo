@@ -22,7 +22,7 @@ function EditModal({ report, onClose }: { report: AdminReport; onClose: () => vo
   const update = useUpdateReport();
   const [status, setStatus] = useState(report.status);
   const [notes, setNotes] = useState(report.notes ?? '');
-  const [trailId, setTrailId] = useState(report.trail_id);
+  const [trailId, setTrailId] = useState(report.trail_id ?? '');
 
   const handleSave = async () => {
     try {
@@ -31,7 +31,7 @@ function EditModal({ report, onClose }: { report: AdminReport; onClose: () => vo
         updates: {
           status,
           notes: notes.trim() || null,
-          trail_id: trailId,
+          ...(trailId ? { trail_id: trailId } : {}),
         },
       });
       toast.success('Report updated');
@@ -85,6 +85,7 @@ function EditModal({ report, onClose }: { report: AdminReport; onClose: () => vo
             onChange={(e) => setTrailId(e.target.value)}
             className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[13px] text-[#374151] bg-white focus:outline-none"
           >
+            <option value="">Park overview / none</option>
             {(trails ?? []).map((t) => (
               <option key={t.id} value={t.id}>{t.name}</option>
             ))}
@@ -158,7 +159,7 @@ function DeleteModal({ report, onClose }: { report: AdminReport; onClose: () => 
 }
 
 export function AdminReportsPage() {
-  const { data: reports, isLoading } = useAdminReports();
+  const { data: reports, isLoading, error } = useAdminReports();
   const [editing, setEditing] = useState<AdminReport | null>(null);
   const [deleting, setDeleting] = useState<AdminReport | null>(null);
   const [search, setSearch] = useState('');
@@ -171,6 +172,7 @@ export function AdminReportsPage() {
       return (
         r.trail_name.toLowerCase().includes(q) ||
         r.trail_location?.toLowerCase().includes(q) ||
+        r.park_name?.toLowerCase().includes(q) ||
         r.user_email?.toLowerCase().includes(q) ||
         r.notes?.toLowerCase().includes(q)
       );
@@ -215,7 +217,12 @@ export function AdminReportsPage() {
         </div>
 
         {isLoading && <div className="px-5 py-12 text-center text-[13px] text-[#687588]">Loading…</div>}
-        {!isLoading && filtered.length === 0 && (
+        {!isLoading && error && (
+          <div className="px-5 py-12 text-center text-[13px] text-red-600">
+            Failed to load reports{error instanceof Error ? `: ${error.message}` : '.'}
+          </div>
+        )}
+        {!isLoading && !error && filtered.length === 0 && (
           <div className="px-5 py-12 text-center text-[13px] text-[#687588]">No reports found.</div>
         )}
 
@@ -226,7 +233,9 @@ export function AdminReportsPage() {
           >
             <div className="min-w-0 pr-3">
               <p className="text-[13px] font-semibold text-[#1a1a1a] truncate">{report.trail_name}</p>
-              <p className="text-[11px] text-[#687588] truncate">{report.trail_location ?? '—'}</p>
+              <p className="text-[11px] text-[#687588] truncate">
+                {report.trail_id ? (report.trail_location ?? '—') : 'Park overview'}
+              </p>
             </div>
             <p className="text-[12px] text-[#687588] truncate pr-3">
               {report.user_email ?? 'Anonymous'}

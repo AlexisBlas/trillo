@@ -5,7 +5,8 @@ import { supabase, Profile, Trail } from '../lib/supabase';
 
 export interface AdminReport {
   id: string;
-  trail_id: string;
+  trail_id: string | null;
+  park_name: string | null;
   user_id: string | null;
   status: 'green' | 'yellow' | 'red';
   conditions: string[] | null;
@@ -20,23 +21,42 @@ export function useAdminReports() {
   return useQuery({
     queryKey: ['admin-reports'],
     queryFn: async () => {
+      // Don't embed profiles(email): user_id FKs to auth.users, not profiles,
+      // so PostgREST rejects that join and the whole query fails.
       const { data, error } = await supabase
         .from('trail_reports')
-        .select('*, trails(name, location), profiles(email)')
+        .select('*, trails(name, location)')
         .order('created_at', { ascending: false })
         .limit(500);
       if (error) throw error;
-      return (data ?? []).map((r: any) => ({
+
+      const rows = data ?? [];
+      const userIds = [
+        ...new Set(rows.map((r: { user_id: string | null }) => r.user_id).filter((id): id is string => !!id)),
+      ];
+
+      const profileMap = new Map<string, string | null>();
+      if (userIds.length > 0) {
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, email')
+          .in('id', userIds);
+        if (profilesError) throw profilesError;
+        for (const p of profiles ?? []) profileMap.set(p.id, p.email ?? null);
+      }
+
+      return rows.map((r: any) => ({
         id: r.id,
         trail_id: r.trail_id,
+        park_name: r.park_name ?? null,
         user_id: r.user_id,
         status: r.status,
         conditions: r.conditions,
         notes: r.notes,
         created_at: r.created_at,
-        trail_name: r.trails?.name ?? '—',
-        trail_location: r.trails?.location ?? null,
-        user_email: r.profiles?.email ?? null,
+        trail_name: r.trails?.name ?? r.park_name ?? '—',
+        trail_location: r.trails?.location ?? r.park_name ?? null,
+        user_email: r.user_id ? profileMap.get(r.user_id) ?? null : null,
       })) as AdminReport[];
     },
   });
