@@ -17,7 +17,7 @@ export interface TrailReport {
   id: string;
   trail_id: string | null;
   park_name: string | null;
-  user_id: string;
+  user_id: string | null;
   status: 'green' | 'yellow' | 'red';
   conditions: string[] | null;
   notes: string | null;

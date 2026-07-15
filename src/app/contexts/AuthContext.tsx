@@ -24,6 +24,36 @@ async function fetchProfile(userId: string): Promise<Profile | null> {
   return data ?? null;
 }
 
+async function applySession(
+  session: Session | null,
+  setters: {
+    setSession: (s: Session | null) => void;
+    setUser: (u: User | null) => void;
+    setProfile: (p: Profile | null) => void;
+  }
+): Promise<Profile | null> {
+  if (!session?.user) {
+    setters.setSession(null);
+    setters.setUser(null);
+    setters.setProfile(null);
+    return null;
+  }
+
+  const profile = await fetchProfile(session.user.id);
+  if (profile?.is_banned) {
+    await supabase.auth.signOut();
+    setters.setSession(null);
+    setters.setUser(null);
+    setters.setProfile(null);
+    return null;
+  }
+
+  setters.setSession(session);
+  setters.setUser(session.user);
+  setters.setProfile(profile);
+  return profile;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -31,27 +61,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const setters = { setSession, setUser, setProfile };
+
     supabase.auth.getSession().then(async ({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        const p = await fetchProfile(session.user.id);
-        setProfile(p);
-      }
+      await applySession(session, setters);
       setLoading(false);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        const p = await fetchProfile(session.user.id);
-        setProfile(p);
-      } else {
-        setProfile(null);
-      }
+      await applySession(session, setters);
       setLoading(false);
     });
 
@@ -59,8 +79,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error };
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return { error };
+
+    if (data.user) {
+      const profile = await fetchProfile(data.user.id);
+      if (profile?.is_banned) {
+        await supabase.auth.signOut();
+        return {
+          error: {
+            name: 'AuthApiError',
+            message: 'This account has been banned.',
+            status: 403,
+          } as AuthError,
+        };
+      }
+    }
+
+    return { error: null };
   };
 
   const signUp = async (email: string, password: string) => {

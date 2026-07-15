@@ -19,19 +19,24 @@ export function useTrailReports(limit = 50) {
         throw error;
       }
 
-      // Fetch user emails separately
+      // Fetch user emails separately (skip null user_ids from anonymous reports)
       if (data && data.length > 0) {
-        const userIds = [...new Set(data.map(r => r.user_id))];
-        const { data: profiles } = await supabase
-          .from('profiles')
-          .select('id, email')
-          .in('id', userIds);
+        const userIds = [...new Set(data.map(r => r.user_id).filter((id): id is string => !!id))];
+        const profileMap = new Map<string, { id: string; email: string | null }>();
 
-        const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+        if (userIds.length > 0) {
+          const { data: profiles } = await supabase
+            .from('profiles')
+            .select('id, email')
+            .in('id', userIds);
+          for (const p of profiles ?? []) profileMap.set(p.id, p);
+        }
 
         return data.map(report => ({
           ...report,
-          profiles: profileMap.get(report.user_id) || { id: report.user_id, email: null },
+          profiles: report.user_id
+            ? profileMap.get(report.user_id) || { id: report.user_id, email: null }
+            : { id: '', email: null },
         })) as TrailReportWithDetails[];
       }
 
@@ -55,19 +60,24 @@ export function useTrailReportsByTrail(trailId: string) {
         throw error;
       }
 
-      // Fetch user emails separately
+      // Fetch user emails separately (skip null user_ids from anonymous reports)
       if (data && data.length > 0) {
-        const userIds = [...new Set(data.map(r => r.user_id))];
-        const { data: profiles } = await supabase
-          .from('profiles')
-          .select('id, email')
-          .in('id', userIds);
+        const userIds = [...new Set(data.map(r => r.user_id).filter((id): id is string => !!id))];
+        const profileMap = new Map<string, { id: string; email: string | null }>();
 
-        const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+        if (userIds.length > 0) {
+          const { data: profiles } = await supabase
+            .from('profiles')
+            .select('id, email')
+            .in('id', userIds);
+          for (const p of profiles ?? []) profileMap.set(p.id, p);
+        }
 
         return data.map(report => ({
           ...report,
-          profiles: profileMap.get(report.user_id) || { id: report.user_id, email: null },
+          profiles: report.user_id
+            ? profileMap.get(report.user_id) || { id: report.user_id, email: null }
+            : { id: '', email: null },
         }));
       }
 
@@ -96,24 +106,29 @@ export function useUserReports(userId: string | undefined) {
 
       if (!reports || reports.length === 0) return [];
 
-      // Fetch trail details separately
-      const trailIds = [...new Set(reports.map(r => r.trail_id))];
-      const { data: trails, error: trailsError } = await supabase
-        .from('trails')
-        .select('*')
-        .in('id', trailIds);
+      // Fetch trail details separately (skip null trail_ids from park reports)
+      const trailIds = [...new Set(reports.map(r => r.trail_id).filter((id): id is string => !!id))];
+      const trailMap = new Map<string, { id: string; name: string }>();
 
-      if (trailsError) {
-        console.error('Error fetching trails:', trailsError);
-        // Return reports without trail details if fetch fails
-        return reports;
+      if (trailIds.length > 0) {
+        const { data: trails, error: trailsError } = await supabase
+          .from('trails')
+          .select('*')
+          .in('id', trailIds);
+
+        if (trailsError) {
+          console.error('Error fetching trails:', trailsError);
+          return reports;
+        }
+
+        for (const t of trails ?? []) trailMap.set(t.id, t);
       }
-
-      const trailMap = new Map(trails?.map(t => [t.id, t]) || []);
 
       return reports.map(report => ({
         ...report,
-        trails: trailMap.get(report.trail_id) || { id: report.trail_id, name: 'Unknown Trail' },
+        trails: report.trail_id
+          ? trailMap.get(report.trail_id) || { id: report.trail_id, name: 'Unknown Trail' }
+          : { id: '', name: report.park_name || 'Park report' },
       }));
     },
     enabled: !!userId,

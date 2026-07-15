@@ -132,6 +132,7 @@ export function useAdminUsers() {
 
       const countMap = new Map<string, number>();
       for (const row of counts ?? []) {
+        if (!row.user_id) continue;
         countMap.set(row.user_id, (countMap.get(row.user_id) ?? 0) + 1);
       }
 
@@ -360,16 +361,58 @@ export function useRenamepark() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ oldName, newName }: { oldName: string; newName: string }) => {
-      const { error } = await supabase
+      if (oldName === newName) return;
+
+      const { data: existingPark, error: parkFetchError } = await supabase
+        .from('parks')
+        .select('*')
+        .eq('name', oldName)
+        .maybeSingle();
+      if (parkFetchError) throw parkFetchError;
+
+      if (existingPark) {
+        const { error: upsertError } = await supabase.from('parks').upsert(
+          {
+            name: newName,
+            is_hidden: existingPark.is_hidden,
+            city: existingPark.city ?? null,
+            description: existingPark.description ?? null,
+            created_at: existingPark.created_at,
+          },
+          { onConflict: 'name' }
+        );
+        if (upsertError) throw upsertError;
+
+        const { error: deleteParkError } = await supabase
+          .from('parks')
+          .delete()
+          .eq('name', oldName);
+        if (deleteParkError) throw deleteParkError;
+      } else {
+        const { error: ensureParkError } = await supabase
+          .from('parks')
+          .upsert({ name: newName, is_hidden: false }, { onConflict: 'name' });
+        if (ensureParkError) throw ensureParkError;
+      }
+
+      const { error: trailsError } = await supabase
         .from('trails')
         .update({ location: newName })
         .eq('location', oldName);
-      if (error) throw error;
+      if (trailsError) throw trailsError;
+
+      const { error: reportsError } = await supabase
+        .from('trail_reports')
+        .update({ park_name: newName })
+        .eq('park_name', oldName);
+      if (reportsError) throw reportsError;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['admin-parks'] });
       qc.invalidateQueries({ queryKey: ['admin-trails'] });
       qc.invalidateQueries({ queryKey: ['trails'] });
+      qc.invalidateQueries({ queryKey: ['hidden-parks'] });
+      qc.invalidateQueries({ queryKey: ['trail-reports'] });
     },
   });
 }
@@ -378,16 +421,23 @@ export function useDeletePark() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (parkName: string) => {
-      const { error } = await supabase
+      const { error: trailsError } = await supabase
         .from('trails')
         .delete()
         .eq('location', parkName);
-      if (error) throw error;
+      if (trailsError) throw trailsError;
+
+      const { error: parkError } = await supabase
+        .from('parks')
+        .delete()
+        .eq('name', parkName);
+      if (parkError) throw parkError;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['admin-parks'] });
       qc.invalidateQueries({ queryKey: ['admin-trails'] });
       qc.invalidateQueries({ queryKey: ['trails'] });
+      qc.invalidateQueries({ queryKey: ['hidden-parks'] });
       qc.invalidateQueries({ queryKey: ['admin-stats'] });
     },
   });
