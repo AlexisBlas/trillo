@@ -5,16 +5,31 @@ import { BackButton } from '../components/layout/BackButton';
 import { StatusBadge } from '../components/trail/StatusBadge';
 import { useAuth } from '../contexts/AuthContext';
 import { useUserReports } from '../hooks/useTrailReports';
-import { cleanNotes, isReportFresh } from '../lib/text';
+import { cleanNotes, isReportFresh, getReportPath } from '../lib/text';
 import { formatDistanceToNow } from 'date-fns';
 import { useLang } from '../contexts/LangContext';
+
+function reportTitle(
+  report: {
+    trail_id?: string | null;
+    park_name?: string | null;
+    trails?: { name?: string | null } | null;
+  },
+  parkReportLabel: string,
+  unknownLabel: string
+): string {
+  if (report.trail_id) {
+    return report.trails?.name?.trim() || unknownLabel;
+  }
+  return report.park_name?.trim() || parkReportLabel;
+}
 
 export function ProfilePage() {
   const navigate = useNavigate();
   const { t } = useLang();
   const { user, signOut } = useAuth();
   const { data: allReports, isLoading } = useUserReports(user?.id);
-  const reports = (allReports || []).filter((r: any) =>
+  const reports = (allReports || []).filter((r) =>
     isReportFresh(r.created_at, r.conditions)
   );
 
@@ -71,7 +86,7 @@ export function ProfilePage() {
           </div>
         )}
 
-        {!isLoading && reports && reports.length === 0 && (
+        {!isLoading && reports.length === 0 && (
           <div className="bg-white rounded-[16px] border-[1.5px] border-[#f0ede6] shadow-sm p-8 text-center">
             <div className="size-12 rounded-full bg-[#f0ede6] flex items-center justify-center mx-auto mb-4">
               <FileText className="size-6 text-[#374151]" />
@@ -89,34 +104,49 @@ export function ProfilePage() {
           </div>
         )}
 
-        {!isLoading && reports && reports.length > 0 && (
+        {!isLoading && reports.length > 0 && (
           <div className="flex flex-col gap-[10px]">
-            {reports.map((report) => (
-              <button
-                key={report.id}
-                onClick={() => navigate(`/trails/${report.trail_id}`)}
-                className="bg-white border-[1.5px] border-[#f0ede6] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#2c4a1e] transition-colors p-4 text-left rounded-[32px]"
-              >
-                <div className="flex items-center justify-between gap-3 mb-1.5">
-                  <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate flex items-center gap-2">
-                    <MapPin className="size-4 text-[#2c4a1e] shrink-0" />
-                    {report.trails.name}
-                  </h3>
-                  <StatusBadge status={report.status} />
-                </div>
-                {cleanNotes(report.notes) && (
-                  <p className="text-[13px] text-[#374151] leading-[19px] line-clamp-2 mb-1.5">
-                    {cleanNotes(report.notes)}
-                  </p>
-                )}
-                <div className="flex items-center gap-1.5 text-[12px] text-[#4b5563]">
-                  <Clock className="size-3.5" />
-                  <span>
-                    {formatDistanceToNow(new Date(report.created_at), { addSuffix: true })}
-                  </span>
-                </div>
-              </button>
-            ))}
+            {reports.map((report) => {
+              const path = getReportPath(report);
+              const title = reportTitle(report, t('park_report'), t('reports_unknown_trail'));
+              const notes = cleanNotes(report.notes);
+              const createdLabel = (() => {
+                try {
+                  return formatDistanceToNow(new Date(report.created_at), { addSuffix: true });
+                } catch {
+                  return '';
+                }
+              })();
+
+              return (
+                <button
+                  key={report.id}
+                  type="button"
+                  onClick={() => path && navigate(path)}
+                  disabled={!path}
+                  className="bg-white border-[1.5px] border-[#f0ede6] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#2c4a1e] transition-colors p-4 text-left rounded-[32px] disabled:opacity-50"
+                >
+                  <div className="flex items-center justify-between gap-3 mb-1.5">
+                    <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate flex items-center gap-2">
+                      <MapPin className="size-4 text-[#2c4a1e] shrink-0" />
+                      {title}
+                    </h3>
+                    <StatusBadge status={report.status} />
+                  </div>
+                  {notes ? (
+                    <p className="text-[13px] text-[#374151] leading-[19px] line-clamp-2 mb-1.5">
+                      {notes}
+                    </p>
+                  ) : null}
+                  {createdLabel ? (
+                    <div className="flex items-center gap-1.5 text-[12px] text-[#4b5563]">
+                      <Clock className="size-3.5" />
+                      <span>{createdLabel}</span>
+                    </div>
+                  ) : null}
+                </button>
+              );
+            })}
           </div>
         )}
       </div>

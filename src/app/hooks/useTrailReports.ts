@@ -83,13 +83,13 @@ export function useTrailReportsByTrail(trailId: string) {
 
       return data;
     },
-    enabled: !!trailId,
+    enabled: !!trailId && trailId !== 'null' && trailId !== 'undefined',
   });
 }
 
 export function useUserReports(userId: string | undefined) {
   return useQuery({
-    queryKey: ['trail-reports', 'user', userId],
+    queryKey: ['trail-reports', 'user', userId, 'v2'],
     queryFn: async () => {
       if (!userId) return [];
 
@@ -118,10 +118,9 @@ export function useUserReports(userId: string | undefined) {
 
         if (trailsError) {
           console.error('Error fetching trails:', trailsError);
-          return reports;
+        } else {
+          for (const t of trails ?? []) trailMap.set(t.id, t);
         }
-
-        for (const t of trails ?? []) trailMap.set(t.id, t);
       }
 
       return reports.map(report => ({

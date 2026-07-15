@@ -29,7 +29,7 @@ export function useTrail(trailId: string | undefined) {
   return useQuery({
     queryKey: ['trails', trailId],
     queryFn: async () => {
-      if (!trailId) return null;
+      if (!trailId || trailId === 'null' || trailId === 'undefined') return null;
       const { data, error } = await supabase
         .from('trails')
         .select('*')
@@ -38,7 +38,7 @@ export function useTrail(trailId: string | undefined) {
       if (error) throw error;
       return data as Trail;
     },
-    enabled: !!trailId,
+    enabled: !!trailId && trailId !== 'null' && trailId !== 'undefined',
   });
 }
 

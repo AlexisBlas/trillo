@@ -48,6 +48,28 @@ export function cleanNotes(text: string | null | undefined): string {
   return text.replace(PARK_OVERVIEW_TAG, '').trim();
 }
 
+/** True when a trail route param is a usable UUID/id (not missing or the string "null"). */
+export function isValidTrailId(trailId: string | null | undefined): trailId is string {
+  if (!trailId) return false;
+  const value = trailId.trim().toLowerCase();
+  return value !== '' && value !== 'null' && value !== 'undefined';
+}
+
+/**
+ * Destination for a report click: trail detail when trail_id exists,
+ * otherwise the park page for park-level reports.
+ */
+export function getReportPath(report: {
+  trail_id?: string | null;
+  park_name?: string | null;
+  trails?: { location?: string | null } | null;
+}): string | null {
+  if (isValidTrailId(report.trail_id)) return `/trails/${report.trail_id}`;
+  const park = report.park_name || report.trails?.location;
+  if (park) return `/parks/${encodeURIComponent(park)}`;
+  return null;
+}
+
 export function truncateWords(text: string | null | undefined, maxWords = 60): string {
   if (!text) return '';
   const words = text.trim().split(/\s+/);

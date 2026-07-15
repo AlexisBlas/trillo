@@ -8,7 +8,7 @@ const statusConfig = {
 };
 
 interface StatusBadgeProps {
-  status: 'green' | 'yellow' | 'red';
+  status: 'green' | 'yellow' | 'red' | string | null | undefined;
   size?: 'sm' | 'md' | 'lg';
   showLabel?: boolean;
   className?: string;
@@ -21,7 +21,10 @@ export function StatusBadge({
   className,
 }: StatusBadgeProps) {
   const { t } = useLang();
-  const config = statusConfig[status];
+  const config =
+    status && status in statusConfig
+      ? statusConfig[status as keyof typeof statusConfig]
+      : statusConfig.yellow;
 
   const sizeClasses = {
     sm: 'h-5 px-2 text-[10px]',

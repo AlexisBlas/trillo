@@ -6,7 +6,7 @@ import { BackButton } from '../components/layout/BackButton';
 import { StatusBadge } from '../components/trail/StatusBadge';
 import { useTrail } from '../hooks/useTrails';
 import { useTrailReportsByTrail } from '../hooks/useTrailReports';
-import { cleanNotes, isReportFresh } from '../lib/text';
+import { cleanNotes, isReportFresh, isValidTrailId } from '../lib/text';
 import { formatDistanceToNow } from 'date-fns';
 import { useLang } from '../contexts/LangContext';
 
@@ -14,10 +14,27 @@ export function TrailDetailPage() {
   const { trailId } = useParams<{ trailId: string }>();
   const navigate = useNavigate();
   const { t } = useLang();
-  const { data: trail, isLoading: trailLoading } = useTrail(trailId);
-  const { data: reports, isLoading: reportsLoading } = useTrailReportsByTrail(trailId || '');
+  const validTrailId = isValidTrailId(trailId) ? trailId : undefined;
+  const { data: trail, isLoading: trailLoading } = useTrail(validTrailId);
+  const { data: reports, isLoading: reportsLoading } = useTrailReportsByTrail(validTrailId || '');
 
-  const isLoading = trailLoading || reportsLoading;
+  const isLoading = !!validTrailId && (trailLoading || reportsLoading);
+
+  if (!validTrailId) {
+    return (
+      <div className="p-4">
+        <Alert variant="destructive">
+          <AlertDescription>{t('trail_not_found')}</AlertDescription>
+        </Alert>
+        <button
+          className="mt-4 text-[#2c4a1e] font-bold text-[13px]"
+          onClick={() => navigate('/search')}
+        >
+          {t('trail_back_to_search')}
+        </button>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (

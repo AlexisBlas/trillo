@@ -7,7 +7,7 @@ import { Input } from '../components/ui/input';
 import { BackButton } from '../components/layout/BackButton';
 import { StatusCircle } from '../components/trail/StatusCircle';
 import { useParkReports } from '../hooks/useParkReports';
-import { cleanNotes, formatUpdatedAgo, isReportFresh } from '../lib/text';
+import { cleanNotes, formatUpdatedAgo, isReportFresh, getReportPath } from '../lib/text';
 import { useTrailReports } from '../hooks/useTrailReports';
 import { formatDistanceToNow } from 'date-fns';
 import { useLang, TranslationKey } from '../contexts/LangContext';
@@ -64,6 +64,7 @@ export function ReportsPage() {
       const haystack = [
         r.trails?.name,
         r.trails?.location,
+        r.park_name,
         r.notes,
         ...(r.conditions || []),
       ]
@@ -77,7 +78,7 @@ export function ReportsPage() {
   const grouped = useMemo(
     () =>
       filtered.reduce<Record<string, typeof reports>>((acc, report) => {
-        const park = report.trails?.location || 'Other';
+        const park = report.park_name || report.trails?.location || 'Other';
         (acc[park] ||= [] as typeof reports)!.push(report);
         return acc;
       }, {}),
@@ -224,15 +225,21 @@ export function ReportsPage() {
                     {isOpen && (
                       <div className="border-t-[1.5px] border-[#f0ede6]">
                         {parkReports!.map((report) => {
-                          const trailName = report.trails?.name?.includes(' - ')
-                            ? report.trails.name.split(' - ').slice(1).join(' - ')
-                            : report.trails?.name || t('reports_unknown_trail');
+                          const isParkReport = !report.trail_id && !!report.park_name;
+                          const rawTrailName = report.trails?.name;
+                          const trailName = isParkReport
+                            ? t('park_report')
+                            : rawTrailName?.includes(' - ')
+                              ? rawTrailName.split(' - ').slice(1).join(' - ')
+                              : rawTrailName || t('reports_unknown_trail');
                           const notes = cleanNotes(report.notes);
+                          const path = getReportPath(report);
                           return (
                             <button
                               key={report.id}
-                              onClick={() => navigate(`/trails/${report.trail_id}`)}
-                              className="w-full pl-[18px] pr-[15.5px] py-3 flex items-start gap-3 text-left border-b-[1.5px] border-[#f5f2ec] last:border-b-0 hover:bg-[#faf8f4] transition-colors"
+                              onClick={() => path && navigate(path)}
+                              disabled={!path}
+                              className="w-full pl-[18px] pr-[15.5px] py-3 flex items-start gap-3 text-left border-b-[1.5px] border-[#f5f2ec] last:border-b-0 hover:bg-[#faf8f4] transition-colors disabled:opacity-50"
                             >
                               <StatusCircle status={report.status} size="sm" className="mt-0.5" />
                               <div className="flex-1 min-w-0">
