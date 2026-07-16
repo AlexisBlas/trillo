@@ -20,7 +20,7 @@ const surfaceKeyMap: Record<string, TranslationKey> = {
 const hazardKeyMap: Record<string, TranslationKey> = {
   'downed-trees': 'hazard_downed_trees',
   'broken-bridge': 'hazard_broken_bridge',
-  rocky: 'hazard_rocky',
+  slippery: 'hazard_slippery',
   other: 'hazard_other',
 };
 

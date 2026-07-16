@@ -170,7 +170,7 @@ const translations = {
     form_select_hazards: 'Select all that apply',
     form_notes_submit_placeholder: 'Share anything helpful for other hikers...',
     hazard_broken_bridge: 'Broken bridge',
-    hazard_rocky: 'Rocky',
+    hazard_slippery: 'Slippery',
     hazard_other: 'Other',
     // Common
     loading: 'Loading…',
@@ -347,7 +347,7 @@ const translations = {
     form_select_hazards: 'Selecciona todos los que apliquen',
     form_notes_submit_placeholder: '¿Algo útil para otros senderistas?',
     hazard_broken_bridge: 'Puente roto',
-    hazard_rocky: 'Pedregoso',
+    hazard_slippery: 'Resbaladizo',
     hazard_other: 'Otro',
     // Common
     loading: 'Cargando…',

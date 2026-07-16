@@ -36,7 +36,7 @@ export const CONDITION_OPTIONS = [
   { value: 'damp', label: 'Damp' },
   { value: 'muddy', label: 'Muddy' },
   { value: 'downed-trees', label: 'Downed Trees' },
-  { value: 'rocky', label: 'Rocky' },
+  { value: 'slippery', label: 'Slippery' },
   { value: 'other', label: 'Other' },
 ] as const;
 
@@ -57,6 +57,6 @@ export const SURFACE_OPTIONS = [
 export const HAZARD_OPTIONS = [
   { value: 'downed-trees', label: 'Downed Trees' },
   { value: 'broken-bridge', label: 'Broken bridge' },
-  { value: 'rocky', label: 'Rocky' },
+  { value: 'slippery', label: 'Slippery' },
   { value: 'other', label: 'Other' },
 ] as const;
