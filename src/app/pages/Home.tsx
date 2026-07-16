@@ -1,17 +1,4 @@
-import image_eltrillo_hero_4 from '@/imports/eltrillo_hero-4.jpg'
-import image_eltrillo_hero_3 from '@/imports/eltrillo_hero-3.jpg'
-import image_eltrillo_hero_2 from '@/imports/eltrillo_hero-2.jpg'
-import image_eltrillo_hero_1 from '@/imports/eltrillo_hero-1.jpg'
-import image_eltrillo_hero from '@/imports/eltrillo_hero.jpg'
-import image_Generated_Image_July_07__2026___2_14PM from '@/imports/Generated_Image_July_07__2026_-_2_14PM.png'
-import image_tscope_hero_img_1 from '@/imports/tscope-hero-img-1.png'
-import image_tscope_hero_img from '@/imports/tscope-hero-img.png'
-import image_hero_img_fi_5 from '@/imports/hero-img-fi-5.png'
-import image_hero_img_fi_4 from '@/imports/hero-img-fi-4.png'
-import image_hero_img_fi_3 from '@/imports/hero-img-fi-3.png'
-import image_hero_img_fi_2 from '@/imports/hero-img-fi-2.png'
-import image_hero_img_fi_1 from '@/imports/hero-img-fi-1.png'
-import image_hero_img_fi from '@/imports/hero-img-fi.png'
+import heroImage from '@/imports/eltrillo_hero.png'
 import { useMemo, useState } from 'react';
 import { Search, Plus, Database, MapPin, Mountain, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router';
@@ -28,7 +15,6 @@ import { StatusCircle } from '../components/trail/StatusCircle';
 import { isReportFresh, formatUpdatedAgo, normalizeSearchText, searchIncludes } from '../lib/text';
 import { useLang } from '../contexts/LangContext';
 import { getParkCity, useParksMeta } from '../hooks/useParksMeta';
-import heroImage from '../../imports/her-img-3.png';
 
 type Park = { name: string; city: string | null; trails: TrailWithCity[] };
 
@@ -114,8 +100,8 @@ export function Home() {
 
       <div className="px-[0px] p-[0px]">
         <img
-          src={image_eltrillo_hero_4}
-          alt="Hikers, a runner, and a mountain biker among green peaks"
+          src={heroImage}
+          alt="Runner, hiker, and cyclist on a mountain trail"
           className="w-full h-auto select-none pointer-events-none m-[0px]"
         />
       </div>
