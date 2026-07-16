@@ -30,6 +30,7 @@ export function ReportPage() {
     try {
       const { error } = await supabase.from('trail_reports').insert({
         trail_id: trailId,
+        park_name: null,
         user_id: user?.id ?? null,
         status: data.status,
         conditions: data.conditions || null,

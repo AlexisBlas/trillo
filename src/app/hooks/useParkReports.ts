@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTrailReports } from './useTrailReports';
-import { isReportFresh } from '../lib/text';
+import { isReportFresh, isValidTrailId } from '../lib/text';
 
 export type ParkReportSummary = {
   status: 'green' | 'yellow' | 'red';
@@ -10,8 +10,8 @@ export type ParkReportSummary = {
 };
 
 /**
- * Aggregates trail reports by park (using each trail's `location`) and returns
- * the most recent report seen at each park.
+ * Park-overview status only — reports with `park_name` and no `trail_id`.
+ * Trail reports never roll up into park status (and vice versa).
  */
 export function useParkReports() {
   const query = useTrailReports(200);
@@ -19,7 +19,9 @@ export function useParkReports() {
   const byPark = useMemo(() => {
     const map = new Map<string, ParkReportSummary>();
     for (const report of query.data || []) {
-      const park = report.park_name ?? report.trails?.location;
+      // Park-level reports only (exclude anything tied to a trail)
+      if (isValidTrailId(report.trail_id)) continue;
+      const park = report.park_name?.trim();
       if (!park) continue;
       if (!isReportFresh(report.created_at, report.conditions)) continue;
       const existing = map.get(park);
