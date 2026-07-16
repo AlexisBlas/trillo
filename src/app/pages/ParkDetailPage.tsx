@@ -7,6 +7,7 @@ import { BackButton } from '../components/layout/BackButton';
 import { useTrails } from '../hooks/useTrails';
 import { useParkReports } from '../hooks/useParkReports';
 import { useParkMeta } from '../hooks/useHiddenParks';
+import { StatusCircle } from '../components/trail/StatusCircle';
 import {
   isReportFresh,
   truncateWords,
@@ -26,10 +27,10 @@ const STATUS_LABEL: Record<TrailStatus, TranslationKey> = {
   red: 'park_trail_status_poor',
 };
 
-const STATUS_STYLE: Record<TrailStatus, { text: string; dot: string }> = {
-  green: { text: '#346538', dot: '#22c55e' },
-  yellow: { text: '#92400e', dot: '#eab308' },
-  red: { text: '#9f2f2d', dot: '#ef4444' },
+const STATUS_TEXT: Record<TrailStatus, string> = {
+  green: '#346538',
+  yellow: '#92400e',
+  red: '#9f2f2d',
 };
 
 export function ParkDetailPage() {
@@ -69,7 +70,7 @@ export function ParkDetailPage() {
 
   const summary = byPark.get(decoded);
   const summaryNotes = cleanNotes(summary?.notes);
-  const style = summary ? STATUS_STYLE[summary.status] : null;
+  const statusText = summary ? STATUS_TEXT[summary.status] : null;
 
   const updateMeta = useMemo(() => {
     if (!summary?.createdAt) return null;
@@ -145,14 +146,10 @@ export function ParkDetailPage() {
                 {t('park_current_conditions')}
               </p>
               <div className="mt-3 flex items-center gap-3 min-w-0">
-                <span
-                  className="size-10 shrink-0 rounded-full"
-                  style={{ backgroundColor: style?.dot ?? '#d1d5db' }}
-                  aria-hidden
-                />
+                <StatusCircle status={summary?.status ?? null} />
                 <p
                   className="text-[44px] font-bold tracking-[-1.8px] leading-[0.95] break-words min-w-0"
-                  style={{ color: style?.text ?? '#1a1a1a' }}
+                  style={{ color: statusText ?? '#1a1a1a' }}
                 >
                   {summary ? t(STATUS_LABEL[summary.status]) : '—'}
                 </p>
@@ -237,18 +234,13 @@ export function ParkDetailPage() {
                   ? trail.name.split(' - ').slice(1).join(' - ')
                   : trail.name;
                 const status = statusByTrail.get(trail.id) ?? null;
-                const trailStyle = status ? STATUS_STYLE[status] : null;
                 return (
                   <button
                     key={trail.id}
                     onClick={() => navigate(`/trails/${trail.id}`)}
                     className="bg-white border border-[#ebe6dc] hover:border-[#2c4a1e]/40 transition-colors px-4 py-3.5 flex items-center gap-3.5 text-left rounded-[20px] active:scale-[0.99]"
                   >
-                    <span
-                      className="size-10 shrink-0 rounded-full"
-                      style={{ backgroundColor: trailStyle?.dot ?? '#d1d5db' }}
-                      aria-hidden
-                    />
+                    <StatusCircle status={status} />
                     <div className="flex-1 min-w-0">
                       <h3 className="text-[15px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
                         {displayName}
@@ -256,7 +248,7 @@ export function ParkDetailPage() {
                     </div>
                     <span
                       className="shrink-0 text-[12px] font-bold"
-                      style={{ color: trailStyle?.text ?? '#8a8478' }}
+                      style={{ color: status ? STATUS_TEXT[status] : '#8a8478' }}
                     >
                       {statusWord(status)}
                     </span>

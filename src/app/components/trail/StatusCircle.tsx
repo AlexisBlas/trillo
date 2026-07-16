@@ -1,17 +1,19 @@
-import { Check, AlertTriangle, XCircle, MapPin } from 'lucide-react';
 import { cn } from '../ui/utils';
 
 type Status = 'green' | 'yellow' | 'red';
 
-const config: Record<Status, { bg: string; text: string; Icon: typeof Check }> = {
-  green: { bg: '#d1fae5', text: '#065f46', Icon: Check },
-  yellow: { bg: '#fef3c7', text: '#92400e', Icon: AlertTriangle },
-  red: { bg: '#fee2e2', text: '#991b1b', Icon: XCircle },
+/** Community trail-condition colors: Dry / Wet / Muddy */
+export const STATUS_DOT: Record<Status, string> = {
+  green: '#22c55e',
+  yellow: '#eab308',
+  red: '#ef4444',
 };
 
+const UNKNOWN_DOT = '#d1d5db';
+
 const sizeMap = {
-  sm: { box: 'size-10', icon: 'size-5' },
-  md: { box: 'size-12', icon: 'size-6' },
+  sm: 'size-10', // 40×40
+  md: 'size-10', // 40×40 — same marker everywhere
 } as const;
 
 interface StatusCircleProps {
@@ -20,35 +22,13 @@ interface StatusCircleProps {
   className?: string;
 }
 
+/** Solid condition marker — green / yellow / red, no icon. */
 export function StatusCircle({ status, size = 'md', className }: StatusCircleProps) {
-  const s = sizeMap[size];
-
-  if (!status) {
-    return (
-      <div
-        className={cn(
-          'rounded-full flex items-center justify-center shrink-0 bg-[#f0ede6]',
-          s.box,
-          className
-        )}
-      >
-        <MapPin className={cn(s.icon, 'text-[#374151]')} />
-      </div>
-    );
-  }
-
-  const { bg, text, Icon } = config[status];
-
   return (
-    <div
-      className={cn(
-        'rounded-full flex items-center justify-center shrink-0 border',
-        s.box,
-        className
-      )}
-      style={{ backgroundColor: bg, borderColor: text }}
-    >
-      <Icon className={s.icon} style={{ color: text }} strokeWidth={2.4} />
-    </div>
+    <span
+      className={cn('rounded-full shrink-0', sizeMap[size], className)}
+      style={{ backgroundColor: status ? STATUS_DOT[status] : UNKNOWN_DOT }}
+      aria-hidden
+    />
   );
 }
