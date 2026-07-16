@@ -110,7 +110,10 @@ export function ParkDetailPage() {
     if (Number.isNaN(diffMs)) return null;
     const minutes = Math.floor(diffMs / (60 * 1000));
     if (minutes < 1) {
-      return { primary: t('park_updated_just_now'), secondary: t('park_updated') };
+      return {
+        label: t('park_updated'),
+        value: t('park_updated_just_now').toLowerCase(),
+      };
     }
     const value =
       minutes < 60
@@ -118,11 +121,14 @@ export function ParkDetailPage() {
         : minutes < 24 * 60
           ? `${Math.floor(minutes / 60)}h`
           : `${Math.floor(minutes / (24 * 60))}d`;
-    // ES typically puts the marker before the value ("hace 2h")
-    if (lang === 'es') {
-      return { primary: `${t('park_updated_ago')} ${value}`, secondary: t('park_updated') };
-    }
-    return { primary: value, secondary: t('park_updated_ago') };
+    // EN: "39m ago" · ES: "hace 39m"
+    return {
+      label: t('park_updated'),
+      value:
+        lang === 'es'
+          ? `${t('park_updated_ago')} ${value}`
+          : `${value} ${t('park_updated_ago')}`,
+    };
   }, [summary?.createdAt, t, lang]);
 
   const handleReport = () => {
@@ -199,25 +205,20 @@ export function ParkDetailPage() {
               </div>
             </div>
 
-            <div className="pl-4 border-l border-[#e5e7eb] flex flex-col justify-center gap-5 min-w-0">
+            <div className="pl-4 border-l border-[#e5e7eb] flex flex-col justify-center min-w-0">
               {updateMeta ? (
                 <div>
-                  <p className="text-[20px] font-bold tracking-[-0.4px] text-[#1a1a1a] leading-none tabular-nums">
-                    {updateMeta.primary}
+                  <p className="text-[13px] font-normal text-[#6b7280] leading-none">
+                    {updateMeta.label}
                   </p>
-                  <p className="mt-1.5 text-[13px] text-[#6b7280] leading-none">
-                    {updateMeta.secondary}
+                  <p className="mt-1.5 text-[20px] font-bold tracking-[-0.4px] text-[#1a1a1a] leading-none tabular-nums">
+                    {updateMeta.value}
                   </p>
                 </div>
               ) : (
-                <div>
-                  <p className="text-[20px] font-bold tracking-[-0.4px] text-[#1a1a1a] leading-none">
-                    —
-                  </p>
-                  <p className="mt-1.5 text-[13px] text-[#6b7280] leading-none">
-                    {t('park_report_to_update')}
-                  </p>
-                </div>
+                <p className="text-[13px] font-normal text-[#6b7280] leading-snug">
+                  {t('park_report_to_update')}
+                </p>
               )}
             </div>
           </div>
