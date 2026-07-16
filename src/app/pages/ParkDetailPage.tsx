@@ -7,7 +7,6 @@ import { BackButton } from '../components/layout/BackButton';
 import { useTrails } from '../hooks/useTrails';
 import { useParkReports } from '../hooks/useParkReports';
 import { useParkMeta } from '../hooks/useHiddenParks';
-import { StatusCircle } from '../components/trail/StatusCircle';
 import {
   isReportFresh,
   truncateWords,
@@ -245,7 +244,11 @@ export function ParkDetailPage() {
                     onClick={() => navigate(`/trails/${trail.id}`)}
                     className="bg-white border border-[#ebe6dc] hover:border-[#2c4a1e]/40 transition-colors px-4 py-3.5 flex items-center gap-3.5 text-left rounded-[20px] active:scale-[0.99]"
                   >
-                    <StatusCircle status={status} size="sm" />
+                    <span
+                      className="size-10 shrink-0 rounded-full"
+                      style={{ backgroundColor: trailStyle?.dot ?? '#d1d5db' }}
+                      aria-hidden
+                    />
                     <div className="flex-1 min-w-0">
                       <h3 className="text-[15px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
                         {displayName}
