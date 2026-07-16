@@ -1,23 +1,56 @@
 import { ReactNode } from 'react';
-import { motion } from 'motion/react';
-import { useNavigationType } from 'react-router';
+import { motion, Transition, Variants } from 'motion/react';
+import type { NavKind } from './useNavKind';
 
 interface PageTransitionProps {
   children: ReactNode;
+  kind: NavKind;
 }
 
-export function PageTransition({ children }: PageTransitionProps) {
-  const navType = useNavigationType();
-  const isBack = navType === 'POP';
+const ease = [0.22, 0.61, 0.36, 1] as const;
+
+const tabTransition: Transition = {
+  duration: 0.16,
+  ease,
+};
+
+const stackTransition: Transition = {
+  duration: 0.22,
+  ease,
+};
+
+/** Soft stack slide (not full-screen iOS push). */
+const STACK_OFFSET = 28;
+
+const variants: Record<NavKind, Variants> = {
+  tab: {
+    enter: { opacity: 0 },
+    center: { opacity: 1, x: 0 },
+    exit: { opacity: 0 },
+  },
+  push: {
+    enter: { opacity: 0.6, x: STACK_OFFSET },
+    center: { opacity: 1, x: 0 },
+    exit: { opacity: 0.6, x: -STACK_OFFSET },
+  },
+  pop: {
+    enter: { opacity: 0.6, x: -STACK_OFFSET },
+    center: { opacity: 1, x: 0 },
+    exit: { opacity: 0.6, x: STACK_OFFSET },
+  },
+};
+
+export function PageTransition({ children, kind }: PageTransitionProps) {
+  const isTab = kind === 'tab';
 
   return (
     <motion.div
-      initial={{ opacity: 0.6, x: isBack ? -24 : 24 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0.6, x: isBack ? 24 : -24 }}
-      transition={{ type: 'tween', ease: [0.22, 0.61, 0.36, 1], duration: 0.22 }}
+      variants={variants[kind]}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      transition={isTab ? tabTransition : stackTransition}
       className="w-full min-h-full"
-      style={{ willChange: 'transform, opacity' }}
     >
       {children}
     </motion.div>
