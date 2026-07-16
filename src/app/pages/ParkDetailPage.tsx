@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { Mountain, ChevronRight } from 'lucide-react';
 import { Skeleton } from '../components/ui/skeleton';
@@ -10,7 +10,6 @@ import { useParkMeta } from '../hooks/useHiddenParks';
 import { StatusCircle } from '../components/trail/StatusCircle';
 import {
   isReportFresh,
-  truncateWords,
   cleanNotes,
   pickLocalizedText,
   isValidTrailId,
@@ -41,6 +40,39 @@ export function ParkDetailPage() {
   const { data: trails, isLoading, error } = useTrails();
   const { byPark, data: allReports } = useParkReports();
   const { data: parkMeta } = useParkMeta(decoded);
+  const [descExpanded, setDescExpanded] = useState(false);
+  const [descOverflows, setDescOverflows] = useState(false);
+  const descRef = useRef<HTMLParagraphElement>(null);
+
+  const parkDescription = pickLocalizedText(
+    parkMeta?.description,
+    parkMeta?.description_es,
+    lang
+  );
+
+  useEffect(() => {
+    setDescExpanded(false);
+  }, [decoded, parkDescription]);
+
+  useEffect(() => {
+    const el = descRef.current;
+    if (!el || !parkDescription) {
+      setDescOverflows(false);
+      return;
+    }
+    // Measure while clamped so we know if a toggle is needed
+    const measure = () => {
+      if (descExpanded) {
+        // Keep showing the button once we know it overflows
+        return;
+      }
+      setDescOverflows(el.scrollHeight > el.clientHeight + 1);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [parkDescription, descExpanded, lang]);
 
   const statusByTrail = useMemo(() => {
     const map = new Map<string, TrailStatus>();
@@ -93,11 +125,6 @@ export function ParkDetailPage() {
     return { primary: value, secondary: t('park_updated_ago') };
   }, [summary?.createdAt, t, lang]);
 
-  const parkDescription = truncateWords(
-    pickLocalizedText(parkMeta?.description, parkMeta?.description_es, lang),
-    60
-  );
-
   const handleReport = () => {
     if (!parkTrails.length) return;
     navigate(`/parks/${encodeURIComponent(decoded)}/report`);
@@ -130,14 +157,30 @@ export function ParkDetailPage() {
         </h2>
 
         {parkDescription && (
-          <p className="text-[15px] leading-[23px] text-[#4b5563] mt-3 text-pretty max-w-[36rem]">
-            {parkDescription}
-          </p>
+          <div className="mt-3 max-w-[36rem]">
+            <p
+              ref={descRef}
+              className={`text-[15px] leading-[23px] text-[#4b5563] text-pretty ${
+                descExpanded ? '' : 'line-clamp-2'
+              }`}
+            >
+              {parkDescription}
+            </p>
+            {(descOverflows || descExpanded) && (
+              <button
+                type="button"
+                onClick={() => setDescExpanded((v) => !v)}
+                className="mt-1.5 text-[13px] font-bold text-[#2c4a1e] hover:text-[#1a3010] transition-colors"
+              >
+                {descExpanded ? t('park_show_less') : t('park_show_more')}
+              </button>
+            )}
+          </div>
         )}
 
         {/* Conditions: large status | update · notes below */}
         <section
-          className="mt-6 bg-white rounded-[24px] border border-[#ebe6dc] overflow-hidden"
+          className="mt-4 bg-white rounded-[24px] border border-[#ebe6dc] overflow-hidden"
           aria-label={t('park_current_conditions')}
         >
           <div className="grid grid-cols-[1.35fr_1fr] gap-0 px-5 pt-5 pb-5">

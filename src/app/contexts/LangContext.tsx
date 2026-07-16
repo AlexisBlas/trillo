@@ -163,6 +163,8 @@ const translations = {
     park_no_recent_reports: 'No recent reports',
     park_report_to_update: 'No update yet',
     park_trails_by_condition: 'Trails by condition',
+    park_show_more: 'Show more',
+    park_show_less: 'Show less',
     // Report form
     form_select_hazards: 'Select all that apply',
     form_notes_submit_placeholder: 'Share anything helpful for other hikers...',
@@ -337,6 +339,8 @@ const translations = {
     park_no_recent_reports: 'Sin reportes recientes',
     park_report_to_update: 'Sin actualización',
     park_trails_by_condition: 'Senderos por condición',
+    park_show_more: 'Ver más',
+    park_show_less: 'Ver menos',
     // Report form
     form_select_hazards: 'Selecciona todos los que apliquen',
     form_notes_submit_placeholder: '¿Algo útil para otros senderistas?',
