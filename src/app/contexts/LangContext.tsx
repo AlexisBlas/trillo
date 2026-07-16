@@ -51,6 +51,12 @@ const translations = {
     lang_en: 'English',
     lang_es: 'Español',
     about_description: 'Real-time trail conditions reported by hikers, for hikers. Built for Puerto Rico\'s public trail network.',
+    // Notifications
+    notif_open: 'Open notifications',
+    notif_title: 'Recent reports',
+    notif_empty: 'No recent reports yet.',
+    notif_view_all: 'View all reports',
+    notif_park_overview: 'Park overview',
     // Report pages
     report_conditions: 'Report Conditions',
     park_report: 'Park Overview Report',
@@ -228,6 +234,12 @@ const translations = {
     lang_en: 'English',
     lang_es: 'Español',
     about_description: 'Condiciones de senderos en tiempo real, reportadas por senderistas, para senderistas. Construido para la red de senderos públicos de Puerto Rico.',
+    // Notifications
+    notif_open: 'Abrir notificaciones',
+    notif_title: 'Reportes recientes',
+    notif_empty: 'Aún no hay reportes recientes.',
+    notif_view_all: 'Ver todos los reportes',
+    notif_park_overview: 'Resumen del parque',
     // Report pages
     report_conditions: 'Reportar Condiciones',
     park_report: 'Reporte General del Parque',
