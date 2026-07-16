@@ -7,20 +7,20 @@ interface PageTransitionProps {
   kind: NavKind;
 }
 
-const ease = [0.22, 0.61, 0.36, 1] as const;
+/** Deceleration into place — no overshoot (iOS-like). */
+const iosEase = [0.32, 0.72, 0, 1] as const;
 
 const tabTransition: Transition = {
-  duration: 0.16,
-  ease,
+  duration: 0.1,
+  ease: iosEase,
 };
 
 const stackTransition: Transition = {
-  duration: 0.22,
-  ease,
+  duration: 0.3,
+  ease: iosEase,
 };
 
-/** Soft stack slide (not full-screen iOS push). */
-const STACK_OFFSET = 28;
+const instant: Transition = { duration: 0 };
 
 const variants: Record<NavKind, Variants> = {
   tab: {
@@ -28,15 +28,17 @@ const variants: Record<NavKind, Variants> = {
     center: { opacity: 1, x: 0 },
     exit: { opacity: 0 },
   },
+  // Push: only the new screen moves in from the right (opaque)
   push: {
-    enter: { opacity: 0.6, x: STACK_OFFSET },
-    center: { opacity: 1, x: 0 },
-    exit: { opacity: 0.6, x: -STACK_OFFSET },
+    enter: { x: '100%' },
+    center: { x: 0 },
+    exit: { x: 0, transition: instant },
   },
+  // Pop: current screen slides off to the right; previous is already underneath
   pop: {
-    enter: { opacity: 0.6, x: -STACK_OFFSET },
-    center: { opacity: 1, x: 0 },
-    exit: { opacity: 0.6, x: STACK_OFFSET },
+    enter: { x: 0, transition: instant },
+    center: { x: 0 },
+    exit: { x: '100%' },
   },
 };
 
@@ -50,7 +52,7 @@ export function PageTransition({ children, kind }: PageTransitionProps) {
       animate="center"
       exit="exit"
       transition={isTab ? tabTransition : stackTransition}
-      className="w-full min-h-full"
+      className="w-full min-h-full bg-[#F5F0E8]"
     >
       {children}
     </motion.div>
