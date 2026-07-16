@@ -48,6 +48,9 @@ export function SignInPage() {
         <p className="text-[14px] text-[#4b6b3a] mt-1">
           {t('signin_subtitle')}
         </p>
+        <p className="text-[14px] text-[#4b6b3a] mt-1">
+          {t('auth_guest_note')}
+        </p>
       </div>
 
       <div className="px-5 pb-8">

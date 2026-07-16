@@ -51,7 +51,10 @@ export function SignUpPage() {
         </div>
         <h1 className="text-[24px] font-bold text-[#1a3010] leading-tight">Create account</h1>
         <p className="text-[14px] text-[#4b6b3a] mt-1">
-          {t('signup_subtitle')}
+          {t('signin_subtitle')}
+        </p>
+        <p className="text-[14px] text-[#4b6b3a] mt-1">
+          {t('auth_guest_note')}
         </p>
       </div>
 

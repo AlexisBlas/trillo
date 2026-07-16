@@ -21,6 +21,7 @@ const translations = {
     // Auth
     signin_subtitle: 'Sign in to your Trillo account.',
     signup_subtitle: 'Join the Trillo community.',
+    auth_guest_note: 'No account? You can still report trail conditions.',
     forgot_password_link: 'Forgot your password?',
     forgot_password_title: 'Forgot password',
     forgot_password_subtitle: 'Enter your email and we\'ll send a reset link.',
@@ -197,6 +198,7 @@ const translations = {
     // Auth
     signin_subtitle: 'Inicia sesión en tu cuenta de Trillo.',
     signup_subtitle: 'Únete a la comunidad de Trillo.',
+    auth_guest_note: '¿No tienes cuenta? Igual puedes reportar las condiciones de los senderos.',
     forgot_password_link: '¿Olvidaste tu contraseña?',
     forgot_password_title: 'Recuperar contraseña',
     forgot_password_subtitle: 'Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.',
