@@ -1,26 +1,42 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase, Trail } from '../lib/supabase';
+import { resolveParkCity } from '../lib/text';
 
-async function fetchHiddenParkNames(): Promise<Set<string>> {
-  const { data } = await supabase
-    .from('parks')
-    .select('name')
-    .eq('is_hidden', true);
-  return new Set((data ?? []).map((p: { name: string }) => p.name));
+export type TrailWithCity = Trail & { city: string | null };
+
+async function fetchParksMeta(): Promise<{
+  hidden: Set<string>;
+  cityByPark: Map<string, string | null>;
+}> {
+  const { data, error } = await supabase.from('parks').select('name, city, is_hidden');
+  if (error) throw error;
+  const hidden = new Set<string>();
+  const cityByPark = new Map<string, string | null>();
+  for (const p of data ?? []) {
+    const row = p as { name: string; city: string | null; is_hidden: boolean };
+    if (row.is_hidden) hidden.add(row.name);
+    cityByPark.set(row.name, resolveParkCity(row.name, row.city));
+  }
+  return { hidden, cityByPark };
 }
 
 export function useTrails() {
   return useQuery({
-    queryKey: ['trails'],
+    queryKey: ['trails', 'with-city'],
     queryFn: async () => {
-      const [trailsRes, hidden] = await Promise.all([
+      const [trailsRes, parks] = await Promise.all([
         supabase.from('trails').select('*').order('name'),
-        fetchHiddenParkNames(),
+        fetchParksMeta(),
       ]);
       if (trailsRes.error) throw trailsRes.error;
-      return (trailsRes.data as Trail[]).filter(
-        (t) => !t.location || !hidden.has(t.location)
-      );
+      return (trailsRes.data as Trail[])
+        .filter((t) => !t.location || !parks.hidden.has(t.location))
+        .map(
+          (t): TrailWithCity => ({
+            ...t,
+            city: t.location ? parks.cityByPark.get(t.location) ?? resolveParkCity(t.location, null) : null,
+          })
+        );
     },
   });
 }

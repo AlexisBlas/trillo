@@ -55,7 +55,6 @@ export const SURFACE_OPTIONS = [
 ] as const;
 
 export const HAZARD_OPTIONS = [
-  { value: 'none', label: 'None' },
   { value: 'downed-trees', label: 'Downed Trees' },
   { value: 'broken-bridge', label: 'Broken bridge' },
   { value: 'rocky', label: 'Rocky' },

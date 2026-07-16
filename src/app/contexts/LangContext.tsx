@@ -115,7 +115,7 @@ const translations = {
     home_no_matches: 'No matches for',
     // Search page
     search_title: 'Parks and Trails',
-    search_placeholder: 'Search parks or trails',
+    search_placeholder: 'Search parks, trails, or cities',
     search_load_error: 'Failed to load trails. Please try again later.',
     search_no_parks_found: 'No Parks Found',
     search_no_parks_available: 'No Parks Available',
@@ -288,7 +288,7 @@ const translations = {
     home_no_matches: 'Sin resultados para',
     // Search page
     search_title: 'Parques y Senderos',
-    search_placeholder: 'Buscar parques o senderos',
+    search_placeholder: 'Buscar parques, senderos o ciudades',
     search_load_error: 'Error al cargar los senderos. Intenta de nuevo.',
     search_no_parks_found: 'No se encontraron parques',
     search_no_parks_available: 'Sin parques disponibles',

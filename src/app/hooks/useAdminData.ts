@@ -256,6 +256,7 @@ export function useDeleteTrail() {
 export interface AdminPark {
   name: string;
   description: string | null;
+  description_es: string | null;
   city: string | null;
   trailCount: number;
   trails: Trail[];
@@ -268,12 +269,20 @@ export function useAdminParks() {
     queryFn: async () => {
       const [trailsRes, parksRes] = await Promise.all([
         supabase.from('trails').select('*').order('location', { ascending: true }),
-        supabase.from('parks').select('name, is_hidden, description, city'),
+        supabase.from('parks').select('name, is_hidden, description, description_es, city'),
       ]);
       if (trailsRes.error) throw trailsRes.error;
 
       const parkMeta = new Map(
-        (parksRes.data ?? []).map((p) => [p.name, { isHidden: p.is_hidden, description: p.description ?? null, city: p.city ?? null }])
+        (parksRes.data ?? []).map((p) => [
+          p.name,
+          {
+            isHidden: p.is_hidden,
+            description: p.description ?? null,
+            description_es: p.description_es ?? null,
+            city: p.city ?? null,
+          },
+        ])
       );
 
       const map = new Map<string, Trail[]>();
@@ -286,6 +295,7 @@ export function useAdminParks() {
       return Array.from(map.entries()).map(([name, trails]) => ({
         name,
         description: parkMeta.get(name)?.description ?? null,
+        description_es: parkMeta.get(name)?.description_es ?? null,
         city: parkMeta.get(name)?.city ?? null,
         trailCount: trails.length,
         trails,
@@ -301,17 +311,22 @@ export function useCreatePark() {
     mutationFn: async ({
       name,
       description,
+      description_es,
       city,
       trails,
     }: {
       name: string;
       description: string | null;
+      description_es: string | null;
       city: string | null;
       trails: Array<{ name: string; description: string | null; difficulty: string | null }>;
     }) => {
       const { error: parkError } = await supabase
         .from('parks')
-        .upsert({ name, description, city, is_hidden: false }, { onConflict: 'name' });
+        .upsert(
+          { name, description, description_es, city, is_hidden: false },
+          { onConflict: 'name' }
+        );
       if (parkError) throw parkError;
 
       if (trails.length > 0) {
@@ -326,6 +341,7 @@ export function useCreatePark() {
       qc.invalidateQueries({ queryKey: ['admin-trails'] });
       qc.invalidateQueries({ queryKey: ['trails'] });
       qc.invalidateQueries({ queryKey: ['admin-stats'] });
+      qc.invalidateQueries({ queryKey: ['park-meta'] });
     },
   });
 }
@@ -333,14 +349,25 @@ export function useCreatePark() {
 export function useUpdatePark() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ name, description, city }: { name: string; description: string | null; city: string | null }) => {
+    mutationFn: async ({
+      name,
+      description,
+      description_es,
+      city,
+    }: {
+      name: string;
+      description: string | null;
+      description_es: string | null;
+      city: string | null;
+    }) => {
       const { error } = await supabase
         .from('parks')
-        .upsert({ name, description, city }, { onConflict: 'name' });
+        .upsert({ name, description, description_es, city }, { onConflict: 'name' });
       if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['admin-parks'] });
+      qc.invalidateQueries({ queryKey: ['park-meta'] });
     },
   });
 }
@@ -397,6 +424,7 @@ export function useRenamepark() {
             is_hidden: existingPark.is_hidden,
             city: existingPark.city ?? null,
             description: existingPark.description ?? null,
+            description_es: existingPark.description_es ?? null,
             created_at: existingPark.created_at,
           },
           { onConflict: 'name' }

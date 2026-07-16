@@ -8,7 +8,6 @@ import { cn } from '../../components/ui/utils';
 interface TrailRow {
   id: number;
   name: string;
-  description: string;
   difficulty: string;
 }
 
@@ -43,12 +42,13 @@ export function AddParkPage() {
   const [parkName, setParkName] = useState('');
   const [parkCity, setParkCity] = useState('');
   const [parkDescription, setParkDescription] = useState('');
+  const [parkDescriptionEs, setParkDescriptionEs] = useState('');
   const [trails, setTrails] = useState<TrailRow[]>([
-    { id: nextId++, name: '', description: '', difficulty: '' },
+    { id: nextId++, name: '', difficulty: '' },
   ]);
 
   const addTrail = () => {
-    setTrails((prev) => [...prev, { id: nextId++, name: '', description: '', difficulty: '' }]);
+    setTrails((prev) => [...prev, { id: nextId++, name: '', difficulty: '' }]);
   };
 
   const removeTrail = (id: number) => {
@@ -67,10 +67,11 @@ export function AddParkPage() {
       await create.mutateAsync({
         name: parkName.trim(),
         description: parkDescription.trim() || null,
+        description_es: parkDescriptionEs.trim() || null,
         city: parkCity.trim() || null,
         trails: validTrails.map((t) => ({
           name: t.name.trim(),
-          description: t.description.trim() || null,
+          description: null,
           difficulty: t.difficulty || null,
         })),
       });
@@ -128,11 +129,21 @@ export function AddParkPage() {
           </div>
 
           <div>
-            <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Description <span className="text-[#687588] font-normal">(optional)</span></label>
+            <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Description (English) <span className="text-[#687588] font-normal">(optional)</span></label>
             <textarea
               value={parkDescription}
               onChange={(e) => setParkDescription(e.target.value)}
               placeholder="Describe the park, access points, highlights…"
+              rows={3}
+              className="w-full border border-[#e5e0d5] rounded-[10px] px-3 py-2.5 text-[13px] text-[#1a1a1a] resize-none focus:outline-none focus:border-[#2c4a1e]"
+            />
+          </div>
+          <div>
+            <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Description (Español) <span className="text-[#687588] font-normal">(opcional)</span></label>
+            <textarea
+              value={parkDescriptionEs}
+              onChange={(e) => setParkDescriptionEs(e.target.value)}
+              placeholder="Describe el parque, puntos de acceso, atractivos…"
               rows={3}
               className="w-full border border-[#e5e0d5] rounded-[10px] px-3 py-2.5 text-[13px] text-[#1a1a1a] resize-none focus:outline-none focus:border-[#2c4a1e]"
             />
@@ -194,17 +205,6 @@ export function AddParkPage() {
                       ))}
                     </select>
                   </div>
-                </div>
-
-                <div>
-                  <label className="block text-[12px] font-bold text-[#374151] mb-1">Description <span className="text-[#687588] font-normal">(optional)</span></label>
-                  <textarea
-                    value={trail.description}
-                    onChange={(e) => updateTrail(trail.id, 'description', e.target.value)}
-                    placeholder="Short trail description…"
-                    rows={2}
-                    className="w-full border border-[#e5e0d5] rounded-[8px] px-3 py-2 text-[13px] text-[#1a1a1a] resize-none focus:outline-none focus:border-[#2c4a1e]"
-                  />
                 </div>
               </div>
             ))}

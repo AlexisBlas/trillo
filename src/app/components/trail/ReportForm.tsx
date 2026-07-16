@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Smile, Meh, Frown, Sun, Droplet } from 'lucide-react';
+import { Smile, Meh, Frown, Sun, Droplet, Check } from 'lucide-react';
 import { ReportFormData, OVERALL_OPTIONS, SURFACE_OPTIONS, HAZARD_OPTIONS } from '../../lib/schemas';
 import { cn } from '../ui/utils';
 import { useLang, TranslationKey } from '../../contexts/LangContext';
@@ -18,7 +18,6 @@ const surfaceKeyMap: Record<string, TranslationKey> = {
 };
 
 const hazardKeyMap: Record<string, TranslationKey> = {
-  none: 'hazard_none',
   'downed-trees': 'hazard_downed_trees',
   'broken-bridge': 'hazard_broken_bridge',
   rocky: 'hazard_rocky',
@@ -47,29 +46,24 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
   const { t } = useLang();
   const [overall, setOverall] = useState<string>('great');
   const [surface, setSurface] = useState<string>('dry');
-  const [hazards, setHazards] = useState<string[]>(['none']);
+  const [hazards, setHazards] = useState<string[]>([]);
   const [notes, setNotes] = useState('');
 
   const toggleHazard = (value: string) => {
-    if (value === 'none') {
-      setHazards(['none']);
-      return;
-    }
-    setHazards((prev) => {
-      const without = prev.filter((h) => h !== 'none');
-      if (without.includes(value)) {
-        const next = without.filter((h) => h !== value);
-        return next.length === 0 ? ['none'] : next;
-      }
-      return [...without, value];
-    });
+    setHazards((prev) =>
+      prev.includes(value) ? prev.filter((h) => h !== value) : [...prev, value]
+    );
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const overallOpt = OVERALL_OPTIONS.find((o) => o.value === overall);
     if (!overallOpt) return;
-    const conditions = [overall, `surface:${surface}`, ...hazards.filter((h) => h !== 'none').map((h) => `hazard:${h}`)];
+    const conditions = [
+      overall,
+      `surface:${surface}`,
+      ...hazards.map((h) => `hazard:${h}`),
+    ];
     onSubmit({
       status: overallOpt.status,
       conditions,
@@ -93,9 +87,12 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
                 key={opt.value}
                 type="button"
                 onClick={() => setOverall(opt.value)}
-                className={cn("h-[78px] border-[1.5px] flex flex-col items-center justify-center gap-1 transition-colors rounded-[20px]", active
-    ? 'bg-[#2c4a1e] border-[#2c4a1e] text-white'
-    : 'bg-white border-[#e5e7eb] text-[#1a1a1a]')}
+                className={cn(
+                  'h-[78px] border-[1.5px] flex flex-col items-center justify-center gap-1 transition-colors rounded-[20px]',
+                  active
+                    ? 'bg-[#2c4a1e] border-[#2c4a1e] text-white'
+                    : 'bg-white border-[#e5e7eb] text-[#1a1a1a]'
+                )}
               >
                 <Icon className="size-6" />
                 <span className="text-[11px] font-bold">{t(overallKeyMap[opt.value])}</span>
@@ -119,9 +116,12 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
                 key={opt.value}
                 type="button"
                 onClick={() => setSurface(opt.value)}
-                className={cn("h-[78px] border-[1.5px] flex flex-col items-center justify-center gap-1 transition-colors rounded-[20px]", active
-    ? 'bg-[#2c4a1e] border-[#2c4a1e] text-white'
-    : 'bg-white border-[#e5e7eb] text-[#1a1a1a]')}
+                className={cn(
+                  'h-[78px] border-[1.5px] flex flex-col items-center justify-center gap-1 transition-colors rounded-[20px]',
+                  active
+                    ? 'bg-[#2c4a1e] border-[#2c4a1e] text-white'
+                    : 'bg-white border-[#e5e7eb] text-[#1a1a1a]'
+                )}
               >
                 <Icon className="size-5" />
                 <span className="text-[11px] font-bold">{t(surfaceKeyMap[opt.value])}</span>
@@ -131,7 +131,7 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
         </div>
       </section>
 
-      {/* Hazards */}
+      {/* Hazards — multi-select */}
       <section>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#374151]">
@@ -139,7 +139,24 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
           </h2>
           <span className="text-[12px] text-[#4b5563]">{t('form_select_hazards')}</span>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div
+          className="flex flex-wrap gap-2"
+          role="group"
+          aria-label={t('form_hazards_label')}
+        >
+          <button
+            type="button"
+            onClick={() => setHazards([])}
+            aria-pressed={hazards.length === 0}
+            className={cn(
+              'h-9 px-4 rounded-full border-[1.5px] text-[13px] font-bold transition-colors inline-flex items-center gap-1.5',
+              hazards.length === 0
+                ? 'bg-[#2c4a1e] border-[#2c4a1e] text-white'
+                : 'bg-white border-[#e5e7eb] text-[#1a1a1a]'
+            )}
+          >
+            {t('hazard_none')}
+          </button>
           {HAZARD_OPTIONS.map((opt) => {
             const active = hazards.includes(opt.value);
             return (
@@ -147,13 +164,15 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
                 key={opt.value}
                 type="button"
                 onClick={() => toggleHazard(opt.value)}
+                aria-pressed={active}
                 className={cn(
-                  'h-9 px-4 rounded-full border-[1.5px] text-[13px] font-bold transition-colors',
+                  'h-9 px-4 rounded-full border-[1.5px] text-[13px] font-bold transition-colors inline-flex items-center gap-1.5',
                   active
                     ? 'bg-[#2c4a1e] border-[#2c4a1e] text-white'
                     : 'bg-white border-[#e5e7eb] text-[#1a1a1a]'
                 )}
               >
+                {active && <Check className="size-3.5 shrink-0" strokeWidth={2.5} />}
                 {t(hazardKeyMap[opt.value] ?? 'hazard_other')}
               </button>
             );

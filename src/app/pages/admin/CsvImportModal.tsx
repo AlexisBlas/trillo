@@ -59,7 +59,6 @@ type Step = 'upload' | 'map' | 'preview' | 'result';
 interface Mapping {
   name: string;
   location: string;
-  description: string;
   qr_code: string;
 }
 
@@ -109,7 +108,7 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState<Step>('upload');
   const [headers, setHeaders] = useState<string[]>([]);
   const [rows, setRows] = useState<Record<string, string>[]>([]);
-  const [mapping, setMapping] = useState<Mapping>({ name: '', location: '', description: '', qr_code: '' });
+  const [mapping, setMapping] = useState<Mapping>({ name: '', location: '', qr_code: '' });
   const [importing, setImporting] = useState(false);
   const [result, setResult] = useState<ImportResult | null>(null);
   const [dragOver, setDragOver] = useState(false);
@@ -133,7 +132,6 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
       setMapping({
         name: find('title', 'name', 'trail'),
         location: find('region', 'area', 'location', 'park', 'forest'),
-        description: find('description', 'desc', 'summary', 'notes'),
         qr_code: find('qr', 'code', 'slug', 'id'),
       });
       setStep('map');
@@ -159,7 +157,7 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
     .map((r) => ({
       name: mapping.name ? r[mapping.name]?.trim() : '',
       location: mapping.location ? r[mapping.location]?.trim() || null : null,
-      description: mapping.description ? r[mapping.description]?.trim() || null : null,
+      description: null as string | null,
       qr_code: mapping.qr_code ? r[mapping.qr_code]?.trim() || null : null,
     }))
     .filter((r) => r.name);
@@ -249,7 +247,7 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
                 </p>
                 <p className="text-[12px] text-[#687588] leading-relaxed">
                   On any Trailforks region page, scroll to the trail list and use the export button (CSV).
-                  You'll get columns like <strong>Title</strong>, <strong>Region</strong>, and <strong>Description</strong> — Trillo will auto-map these.
+                  You'll get columns like <strong>Title</strong> and <strong>Region</strong> — Trillo will auto-map these.
                 </p>
               </div>
             </div>
@@ -264,7 +262,6 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
               <div className="grid grid-cols-2 gap-3">
                 <ColumnSelect label="Trail Name" required headers={headers} value={mapping.name} onChange={setMap('name')} />
                 <ColumnSelect label="Park / Location" headers={headers} value={mapping.location} onChange={setMap('location')} />
-                <ColumnSelect label="Description" headers={headers} value={mapping.description} onChange={setMap('description')} />
                 <ColumnSelect label="QR Code" headers={headers} value={mapping.qr_code} onChange={setMap('qr_code')} />
               </div>
               <p className="text-[11px] text-[#687588] mt-4">

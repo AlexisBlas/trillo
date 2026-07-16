@@ -48,6 +48,53 @@ export function cleanNotes(text: string | null | undefined): string {
   return text.replace(PARK_OVERVIEW_TAG, '').trim();
 }
 
+/** Lowercase + strip accents so "Bayamon" matches "Bayamón". */
+export function normalizeSearchText(value: string | null | undefined): string {
+  if (!value) return '';
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+export function searchIncludes(
+  haystack: string | null | undefined,
+  normalizedQuery: string
+): boolean {
+  if (!normalizedQuery) return true;
+  return normalizeSearchText(haystack).includes(normalizedQuery);
+}
+
+/**
+ * Prefer parks.city; otherwise the last ", City" segment of the park name
+ * (common in imported names like "Bosque Estatal de Susúa, Yauco").
+ */
+export function resolveParkCity(
+  parkName: string | null | undefined,
+  cityFromMeta: string | null | undefined
+): string | null {
+  const fromMeta = cityFromMeta?.trim();
+  if (fromMeta) return fromMeta;
+  if (!parkName) return null;
+  const comma = parkName.lastIndexOf(',');
+  if (comma < 0) return null;
+  const suffix = parkName.slice(comma + 1).trim();
+  return suffix || null;
+}
+
+/** Prefer the active language; fall back to the other if missing. */
+export function pickLocalizedText(
+  en: string | null | undefined,
+  es: string | null | undefined,
+  lang: 'en' | 'es'
+): string | null {
+  const english = en?.trim() || null;
+  const spanish = es?.trim() || null;
+  if (lang === 'es') return spanish || english;
+  return english || spanish;
+}
+
 /** True when a trail route param is a usable UUID/id (not missing or the string "null"). */
 export function isValidTrailId(trailId: string | null | undefined): trailId is string {
   if (!trailId) return false;

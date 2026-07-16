@@ -6,13 +6,12 @@ import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { BackButton } from '../components/layout/BackButton';
 import { useTrails } from '../hooks/useTrails';
+import type { TrailWithCity } from '../hooks/useTrails';
 import { useParkReports } from '../hooks/useParkReports';
 import { StatusCircle } from '../components/trail/StatusCircle';
-import { Trail } from '../lib/supabase';
-import { formatUpdatedAgo } from '../lib/text';
+import { formatUpdatedAgo, normalizeSearchText, searchIncludes } from '../lib/text';
 import { useLang } from '../contexts/LangContext';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '../lib/supabase';
+import { getParkCity, useParksMeta } from '../hooks/useParksMeta';
 
 export function SearchPage() {
   const navigate = useNavigate();
@@ -20,36 +19,34 @@ export function SearchPage() {
   const { data: trails, isLoading, error } = useTrails();
   const { byPark } = useParkReports();
   const [searchQuery, setSearchQuery] = useState('');
-  const { data: parksMeta } = useQuery({
-    queryKey: ['parks-meta-public'],
-    queryFn: async () => {
-      const { data } = await supabase.from('parks').select('name, city');
-      return new Map((data ?? []).map((p: { name: string; city: string | null }) => [p.name, p.city ?? null]));
-    },
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data: parksMeta } = useParksMeta();
 
-  const q = searchQuery.trim().toLowerCase();
+  const q = normalizeSearchText(searchQuery);
 
-  // Group trails by park. When searching, only include parks/trails that match.
+  // Group trails by park. When searching, match park name, city, or trail name.
   const parks = useMemo(() => {
-    const filtered = (trails || []).filter((t) =>
-      !q ||
-      t.name.toLowerCase().includes(q) ||
-      t.location?.toLowerCase().includes(q)
-    );
+    const filtered = (trails || []).filter((trail) => {
+      if (!q) return true;
+      const parkName = trail.location || 'Other';
+      const city = trail.city ?? getParkCity(parksMeta, parkName);
+      return (
+        searchIncludes(trail.name, q) ||
+        searchIncludes(parkName, q) ||
+        searchIncludes(city, q)
+      );
+    });
 
-    const map = new Map<string, Trail[]>();
-    for (const t of filtered) {
-      const park = t.location || 'Other';
+    const map = new Map<string, TrailWithCity[]>();
+    for (const trail of filtered) {
+      const park = trail.location || 'Other';
       if (!map.has(park)) map.set(park, []);
-      map.get(park)!.push(t);
+      map.get(park)!.push(trail);
     }
 
     return Array.from(map.entries())
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([name, parkTrails]) => ({ name, trails: parkTrails }));
-  }, [trails, q]);
+  }, [trails, q, parksMeta]);
 
   return (
     <div className="min-h-screen bg-[#F5F0E8]">
@@ -114,7 +111,7 @@ export function SearchPage() {
             <div className="flex flex-col gap-[10px]">
               {parks.map((park) => {
                 const parkTitle = park.name;
-                const city = parksMeta?.get(park.name) ?? null;
+                const city = getParkCity(parksMeta, park.name);
                 const updatedAgo = formatUpdatedAgo(byPark.get(park.name)?.createdAt);
                 return (
                   <button

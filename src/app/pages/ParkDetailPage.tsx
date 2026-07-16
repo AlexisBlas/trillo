@@ -10,14 +10,13 @@ import { useParkReports } from '../hooks/useParkReports';
 import { useWeather } from '../hooks/useWeather';
 import { useParkMeta } from '../hooks/useHiddenParks';
 import { StatusCircle } from '../components/trail/StatusCircle';
-import { isReportFresh } from '../lib/text';
-import { truncateWords, cleanNotes } from '../lib/text';
+import { isReportFresh, truncateWords, cleanNotes, pickLocalizedText } from '../lib/text';
 import { formatDistanceToNow } from 'date-fns';
 import { useLang } from '../contexts/LangContext';
 
 export function ParkDetailPage() {
   const navigate = useNavigate();
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { parkName } = useParams<{ parkName: string }>();
   const decoded = decodeURIComponent(parkName || '');
   const { data: trails, isLoading, error } = useTrails();
@@ -35,7 +34,7 @@ export function ParkDetailPage() {
   const { data: parkMeta } = useParkMeta(decoded);
 
   const parkTrails = useMemo(
-    () => (trails || []).filter((t) => (t.location || 'Other') === decoded),
+    () => (trails || []).filter((trail) => (trail.location || 'Other') === decoded),
     [trails, decoded]
   );
 
@@ -46,7 +45,10 @@ export function ParkDetailPage() {
 
   const parkTitle = decoded;
 
-  const parkDescription = truncateWords(parkMeta?.description ?? null, 60);
+  const parkDescription = truncateWords(
+    pickLocalizedText(parkMeta?.description, parkMeta?.description_es, lang),
+    60
+  );
 
   const handleReport = () => {
     if (!parkTrails.length) return;
@@ -178,11 +180,6 @@ export function ParkDetailPage() {
                       <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
                         {displayName}
                       </h3>
-                      {trail.description && (
-                        <p className="text-[12px] text-[#374151] truncate">
-                          {trail.description}
-                        </p>
-                      )}
                     </div>
                     <ChevronRight className="size-5 text-[#4b5563] shrink-0" />
                   </button>

@@ -7,12 +7,11 @@ import { Input } from '../components/ui/input';
 import { BackButton } from '../components/layout/BackButton';
 import { StatusCircle } from '../components/trail/StatusCircle';
 import { useParkReports } from '../hooks/useParkReports';
-import { cleanNotes, formatUpdatedAgo, isReportFresh, getReportPath } from '../lib/text';
+import { cleanNotes, formatUpdatedAgo, isReportFresh, getReportPath, normalizeSearchText, searchIncludes } from '../lib/text';
 import { useTrailReports } from '../hooks/useTrailReports';
 import { formatDistanceToNow } from 'date-fns';
 import { useLang, TranslationKey } from '../contexts/LangContext';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '../lib/supabase';
+import { getParkCity, useParksMeta } from '../hooks/useParksMeta';
 
 const STATUS_FILTERS: { value: 'all' | 'green' | 'yellow' | 'red'; labelKey: TranslationKey; dot: string | null; bg: string; text: string }[] = [
   { value: 'all', labelKey: 'reports_all', dot: null, bg: '#1a3010', text: '#ffffff' },
@@ -27,18 +26,11 @@ export function ReportsPage() {
   const { data: reports, isLoading, error } = useTrailReports(100);
   const { byPark } = useParkReports();
   const [searchQuery, setSearchQuery] = useState('');
-  const { data: parksMeta } = useQuery({
-    queryKey: ['parks-meta-public'],
-    queryFn: async () => {
-      const { data } = await supabase.from('parks').select('name, city');
-      return new Map((data ?? []).map((p: { name: string; city: string | null }) => [p.name, p.city ?? null]));
-    },
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data: parksMeta } = useParksMeta();
   const [statusFilter, setStatusFilter] = useState<'all' | 'green' | 'yellow' | 'red'>('all');
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
-  const q = searchQuery.trim().toLowerCase();
+  const q = normalizeSearchText(searchQuery);
   // When searching or filtering, expand every group so matches aren't hidden.
   const forceOpen = !!q || statusFilter !== 'all';
 
@@ -56,24 +48,23 @@ export function ReportsPage() {
     [reports]
   );
 
-  // Filter reports by status, then by trail name, park, notes, or hazard tags.
+  // Filter reports by status, then by trail name, park, city, notes, or hazard tags.
   const filtered = useMemo(() => {
     return fresh.filter((r) => {
       if (statusFilter !== 'all' && r.status !== statusFilter) return false;
       if (!q) return true;
-      const haystack = [
-        r.trails?.name,
-        r.trails?.location,
-        r.park_name,
-        r.notes,
-        ...(r.conditions || []),
-      ]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase();
-      return haystack.includes(q);
+      const park = r.park_name || r.trails?.location || null;
+      const city = getParkCity(parksMeta, park);
+      return (
+        searchIncludes(r.trails?.name, q) ||
+        searchIncludes(r.trails?.location, q) ||
+        searchIncludes(r.park_name, q) ||
+        searchIncludes(city, q) ||
+        searchIncludes(r.notes, q) ||
+        (r.conditions || []).some((c) => searchIncludes(c, q))
+      );
     });
-  }, [fresh, q, statusFilter]);
+  }, [fresh, q, statusFilter, parksMeta]);
 
   const grouped = useMemo(
     () =>
@@ -177,7 +168,7 @@ export function ReportsPage() {
               .sort(([a], [b]) => a.localeCompare(b))
               .map(([park, parkReports]) => {
                 const parkTitle = park;
-                const city = parksMeta?.get(park) ?? null;
+                const city = getParkCity(parksMeta, park);
                 const isOpen = forceOpen || expanded.has(park);
                 // Reports arrive newest-first, so the first one is the latest.
                 const latestAgo = formatUpdatedAgo(parkReports![0]?.created_at);

@@ -21,17 +21,16 @@ import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { useTrails } from '../hooks/useTrails';
+import type { TrailWithCity } from '../hooks/useTrails';
 import { useTrailReports } from '../hooks/useTrailReports';
 import { useParkReports } from '../hooks/useParkReports';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '../lib/supabase';
 import { StatusCircle } from '../components/trail/StatusCircle';
-import { isReportFresh, formatUpdatedAgo } from '../lib/text';
-import { Trail } from '../lib/supabase';
+import { isReportFresh, formatUpdatedAgo, normalizeSearchText, searchIncludes } from '../lib/text';
 import { useLang } from '../contexts/LangContext';
+import { getParkCity, useParksMeta } from '../hooks/useParksMeta';
 import heroImage from '../../imports/her-img-3.png';
 
-type Park = { name: string; city: string | null; trails: Trail[] };
+type Park = { name: string; city: string | null; trails: TrailWithCity[] };
 
 export function Home() {
   const navigate = useNavigate();
@@ -39,14 +38,7 @@ export function Home() {
   const { data: trails, isLoading, error } = useTrails();
   const { data: reports } = useTrailReports(200);
   const { byPark } = useParkReports();
-  const { data: parksMeta } = useQuery({
-    queryKey: ['parks-meta-public'],
-    queryFn: async () => {
-      const { data } = await supabase.from('parks').select('name, city');
-      return new Map((data ?? []).map((p: { name: string; city: string | null }) => [p.name, p.city ?? null]));
-    },
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data: parksMeta } = useParksMeta();
   const [searchQuery, setSearchQuery] = useState('');
 
   const freshReportCount = (reports || []).filter((r) =>
@@ -61,40 +53,44 @@ export function Home() {
   };
 
   const parks = useMemo<Park[]>(() => {
-    const map = new Map<string, Trail[]>();
-    for (const t of trails || []) {
-      const park = t.location || 'Other';
+    const map = new Map<string, TrailWithCity[]>();
+    for (const trail of trails || []) {
+      const park = trail.location || 'Other';
       if (!map.has(park)) map.set(park, []);
-      map.get(park)!.push(t);
+      map.get(park)!.push(trail);
     }
     return Array.from(map.entries())
       .map(([name, parkTrails]) => ({
         name,
-        city: parksMeta?.get(name) ?? null,
+        city: getParkCity(parksMeta, name) ?? parkTrails[0]?.city ?? null,
         trails: parkTrails,
       }))
       .sort((a, b) => b.trails.length - a.trails.length);
   }, [trails, parksMeta]);
 
-  const q = searchQuery.trim().toLowerCase();
+  const q = normalizeSearchText(searchQuery);
 
   const suggestions = useMemo(() => {
-    if (!q) return { parks: [] as Park[], trails: [] as Trail[] };
+    if (!q) return { parks: [] as Park[], trails: [] as TrailWithCity[] };
     const parkMatches = parks
-      .filter((p) => p.name.toLowerCase().includes(q))
+      .filter((p) => searchIncludes(p.name, q) || searchIncludes(p.city, q))
       .slice(0, 4);
     const trailMatches = (trails || [])
-      .filter((t) => {
-        const displayName = t.name.includes(' - ') ? t.name.split(' - ').slice(1).join(' - ') : t.name;
+      .filter((trail) => {
+        const displayName = trail.name.includes(' - ')
+          ? trail.name.split(' - ').slice(1).join(' - ')
+          : trail.name;
+        const parkCity = trail.city ?? getParkCity(parksMeta, trail.location);
         return (
-          displayName.toLowerCase().includes(q) ||
-          t.name.toLowerCase().includes(q) ||
-          t.location?.toLowerCase().includes(q)
+          searchIncludes(displayName, q) ||
+          searchIncludes(trail.name, q) ||
+          searchIncludes(trail.location, q) ||
+          searchIncludes(parkCity, q)
         );
       })
       .slice(0, 6);
     return { parks: parkMatches, trails: trailMatches };
-  }, [q, parks, trails]);
+  }, [q, parks, trails, parksMeta]);
 
   // Surface the parks with the most recent fresh reports first, so the section
   // highlights where the latest on-the-ground conditions are. Parks without a

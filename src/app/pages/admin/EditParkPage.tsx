@@ -37,7 +37,6 @@ const DIFFICULTIES = [
 interface NewTrailRow {
   id: number;
   name: string;
-  description: string;
   difficulty: string;
 }
 
@@ -59,6 +58,7 @@ export function EditParkPage() {
 
   const [parkNameInput, setParkNameInput] = useState('');
   const [description, setDescription] = useState('');
+  const [descriptionEs, setDescriptionEs] = useState('');
   const [city, setCity] = useState('');
   const [editingTrails, setEditingTrails] = useState<Record<string, Trail>>({});
   const [newTrails, setNewTrails] = useState<NewTrailRow[]>([]);
@@ -68,6 +68,7 @@ export function EditParkPage() {
     if (park) {
       setParkNameInput(park.name);
       setDescription(park.description ?? '');
+      setDescriptionEs(park.description_es ?? '');
       setCity(park.city ?? '');
       const map: Record<string, Trail> = {};
       park.trails.forEach((t) => { map[t.id] = { ...t }; });
@@ -76,7 +77,7 @@ export function EditParkPage() {
   }, [park?.name]);
 
   const addNewTrailRow = () => {
-    setNewTrails((prev) => [...prev, { id: nextId++, name: '', description: '', difficulty: '' }]);
+    setNewTrails((prev) => [...prev, { id: nextId++, name: '', difficulty: '' }]);
   };
 
   const updateNewTrail = (id: number, field: keyof Omit<NewTrailRow, 'id'>, value: string) => {
@@ -114,14 +115,19 @@ export function EditParkPage() {
       }
 
       // Update park metadata
-      await updatePark.mutateAsync({ name: effectiveName, description: description.trim() || null, city: city.trim() || null });
+      await updatePark.mutateAsync({
+        name: effectiveName,
+        description: description.trim() || null,
+        description_es: descriptionEs.trim() || null,
+        city: city.trim() || null,
+      });
 
       // Update existing trails
       await Promise.all(
         Object.values(editingTrails).map((t) =>
           updateTrail.mutateAsync({
             id: t.id,
-            updates: { name: t.name, description: t.description, difficulty: t.difficulty },
+            updates: { name: t.name, difficulty: t.difficulty },
           })
         )
       );
@@ -133,7 +139,7 @@ export function EditParkPage() {
           addTrail.mutateAsync({
             name: t.name.trim(),
             location: effectiveName,
-            description: t.description.trim() || null,
+            description: null,
             difficulty: t.difficulty || null,
           })
         )
@@ -211,11 +217,21 @@ export function EditParkPage() {
             </datalist>
           </div>
           <div>
-            <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Description</label>
+            <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Description (English)</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe the park, access points, highlights…"
+              rows={3}
+              className="w-full border border-[#e5e0d5] rounded-[10px] px-3 py-2.5 text-[13px] text-[#1a1a1a] resize-none focus:outline-none focus:border-[#2c4a1e]"
+            />
+          </div>
+          <div>
+            <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Description (Español)</label>
+            <textarea
+              value={descriptionEs}
+              onChange={(e) => setDescriptionEs(e.target.value)}
+              placeholder="Describe el parque, puntos de acceso, atractivos…"
               rows={3}
               className="w-full border border-[#e5e0d5] rounded-[10px] px-3 py-2.5 text-[13px] text-[#1a1a1a] resize-none focus:outline-none focus:border-[#2c4a1e]"
             />
@@ -273,17 +289,6 @@ export function EditParkPage() {
                     ))}
                   </select>
                 </div>
-
-                <div>
-                  <label className="block text-[12px] font-bold text-[#374151] mb-1">Description</label>
-                  <textarea
-                    value={trail.description ?? ''}
-                    onChange={(e) => setEditingTrails((prev) => ({ ...prev, [trail.id]: { ...prev[trail.id], description: e.target.value } }))}
-                    rows={2}
-                    placeholder="Short trail description…"
-                    className="w-full border border-[#e5e0d5] rounded-[8px] px-3 py-2 text-[13px] text-[#1a1a1a] resize-none focus:outline-none focus:border-[#2c4a1e]"
-                  />
-                </div>
               </div>
             ))}
 
@@ -322,17 +327,6 @@ export function EditParkPage() {
                       <option key={d.value} value={d.value}>{d.label}</option>
                     ))}
                   </select>
-                </div>
-
-                <div>
-                  <label className="block text-[12px] font-bold text-[#374151] mb-1">Description</label>
-                  <textarea
-                    value={trail.description}
-                    onChange={(e) => updateNewTrail(trail.id, 'description', e.target.value)}
-                    rows={2}
-                    placeholder="Short trail description…"
-                    className="w-full border border-[#e5e0d5] rounded-[8px] px-3 py-2 text-[13px] text-[#1a1a1a] resize-none focus:outline-none focus:border-[#2c4a1e]"
-                  />
                 </div>
               </div>
             ))}

@@ -11,7 +11,7 @@ import {
 import { Trail } from '../../lib/supabase';
 import { toast } from 'sonner';
 
-type TrailFormData = Pick<Trail, 'name' | 'location' | 'description' | 'qr_code'>;
+type TrailFormData = Pick<Trail, 'name' | 'location' | 'qr_code'>;
 
 const OTHER = '__other__';
 
@@ -31,7 +31,6 @@ function TrailModal({
   const [form, setForm] = useState<TrailFormData>({
     name: trail?.name ?? '',
     location: trail?.location ?? '',
-    description: trail?.description ?? '',
     qr_code: trail?.qr_code ?? '',
   });
 
@@ -68,7 +67,6 @@ function TrailModal({
           updates: {
             name: form.name.trim(),
             location: form.location?.trim() || null,
-            description: form.description?.trim() || null,
             qr_code: form.qr_code?.trim() || null,
           },
         });
@@ -77,7 +75,7 @@ function TrailModal({
         await create.mutateAsync({
           name: form.name.trim(),
           location: form.location?.trim() || null,
-          description: form.description?.trim() || null,
+          description: null,
           qr_code: form.qr_code?.trim() || null,
         });
         toast.success('Trail created');
@@ -141,24 +139,13 @@ function TrailModal({
         </div>
 
         {/* QR Code */}
-        <div className="mb-4">
+        <div className="mb-5">
           <label className="block text-[12px] font-bold text-[#374151] mb-1.5">QR Code</label>
           <input
             value={form.qr_code ?? ''}
             onChange={set('qr_code')}
             placeholder="e.g. TRAIL_YUNQUE_PEAK"
             className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[14px] text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#2c4a1e]/30"
-          />
-        </div>
-
-        <div className="mb-5">
-          <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Description</label>
-          <textarea
-            value={form.description ?? ''}
-            onChange={set('description')}
-            rows={3}
-            placeholder="Trail description…"
-            className="w-full border border-[#e5e0d5] rounded-[10px] px-3 py-2.5 text-[14px] text-[#1a1a1a] resize-none focus:outline-none focus:ring-2 focus:ring-[#2c4a1e]/30"
           />
         </div>
 
