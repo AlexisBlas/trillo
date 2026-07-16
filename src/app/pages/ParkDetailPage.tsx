@@ -1,18 +1,37 @@
 import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { Mountain, ChevronRight, Sun, Users } from 'lucide-react';
+import { Mountain, ChevronRight } from 'lucide-react';
 import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { BackButton } from '../components/layout/BackButton';
-import { StatusBadge } from '../components/trail/StatusBadge';
 import { useTrails } from '../hooks/useTrails';
 import { useParkReports } from '../hooks/useParkReports';
-import { useWeather } from '../hooks/useWeather';
 import { useParkMeta } from '../hooks/useHiddenParks';
 import { StatusCircle } from '../components/trail/StatusCircle';
-import { isReportFresh, truncateWords, cleanNotes, pickLocalizedText } from '../lib/text';
-import { formatDistanceToNow } from 'date-fns';
-import { useLang } from '../contexts/LangContext';
+import {
+  isReportFresh,
+  truncateWords,
+  cleanNotes,
+  pickLocalizedText,
+  isValidTrailId,
+} from '../lib/text';
+import { useLang, TranslationKey } from '../contexts/LangContext';
+
+type TrailStatus = 'green' | 'yellow' | 'red';
+
+const STATUS_RANK: Record<TrailStatus, number> = { red: 0, yellow: 1, green: 2 };
+
+const STATUS_LABEL: Record<TrailStatus, TranslationKey> = {
+  green: 'park_trail_status_good',
+  yellow: 'park_trail_status_fair',
+  red: 'park_trail_status_poor',
+};
+
+const STATUS_STYLE: Record<TrailStatus, { text: string; dot: string }> = {
+  green: { text: '#346538', dot: '#22c55e' },
+  yellow: { text: '#92400e', dot: '#eab308' },
+  red: { text: '#9f2f2d', dot: '#ef4444' },
+};
 
 export function ParkDetailPage() {
   const navigate = useNavigate();
@@ -21,29 +40,58 @@ export function ParkDetailPage() {
   const decoded = decodeURIComponent(parkName || '');
   const { data: trails, isLoading, error } = useTrails();
   const { byPark, data: allReports } = useParkReports();
+  const { data: parkMeta } = useParkMeta(decoded);
 
   const statusByTrail = useMemo(() => {
-    const map = new Map<string, 'green' | 'yellow' | 'red'>();
+    const map = new Map<string, TrailStatus>();
     for (const r of allReports || []) {
+      if (!isValidTrailId(r.trail_id)) continue;
       if (!isReportFresh(r.created_at, r.conditions)) continue;
       if (!map.has(r.trail_id)) map.set(r.trail_id, r.status);
     }
     return map;
   }, [allReports]);
-  const { data: weather, isLoading: weatherLoading } = useWeather(decoded);
-  const { data: parkMeta } = useParkMeta(decoded);
 
   const parkTrails = useMemo(
     () => (trails || []).filter((trail) => (trail.location || 'Other') === decoded),
     [trails, decoded]
   );
 
-  const summary = byPark.get(decoded);
-  const lastUpdated = summary
-    ? formatDistanceToNow(new Date(summary.createdAt), { addSuffix: true })
-    : null;
+  const sortedTrails = useMemo(() => {
+    return [...parkTrails].sort((a, b) => {
+      const aStatus = statusByTrail.get(a.id);
+      const bStatus = statusByTrail.get(b.id);
+      const aRank = aStatus ? STATUS_RANK[aStatus] : 3;
+      const bRank = bStatus ? STATUS_RANK[bStatus] : 3;
+      if (aRank !== bRank) return aRank - bRank;
+      return a.name.localeCompare(b.name);
+    });
+  }, [parkTrails, statusByTrail]);
 
-  const parkTitle = decoded;
+  const summary = byPark.get(decoded);
+  const summaryNotes = cleanNotes(summary?.notes);
+  const style = summary ? STATUS_STYLE[summary.status] : null;
+
+  const updateMeta = useMemo(() => {
+    if (!summary?.createdAt) return null;
+    const diffMs = Date.now() - new Date(summary.createdAt).getTime();
+    if (Number.isNaN(diffMs)) return null;
+    const minutes = Math.floor(diffMs / (60 * 1000));
+    if (minutes < 1) {
+      return { primary: t('park_updated_just_now'), secondary: t('park_updated') };
+    }
+    const value =
+      minutes < 60
+        ? `${minutes}m`
+        : minutes < 24 * 60
+          ? `${Math.floor(minutes / 60)}h`
+          : `${Math.floor(minutes / (24 * 60))}d`;
+    // ES typically puts the marker before the value ("hace 2h")
+    if (lang === 'es') {
+      return { primary: `${t('park_updated_ago')} ${value}`, secondary: t('park_updated') };
+    }
+    return { primary: value, secondary: t('park_updated_ago') };
+  }, [summary?.createdAt, t, lang]);
 
   const parkDescription = truncateWords(
     pickLocalizedText(parkMeta?.description, parkMeta?.description_es, lang),
@@ -55,85 +103,105 @@ export function ParkDetailPage() {
     navigate(`/parks/${encodeURIComponent(decoded)}/report`);
   };
 
+  const statusWord = (status: TrailStatus | null | undefined) => {
+    if (!status) return t('park_trail_status_unknown');
+    return t(STATUS_LABEL[status]);
+  };
+
   return (
     <div className="min-h-screen bg-[#F5F0E8]">
-      <div className="sticky top-0 z-40 bg-[#F5F0E8] px-4 pt-3.5 h-[52px] flex items-center border-b border-[#ede9e0]">
+      <div className="sticky top-0 z-40 bg-[#F5F0E8]/95 backdrop-blur-sm px-4 pt-3.5 h-[52px] flex items-center border-b border-[#ede9e0]">
         <BackButton />
         <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-[#1a3010] truncate max-w-[60%] text-center">
-          {parkTitle}
+          {decoded}
         </h1>
       </div>
 
-      <div className="px-5 pt-5 pb-4">
-        {summary && (
-          <StatusBadge status={summary.status} className="mb-3" />
-        )}
-
-        <h2 className="text-[24px] font-bold text-[#1a3010] leading-[30px]">
+      <div className="px-5 pt-6 pb-4">
+        <p className="text-[12px] font-medium text-[#687588] tracking-[0.2px]">
+          {[parkMeta?.city, parkTrails.length
+            ? `${parkTrails.length} ${parkTrails.length === 1 ? t('trail_singular') : t('trail_plural')}`
+            : null]
+            .filter(Boolean)
+            .join(' · ')}
+        </p>
+        <h2 className="text-[28px] font-bold text-[#1a3010] leading-[32px] tracking-[-0.6px] mt-1 text-balance">
           {decoded}
         </h2>
-        {parkMeta?.city && (
-          <p className="text-[13px] text-[#687588] mt-1">{parkMeta.city}</p>
-        )}
 
         {parkDescription && (
-          <p className="text-[14px] leading-[21px] text-[#374151] mt-3">
+          <p className="text-[15px] leading-[23px] text-[#4b5563] mt-3 text-pretty max-w-[36rem]">
             {parkDescription}
           </p>
         )}
 
+        {/* Conditions: large status | update · notes below */}
+        <section
+          className="mt-6 bg-white rounded-[24px] border border-[#ebe6dc] overflow-hidden"
+          aria-label={t('park_current_conditions')}
+        >
+          <div className="grid grid-cols-[1.35fr_1fr] gap-0 px-5 pt-5 pb-5">
+            <div className="pr-4 min-w-0">
+              <p className="text-[13px] text-[#6b7280] leading-none">
+                {t('park_current_conditions')}
+              </p>
+              <div className="mt-3 flex items-center gap-3 min-w-0">
+                <span
+                  className="size-10 shrink-0 rounded-full"
+                  style={{ backgroundColor: style?.dot ?? '#d1d5db' }}
+                  aria-hidden
+                />
+                <p
+                  className="text-[44px] font-bold tracking-[-1.8px] leading-[0.95] break-words min-w-0"
+                  style={{ color: style?.text ?? '#1a1a1a' }}
+                >
+                  {summary ? t(STATUS_LABEL[summary.status]) : '—'}
+                </p>
+              </div>
+            </div>
+
+            <div className="pl-4 border-l border-[#e5e7eb] flex flex-col justify-center gap-5 min-w-0">
+              {updateMeta ? (
+                <div>
+                  <p className="text-[20px] font-bold tracking-[-0.4px] text-[#1a1a1a] leading-none tabular-nums">
+                    {updateMeta.primary}
+                  </p>
+                  <p className="mt-1.5 text-[13px] text-[#6b7280] leading-none">
+                    {updateMeta.secondary}
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <p className="text-[20px] font-bold tracking-[-0.4px] text-[#1a1a1a] leading-none">
+                    —
+                  </p>
+                  <p className="mt-1.5 text-[13px] text-[#6b7280] leading-none">
+                    {t('park_report_to_update')}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {summaryNotes ? (
+            <div className="mx-4 mb-4 rounded-[16px] bg-[#f5f2ec] px-4 py-3.5">
+              <p className="text-[14px] leading-[21px] text-[#374151] text-pretty">
+                {summaryNotes}
+              </p>
+            </div>
+          ) : null}
+        </section>
+
         <button
           onClick={handleReport}
           disabled={parkTrails.length === 0}
-          className="mt-4 w-full h-[53px] bg-[#2c4a1e] rounded-[14px] text-white text-[13px] font-bold tracking-[1.5px] disabled:opacity-60"
+          className="mt-4 w-full h-[52px] bg-[#2c4a1e] rounded-[14px] text-white text-[13px] font-bold tracking-[1.5px] disabled:opacity-60 active:scale-[0.99] transition-transform"
         >
           {t('park_report_btn')}
         </button>
       </div>
 
-      <div className="px-5 pt-2">
-        <div className="flex items-center justify-between mb-3 px-[4px] py-[0px]">
-          <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#374151]">
-            {t('park_current_conditions')}
-          </h2>
-          {lastUpdated && (
-            <span className="text-[12px] text-[#4b5563]">{t('park_updated')} {lastUpdated}</span>
-          )}
-        </div>
-        <div className="flex gap-2">
-          <ConditionBox
-            icon={<Sun className="size-5 text-[#f59e0b]" />}
-            label={t('park_weather_label')}
-            value={weather ? `${weather.temperatureF}°F` : weatherLoading ? '…' : '—'}
-            sub={weather ? weather.condition : weatherLoading ? t('loading') : '—'}
-          />
-          <ConditionBox
-            icon={<Mountain className="size-5 text-[#3a6b35]" />}
-            label={t('trail_singular')}
-            value={summary ? (summary.status === 'green' ? t('park_trail_status_good') : summary.status === 'yellow' ? t('park_trail_status_fair') : t('park_trail_status_poor')) : '—'}
-            sub={t('park_surface_sub')}
-          />
-          <ConditionBox
-            icon={<Users className="size-5 text-[#374151]" />}
-            label={t('park_traffic_label')}
-            value={t('park_traffic_value')}
-            sub={t('park_traffic_sub')}
-          />
-        </div>
-
-        {cleanNotes(summary?.notes) && (
-          <div className="mt-4">
-            <h3 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#374151] mb-2">
-              {t('park_condition_summary')}
-            </h3>
-            <div className="bg-white rounded-[14px] border-[1.5px] border-[#f0ede6] p-4">
-              <p className="text-[14px] leading-[22.4px] text-[#374151]">{cleanNotes(summary?.notes)}</p>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="px-5 pt-6 pb-6">
+      <div className="px-5 pt-3 pb-8">
         {error && (
           <Alert variant="destructive" className="mb-4">
             <AlertDescription>{t('park_load_error')}</AlertDescription>
@@ -143,13 +211,13 @@ export function ParkDetailPage() {
         {isLoading && (
           <div className="flex flex-col gap-[10px]">
             {[...Array(4)].map((_, i) => (
-              <Skeleton key={i} className="h-[72px] w-full rounded-[16px]" />
+              <Skeleton key={i} className="h-[72px] w-full rounded-[20px]" />
             ))}
           </div>
         )}
 
         {!isLoading && parkTrails.length === 0 && (
-          <div className="bg-white rounded-[16px] border-[1.5px] border-[#f0ede6] shadow-sm p-8 text-center">
+          <div className="bg-white rounded-[20px] border border-[#ebe6dc] p-8 text-center">
             <div className="size-12 rounded-full bg-[#f0ede6] flex items-center justify-center mx-auto mb-4">
               <Mountain className="size-6 text-[#374151]" />
             </div>
@@ -158,30 +226,38 @@ export function ParkDetailPage() {
           </div>
         )}
 
-        {!isLoading && parkTrails.length > 0 && (
+        {!isLoading && sortedTrails.length > 0 && (
           <>
-            <p className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#374151] mb-3 px-[4px] py-[0px]">
-              {parkTrails.length} {parkTrails.length === 1 ? t('trail_singular') : t('trail_plural')}
+            <p className="text-[11px] font-bold tracking-[1.4px] uppercase text-[#8a8478] mb-3 px-0.5">
+              {t('park_trails_by_condition')}
             </p>
-            
-            <div className="flex flex-col gap-[10px]">
-              {parkTrails.map((trail) => {
+
+            <div className="flex flex-col gap-2">
+              {sortedTrails.map((trail) => {
                 const displayName = trail.name.includes(' - ')
                   ? trail.name.split(' - ').slice(1).join(' - ')
                   : trail.name;
+                const status = statusByTrail.get(trail.id) ?? null;
+                const trailStyle = status ? STATUS_STYLE[status] : null;
                 return (
                   <button
                     key={trail.id}
                     onClick={() => navigate(`/trails/${trail.id}`)}
-                    className="bg-white border-[1.5px] border-[#f0ede6] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#2c4a1e] transition-colors p-4 flex items-center gap-3 text-left rounded-[32px]"
+                    className="bg-white border border-[#ebe6dc] hover:border-[#2c4a1e]/40 transition-colors px-4 py-3.5 flex items-center gap-3.5 text-left rounded-[20px] active:scale-[0.99]"
                   >
-                    <StatusCircle status={statusByTrail.get(trail.id) ?? null} size="sm" />
+                    <StatusCircle status={status} size="sm" />
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
+                      <h3 className="text-[15px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
                         {displayName}
                       </h3>
                     </div>
-                    <ChevronRight className="size-5 text-[#4b5563] shrink-0" />
+                    <span
+                      className="shrink-0 text-[12px] font-bold"
+                      style={{ color: trailStyle?.text ?? '#8a8478' }}
+                    >
+                      {statusWord(status)}
+                    </span>
+                    <ChevronRight className="size-4 text-[#c4c0b6] shrink-0" />
                   </button>
                 );
               })}
@@ -189,27 +265,6 @@ export function ParkDetailPage() {
           </>
         )}
       </div>
-    </div>
-  );
-}
-
-function ConditionBox({
-  icon,
-  label,
-  value,
-  sub,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  sub: string;
-}) {
-  return (
-    <div className="flex-1 bg-[#f9f7f2] border border-[#ede9e0] rounded-[12px] h-[108px] flex flex-col items-center justify-center px-2">
-      <div className="mb-1">{icon}</div>
-      <p className="text-[11px] font-medium tracking-[0.2px] text-[#4b5563]">{label}</p>
-      <p className="text-[15px] font-bold text-[#1a1a1a] mt-0.5">{value}</p>
-      <p className="text-[11.5px] text-[#374151]">{sub}</p>
     </div>
   );
 }
