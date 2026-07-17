@@ -7,6 +7,7 @@ import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
+import { SuggestPlaceDialog } from '../components/home/SuggestPlaceDialog';
 import { useTrails } from '../hooks/useTrails';
 import type { TrailWithCity } from '../hooks/useTrails';
 import { useTrailReports } from '../hooks/useTrailReports';
@@ -26,6 +27,7 @@ export function Home() {
   const { byPark } = useParkReports();
   const { data: parksMeta } = useParksMeta();
   const [searchQuery, setSearchQuery] = useState('');
+  const [suggestOpen, setSuggestOpen] = useState(false);
 
   const freshReportCount = (reports || []).filter((r) =>
     isReportFresh(r.created_at, r.conditions)
@@ -287,7 +289,27 @@ export function Home() {
             })}
           </div>
         )}
+
+        {!isLoading && (
+          <div className="mt-6 pt-5 border-t border-[#e5e0d5]">
+            <p className="text-[15px] font-bold tracking-[-0.2px] text-[#1a3010]">
+              {t('home_suggest_title')}
+            </p>
+            <p className="text-[13px] text-[#4b5563] mt-1 leading-[19px]">
+              {t('home_suggest_body')}
+            </p>
+            <button
+              type="button"
+              onClick={() => setSuggestOpen(true)}
+              className="mt-3.5 w-full h-[48px] rounded-[14px] border-[1.5px] border-[#2c4a1e] text-[#2c4a1e] text-[13px] font-bold tracking-[1.2px] bg-white active:scale-[0.99] transition-transform"
+            >
+              {t('home_suggest_cta')}
+            </button>
+          </div>
+        )}
       </div>
+
+      <SuggestPlaceDialog open={suggestOpen} onOpenChange={setSuggestOpen} />
     </div>
   );
 }

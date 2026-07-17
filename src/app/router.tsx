@@ -21,6 +21,7 @@ import { EditParkPage } from './pages/admin/EditParkPage';
 import { AdminTrailsPage } from './pages/admin/AdminTrailsPage';
 import { AdminReportsPage } from './pages/admin/AdminReportsPage';
 import { AdminUsersPage } from './pages/admin/AdminUsersPage';
+import { AdminRequestsPage } from './pages/admin/AdminRequestsPage';
 import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
 import { ResetPasswordPage } from './pages/auth/ResetPasswordPage';
 
@@ -66,6 +67,7 @@ export const router = createBrowserRouter([
       { path: 'parks/:parkName/edit', element: <EditParkPage /> },
       { path: 'trails', element: <AdminTrailsPage /> },
       { path: 'reports', element: <AdminReportsPage /> },
+      { path: 'requests', element: <AdminRequestsPage /> },
       { path: 'users', element: <AdminUsersPage /> },
     ],
   },

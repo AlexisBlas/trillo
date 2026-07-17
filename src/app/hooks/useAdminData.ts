@@ -490,3 +490,92 @@ export function useDeletePark() {
     },
   });
 }
+
+// ─── Place requests (park/trail suggestions) ──────────────────────────────────
+
+export interface PlaceRequest {
+  id: string;
+  kind: 'park' | 'trail';
+  name: string;
+  details: string | null;
+  status: 'open' | 'done' | 'dismissed';
+  user_id: string | null;
+  created_at: string;
+  user_email: string | null;
+}
+
+export function usePlaceRequests() {
+  return useQuery({
+    queryKey: ['place-requests'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('place_requests')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+
+      const rows = data ?? [];
+      const userIds = [
+        ...new Set(rows.map((r) => r.user_id).filter((id): id is string => !!id)),
+      ];
+
+      const profileMap = new Map<string, string | null>();
+      if (userIds.length > 0) {
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, email')
+          .in('id', userIds);
+        if (profilesError) throw profilesError;
+        for (const p of profiles ?? []) profileMap.set(p.id, p.email ?? null);
+      }
+
+      return rows.map((r) => ({
+        id: r.id,
+        kind: r.kind,
+        name: r.name,
+        details: r.details,
+        status: r.status,
+        user_id: r.user_id,
+        created_at: r.created_at,
+        user_email: r.user_id ? profileMap.get(r.user_id) ?? null : null,
+      })) as PlaceRequest[];
+    },
+    refetchInterval: 60_000,
+  });
+}
+
+export function useUpdatePlaceRequest() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      id,
+      status,
+    }: {
+      id: string;
+      status: 'open' | 'done' | 'dismissed';
+    }) => {
+      const { error } = await supabase
+        .from('place_requests')
+        .update({ status })
+        .eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['place-requests'] });
+    },
+  });
+}
+
+export function useDeletePlaceRequest() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('place_requests').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['place-requests'] });
+    },
+  });
+}
+

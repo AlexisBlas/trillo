@@ -1,19 +1,23 @@
 import { NavLink, Outlet, useNavigate } from 'react-router';
-import { LayoutDashboard, Trees, Map, Users, LogOut, FileText } from 'lucide-react';
+import { LayoutDashboard, Trees, Map, Users, LogOut, FileText, Bell } from 'lucide-react';
 import { cn } from '../../components/ui/utils';
 import { useAuth } from '../../contexts/AuthContext';
+import { usePlaceRequests } from '../../hooks/useAdminData';
 
 const navItems = [
   { to: '/admin', label: 'Overview', icon: LayoutDashboard, end: true },
   { to: '/admin/parks', label: 'Parks', icon: Map, end: false },
   { to: '/admin/trails', label: 'Trails', icon: Trees, end: false },
   { to: '/admin/reports', label: 'Reports', icon: FileText, end: false },
+  { to: '/admin/requests', label: 'Requests', icon: Bell, end: false },
   { to: '/admin/users', label: 'Users', icon: Users, end: false },
 ];
 
 export function AdminLayout() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const { data: requests } = usePlaceRequests();
+  const openRequestCount = (requests ?? []).filter((r) => r.status === 'open').length;
 
   const handleSignOut = async () => {
     await signOut();
@@ -49,7 +53,12 @@ export function AdminLayout() {
               }
             >
               <Icon className="size-4 shrink-0" />
-              {label}
+              <span className="flex-1">{label}</span>
+              {label === 'Requests' && openRequestCount > 0 && (
+                <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-[#ef4444] text-white text-[11px] font-bold flex items-center justify-center">
+                  {openRequestCount > 99 ? '99+' : openRequestCount}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>
