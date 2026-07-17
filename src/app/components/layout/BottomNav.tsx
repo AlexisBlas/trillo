@@ -31,7 +31,7 @@ export function BottomNav() {
                 <Icon
                   className={cn(
                     'absolute left-1/2 -translate-x-1/2 top-[10px] size-[22px]',
-                    isActive ? 'text-[#065F46]' : 'text-[#687588]'
+                    isActive ? 'text-[#D97706]' : 'text-[#687588]'
                   )}
                   strokeWidth={1.83333}
                 />
@@ -39,7 +39,7 @@ export function BottomNav() {
                   className={cn(
                     'absolute left-1/2 -translate-x-1/2 top-[35px] text-[10.5px] text-center whitespace-nowrap',
                     isActive
-                      ? 'font-bold text-[#065F46]'
+                      ? 'font-bold text-[#D97706]'
                       : 'font-medium text-[#687588]'
                   )}
                 >
