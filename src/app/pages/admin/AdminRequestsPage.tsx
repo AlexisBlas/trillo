@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Bell, Check, Trash2, X } from 'lucide-react';
+import { useNavigate } from 'react-router';
+import { Bell, Check, Trash2, X, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 import {
@@ -13,6 +14,7 @@ import { cn } from '../../components/ui/utils';
 type Filter = 'open' | 'all' | 'done' | 'dismissed';
 
 export function AdminRequestsPage() {
+  const navigate = useNavigate();
   const { data: requests, isLoading } = usePlaceRequests();
   const update = useUpdatePlaceRequest();
   const remove = useDeletePlaceRequest();
@@ -42,6 +44,19 @@ export function AdminRequestsPage() {
     }
   };
 
+  const goAddFromRequest = (req: PlaceRequest) => {
+    navigate('/admin/parks/new', {
+      state: {
+        fromRequest: {
+          id: req.id,
+          kind: req.kind,
+          name: req.name,
+          details: req.details,
+        },
+      },
+    });
+  };
+
   return (
     <div className="p-8">
       <div className="mb-6 flex items-start justify-between gap-4">
@@ -61,7 +76,7 @@ export function AdminRequestsPage() {
         </div>
       </div>
 
-      <div className="flex gap-2 mb-5">
+      <div className="flex gap-2 mb-5 flex-wrap">
         {([
           { value: 'open' as const, label: 'Open' },
           { value: 'all' as const, label: 'All' },
@@ -130,7 +145,14 @@ export function AdminRequestsPage() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                <button
+                  onClick={() => goAddFromRequest(req)}
+                  className="h-9 px-3 rounded-[10px] text-[12px] font-bold border-[1.5px] border-[#2c4a1e] text-[#2c4a1e] bg-white flex items-center gap-1.5 hover:bg-[#f0ede6]"
+                >
+                  <Plus className="size-3.5" />
+                  {req.kind === 'park' ? 'Add park' : 'Add trail'}
+                </button>
                 {req.status === 'open' ? (
                   <>
                     <button

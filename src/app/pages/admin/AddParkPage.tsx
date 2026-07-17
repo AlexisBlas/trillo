@@ -1,14 +1,20 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { Plus, Trash2, ChevronLeft } from 'lucide-react';
-import { useCreatePark } from '../../hooks/useAdminData';
+import { useCreatePark, useUpdatePlaceRequest } from '../../hooks/useAdminData';
 import { toast } from 'sonner';
-import { cn } from '../../components/ui/utils';
 
 interface TrailRow {
   id: number;
   name: string;
   difficulty: string;
+}
+
+export interface PlaceRequestDraft {
+  id: string;
+  kind: 'park' | 'trail';
+  name: string;
+  details: string | null;
 }
 
 const DIFFICULTIES = [
@@ -35,16 +41,36 @@ const PR_MUNICIPALITIES = [
 
 let nextId = 1;
 
+function draftFromLocation(state: unknown): PlaceRequestDraft | null {
+  if (!state || typeof state !== 'object') return null;
+  const draft = (state as { fromRequest?: PlaceRequestDraft }).fromRequest;
+  if (!draft?.id || !draft?.name || (draft.kind !== 'park' && draft.kind !== 'trail')) {
+    return null;
+  }
+  return draft;
+}
+
 export function AddParkPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const create = useCreatePark();
+  const updateRequest = useUpdatePlaceRequest();
+  const fromRequest = draftFromLocation(location.state);
 
-  const [parkName, setParkName] = useState('');
+  const [parkName, setParkName] = useState(() =>
+    fromRequest?.kind === 'park' ? fromRequest.name : ''
+  );
   const [parkCity, setParkCity] = useState('');
-  const [parkDescription, setParkDescription] = useState('');
+  const [parkDescription, setParkDescription] = useState(() =>
+    fromRequest?.details?.trim() || ''
+  );
   const [parkDescriptionEs, setParkDescriptionEs] = useState('');
-  const [trails, setTrails] = useState<TrailRow[]>([
-    { id: nextId++, name: '', difficulty: '' },
+  const [trails, setTrails] = useState<TrailRow[]>(() => [
+    {
+      id: nextId++,
+      name: fromRequest?.kind === 'trail' ? fromRequest.name : '',
+      difficulty: '',
+    },
   ]);
 
   const addTrail = () => {
@@ -75,6 +101,13 @@ export function AddParkPage() {
           difficulty: t.difficulty || null,
         })),
       });
+      if (fromRequest?.id) {
+        try {
+          await updateRequest.mutateAsync({ id: fromRequest.id, status: 'done' });
+        } catch {
+          /* park created; request status is secondary */
+        }
+      }
       toast.success('Park created');
       navigate('/admin/parks');
     } catch (err: any) {
@@ -87,23 +120,37 @@ export function AddParkPage() {
       {/* Header */}
       <div className="flex items-center gap-3 mb-8">
         <button
-          onClick={() => navigate('/admin/parks')}
+          onClick={() => navigate(fromRequest ? '/admin/requests' : '/admin/parks')}
           className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#f0ede6] text-[#687588]"
         >
           <ChevronLeft className="size-4" />
         </button>
         <div>
           <h1 className="text-[24px] font-bold text-[#1a1a1a]">New Park</h1>
-          <p className="text-[14px] text-[#687588] mt-0.5">Add a park and its trails</p>
+          <p className="text-[14px] text-[#687588] mt-0.5">
+            {fromRequest
+              ? `Prefilling from ${fromRequest.kind} request`
+              : 'Add a park and its trails'}
+          </p>
         </div>
       </div>
+
+      {fromRequest && (
+        <div className="mb-5 rounded-[12px] border border-[#e5e0d5] bg-white px-4 py-3 text-[13px] text-[#374151]">
+          Requested {fromRequest.kind}:{' '}
+          <span className="font-bold text-[#1a1a1a]">{fromRequest.name}</span>
+          {fromRequest.details ? (
+            <span className="block mt-1 text-[#687588]">{fromRequest.details}</span>
+          ) : null}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-8">
         {/* Park details */}
         <div className="bg-white rounded-[16px] border border-[#e5e0d5] p-6 flex flex-col gap-4">
           <h2 className="text-[13px] font-bold tracking-[1px] uppercase text-[#687588]">Park</h2>
 
-          <div className="grid grid-cols-[1fr_160px] gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-[1fr_160px] gap-3">
             <div>
               <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Name <span className="text-red-500">*</span></label>
               <input
@@ -215,7 +262,7 @@ export function AddParkPage() {
         <div className="flex gap-3">
           <button
             type="button"
-            onClick={() => navigate('/admin/parks')}
+            onClick={() => navigate(fromRequest ? '/admin/requests' : '/admin/parks')}
             className="flex-1 h-10 rounded-[10px] border border-[#e5e0d5] text-[13px] font-bold text-[#374151] hover:bg-[#f0ede6]"
           >
             Cancel
