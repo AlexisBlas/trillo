@@ -10,6 +10,7 @@ import { useParkMeta } from '../hooks/useHiddenParks';
 import { StatusCircle } from '../components/trail/StatusCircle';
 import { StatusWithHazards } from '../components/trail/StatusWithHazards';
 import { HazardNotice } from '../components/trail/HazardNotice';
+import { HazardTrailCarousel } from '../components/trail/HazardTrailCarousel';
 import { getCriticalHazards, mergeCriticalHazards } from '../lib/hazards';
 import {
   isReportFresh,
@@ -124,6 +125,26 @@ export function ParkDetailPage() {
   const summaryNotes = cleanNotes(summary?.notes);
   const summaryHazards = getCriticalHazards(summary?.conditions);
   const statusText = summary ? STATUS_TEXT[summary.status] : null;
+
+  const trailHazardSlides = useMemo(() => {
+    return sortedTrails
+      .map((trail) => {
+        const hazards = hazardsByTrail.get(trail.id) ?? [];
+        if (hazards.length === 0) return null;
+        const displayName = trail.name.includes(' - ')
+          ? trail.name.split(' - ').slice(1).join(' - ')
+          : trail.name;
+        return {
+          id: trail.id,
+          trailName: displayName,
+          conditions: hazards.map((h) => h.tag),
+        };
+      })
+      .filter(
+        (row): row is { id: string; trailName: string; conditions: string[] } =>
+          !!row
+      );
+  }, [sortedTrails, hazardsByTrail]);
 
   const updateMeta = useMemo(() => {
     if (!summary?.createdAt) return null;
@@ -244,7 +265,9 @@ export function ParkDetailPage() {
             </div>
           </div>
 
-          {summaryHazards.length > 0 ? (
+          {trailHazardSlides.length > 0 ? (
+            <HazardTrailCarousel slides={trailHazardSlides} className="mx-4 mb-3" />
+          ) : summaryHazards.length > 0 ? (
             <div className="mx-4 mb-3">
               <HazardNotice conditions={summary?.conditions} />
             </div>

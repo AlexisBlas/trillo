@@ -57,10 +57,10 @@ function Callout({
               </p>
               {trailName ? (
                 <p
-                  className="text-[12px] font-medium mt-0.5 truncate"
+                  className="text-[13px] font-bold mt-1 truncate"
                   style={{ color: HAZARD_COLORS.ink }}
                 >
-                  {t('hazard_reported_on')} {trailName}
+                  {trailName}
                 </p>
               ) : null}
               <p
