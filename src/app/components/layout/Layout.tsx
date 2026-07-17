@@ -4,6 +4,7 @@ import { BottomNav } from './BottomNav';
 import { ScrollToTop } from './ScrollToTop';
 import { PageTransition } from './PageTransition';
 import { AddToHomeScreenPrompt } from './AddToHomeScreenPrompt';
+import { AnalyticsPageViews } from './AnalyticsPageViews';
 import { useNavKind } from './useNavKind';
 
 export function Layout() {
@@ -12,6 +13,7 @@ export function Layout() {
   return (
     <div className="min-h-screen bg-[#F5F0E8] overflow-x-hidden">
       <ScrollToTop />
+      <AnalyticsPageViews />
       <main className="pb-[79px] md:pb-0 relative">
         <AnimatePresence mode="wait" initial={false}>
           <PageTransition key={pathname} kind={kind}>
