@@ -1,9 +1,12 @@
 import { cn } from '../ui/utils';
 import { useLang } from '../../contexts/LangContext';
-import { getCriticalHazards, HAZARD_COLORS } from '../../lib/hazards';
+import { getCriticalHazards } from '../../lib/hazards';
 import { StatusCircle } from './StatusCircle';
 
 type Status = 'green' | 'yellow' | 'red';
+
+/** Solid attention color for the overlapping hazard badge. */
+const BADGE_BG = '#D97706';
 
 interface StatusWithHazardsProps {
   status?: Status | null;
@@ -13,7 +16,7 @@ interface StatusWithHazardsProps {
 }
 
 /**
- * Status dot with a subtle overlapping hazard badge (profile-style),
+ * Status dot with a prominent overlapping hazard badge (profile-style),
  * bottom-left — Downed Trees / Broken Bridge only.
  */
 export function StatusWithHazards({
@@ -32,26 +35,19 @@ export function StatusWithHazards({
       <StatusCircle status={status} size={size} className="absolute inset-0" />
       {primary && PrimaryIcon && (
         <span
-          className="absolute -bottom-0.5 -left-0.5 size-[18px] rounded-full flex items-center justify-center shadow-[0_0_0_1.5px_#ffffff]"
-          style={{
-            backgroundColor: HAZARD_COLORS.iconBg,
-            border: `1.5px solid ${HAZARD_COLORS.ink}`,
-          }}
+          className="absolute -bottom-1 -left-1 size-[20px] rounded-full flex items-center justify-center shadow-[0_0_0_2px_#ffffff]"
+          style={{ backgroundColor: BADGE_BG }}
           aria-label={hazards.map((h) => t(h.labelKey)).join(', ')}
           title={hazards.map((h) => t(h.labelKey)).join(', ')}
         >
           {hazards.length > 1 ? (
-            <span
-              className="text-[9px] font-bold leading-none tabular-nums"
-              style={{ color: HAZARD_COLORS.ink }}
-            >
+            <span className="text-[10px] font-bold leading-none tabular-nums text-white">
               {hazards.length}
             </span>
           ) : (
             <PrimaryIcon
-              className="size-2.5"
-              style={{ color: HAZARD_COLORS.ink }}
-              strokeWidth={2.25}
+              className="size-3 text-white"
+              strokeWidth={2.5}
               aria-hidden
             />
           )}
