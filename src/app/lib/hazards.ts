@@ -1,10 +1,11 @@
 import { Trees, BrickWall, type LucideIcon } from 'lucide-react';
 import type { TranslationKey } from '../contexts/LangContext';
 
-/** Shared palette for hazard callouts / badges (matches design reference). */
+/** Shared palette for hazard callouts / badges. */
 export const HAZARD_COLORS = {
   ink: '#5D3A1A',
-  iconBg: '#F1E3C5',
+  iconBg: '#D97706',
+  iconFg: '#ffffff',
   cardBg: '#FFF9EC',
   cardBorder: '#E5D9C3',
 } as const;

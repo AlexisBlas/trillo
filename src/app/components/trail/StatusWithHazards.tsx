@@ -1,12 +1,9 @@
 import { cn } from '../ui/utils';
 import { useLang } from '../../contexts/LangContext';
-import { getCriticalHazards } from '../../lib/hazards';
+import { getCriticalHazards, HAZARD_COLORS } from '../../lib/hazards';
 import { StatusCircle } from './StatusCircle';
 
 type Status = 'green' | 'yellow' | 'red';
-
-/** Solid attention color for the overlapping hazard badge. */
-const BADGE_BG = '#D97706';
 
 interface StatusWithHazardsProps {
   status?: Status | null;
@@ -36,17 +33,21 @@ export function StatusWithHazards({
       {primary && PrimaryIcon && (
         <span
           className="absolute -bottom-1 -left-1 size-[20px] rounded-full flex items-center justify-center shadow-[0_0_0_2px_#ffffff]"
-          style={{ backgroundColor: BADGE_BG }}
+          style={{ backgroundColor: HAZARD_COLORS.iconBg }}
           aria-label={hazards.map((h) => t(h.labelKey)).join(', ')}
           title={hazards.map((h) => t(h.labelKey)).join(', ')}
         >
           {hazards.length > 1 ? (
-            <span className="text-[10px] font-bold leading-none tabular-nums text-white">
+            <span
+              className="text-[10px] font-bold leading-none tabular-nums"
+              style={{ color: HAZARD_COLORS.iconFg }}
+            >
               {hazards.length}
             </span>
           ) : (
             <PrimaryIcon
-              className="size-3 text-white"
+              className="size-3"
+              style={{ color: HAZARD_COLORS.iconFg }}
               strokeWidth={2.5}
               aria-hidden
             />

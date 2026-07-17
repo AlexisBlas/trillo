@@ -44,8 +44,8 @@ function Callout({
             >
               <Icon
                 className="size-4"
-                style={{ color: HAZARD_COLORS.ink }}
-                strokeWidth={1.75}
+                style={{ color: HAZARD_COLORS.iconFg }}
+                strokeWidth={2.25}
               />
             </div>
             <div className="min-w-0 flex-1">
