@@ -192,6 +192,9 @@ const translations = {
     hazard_broken_bridge: 'Broken bridge',
     hazard_slippery: 'Slippery',
     hazard_other: 'Other',
+    hazard_note_downed_trees: 'Fallen trees may block the path. Proceed with care.',
+    hazard_note_broken_bridge: 'A bridge is damaged or impassable. Use an alternate route if needed.',
+    hazard_reported_on: 'Reported on',
     // Common
     loading: 'Loading…',
     cancel: 'Cancel',
@@ -389,6 +392,9 @@ const translations = {
     hazard_broken_bridge: 'Puente roto',
     hazard_slippery: 'Resbaladizo',
     hazard_other: 'Otro',
+    hazard_note_downed_trees: 'Árboles caídos pueden bloquear el camino. Avanza con cuidado.',
+    hazard_note_broken_bridge: 'Un puente está dañado o intransitable. Busca una ruta alterna si es necesario.',
+    hazard_reported_on: 'Reportado en',
     // Common
     loading: 'Cargando…',
     cancel: 'Cancelar',

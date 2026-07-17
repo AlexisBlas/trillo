@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 import { TrailReportWithDetails } from '../../lib/supabase';
 import { formatDistanceToNow } from 'date-fns';
 import { useLang } from '../../contexts/LangContext';
-import { StatusCircle } from './StatusCircle';
+import { StatusWithHazards } from './StatusWithHazards';
 
 interface TrailCardProps {
   report: TrailReportWithDetails;
@@ -32,7 +32,7 @@ export function TrailCard({ report }: TrailCardProps) {
     <Link to={`/trails/${trails.id}`}>
       <div className="bg-white rounded-[16px] border-[1.5px] border-[#f0ede6] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#2c4a1e] transition-colors">
         <div className="p-[15.5px] flex items-center gap-3.5">
-          <StatusCircle status={status} />
+          <StatusWithHazards status={status} conditions={conditions} />
 
           <div className="flex-1 min-w-0">
             <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate mb-0.5">

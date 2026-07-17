@@ -5,7 +5,7 @@ import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { Input } from '../components/ui/input';
 import { BackButton } from '../components/layout/BackButton';
-import { StatusCircle } from '../components/trail/StatusCircle';
+import { StatusWithHazards } from '../components/trail/StatusWithHazards';
 import { useParkReports } from '../hooks/useParkReports';
 import { cleanNotes, formatUpdatedAgo, isReportFresh, getReportPath, normalizeSearchText, searchIncludes } from '../lib/text';
 import { useTrailReports } from '../hooks/useTrailReports';
@@ -24,7 +24,7 @@ export function ReportsPage() {
   const navigate = useNavigate();
   const { t } = useLang();
   const { data: reports, isLoading, error } = useTrailReports(100);
-  const { byPark } = useParkReports();
+  const { byPark, hazardsByPark } = useParkReports();
   const [searchQuery, setSearchQuery] = useState('');
   const { data: parksMeta } = useParksMeta();
   const [statusFilter, setStatusFilter] = useState<'all' | 'green' | 'yellow' | 'red'>('all');
@@ -172,6 +172,7 @@ export function ReportsPage() {
                 const isOpen = forceOpen || expanded.has(park);
                 // Reports arrive newest-first, so the first one is the latest.
                 const latestAgo = formatUpdatedAgo(parkReports![0]?.created_at);
+                const parkHazards = hazardsByPark.get(park) ?? [];
                 return (
                   <div
                     key={park}
@@ -183,7 +184,10 @@ export function ReportsPage() {
                         onClick={() => navigate(`/parks/${encodeURIComponent(park)}`)}
                         className="flex-1 min-w-0 p-[15.5px] flex items-center gap-3.5 text-left hover:bg-[#faf8f4] transition-colors rounded-l-[32px] rounded-r-[0px]"
                       >
-                        <StatusCircle status={byPark.get(park)?.status ?? null} size="md" />
+                        <StatusWithHazards
+                          status={byPark.get(park)?.status ?? null}
+                          conditions={parkHazards.map((h) => h.tag)}
+                        />
                         <div className="flex-1 min-w-0">
                           <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
                             {parkTitle}
@@ -232,7 +236,11 @@ export function ReportsPage() {
                               disabled={!path}
                               className="w-full pl-[18px] pr-[15.5px] py-3 flex items-start gap-3 text-left border-b-[1.5px] border-[#f5f2ec] last:border-b-0 hover:bg-[#faf8f4] transition-colors disabled:opacity-50"
                             >
-                              <StatusCircle status={report.status} size="sm" className="mt-0.5" />
+                              <StatusWithHazards
+                                status={report.status}
+                                conditions={report.conditions}
+                                className="mt-0.5"
+                              />
                               <div className="flex-1 min-w-0">
                                 <h4 className="text-[14px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
                                   {trailName}

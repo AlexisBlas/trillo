@@ -4,6 +4,8 @@ import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { BackButton } from '../components/layout/BackButton';
 import { StatusBadge } from '../components/trail/StatusBadge';
+import { HazardNotice } from '../components/trail/HazardNotice';
+import { getCriticalHazards } from '../lib/hazards';
 import { useTrail } from '../hooks/useTrails';
 import { useTrailReportsByTrail } from '../hooks/useTrailReports';
 import { cleanNotes, isReportFresh, isValidTrailId } from '../lib/text';
@@ -110,15 +112,18 @@ export function TrailDetailPage() {
       </div>
 
       {/* Condition Summary */}
-      {cleanNotes(latestReport?.notes) && (
+      {(cleanNotes(latestReport?.notes) || (latestReport && getCriticalHazards(latestReport.conditions).length > 0)) && (
         <div className="px-4 pt-5">
           <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#374151] mb-2">
             {t('trail_condition_summary')}
           </h2>
-          <div className="bg-white border-[1.5px] border-[#f0ede6] p-4 rounded-[32px]">
-            <p className="text-[14px] leading-[22.4px] text-[#374151]">
-              {cleanNotes(latestReport?.notes)}
-            </p>
+          <div className="bg-white border-[1.5px] border-[#f0ede6] p-4 rounded-[32px] space-y-3">
+            <HazardNotice conditions={latestReport?.conditions} trailName={trailDisplayName} />
+            {cleanNotes(latestReport?.notes) && (
+              <p className="text-[14px] leading-[22.4px] text-[#374151]">
+                {cleanNotes(latestReport?.notes)}
+              </p>
+            )}
           </div>
         </div>
       )}
@@ -162,6 +167,11 @@ export function TrailDetailPage() {
                   </div>
                   <StatusBadge status={report.status} />
                 </div>
+                <HazardNotice
+                  conditions={report.conditions}
+                  trailName={trailDisplayName}
+                  className="mt-2.5"
+                />
                 {cleanNotes(report.notes) && (
                   <p className="text-[14px] leading-[21px] text-[#374151] mt-2.5">
                     {cleanNotes(report.notes)}

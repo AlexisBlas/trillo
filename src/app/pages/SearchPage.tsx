@@ -8,7 +8,7 @@ import { BackButton } from '../components/layout/BackButton';
 import { useTrails } from '../hooks/useTrails';
 import type { TrailWithCity } from '../hooks/useTrails';
 import { useParkReports } from '../hooks/useParkReports';
-import { StatusCircle } from '../components/trail/StatusCircle';
+import { StatusWithHazards } from '../components/trail/StatusWithHazards';
 import { formatUpdatedAgo, normalizeSearchText, searchIncludes } from '../lib/text';
 import { useLang } from '../contexts/LangContext';
 import { getParkCity, useParksMeta } from '../hooks/useParksMeta';
@@ -17,7 +17,7 @@ export function SearchPage() {
   const navigate = useNavigate();
   const { t } = useLang();
   const { data: trails, isLoading, error } = useTrails();
-  const { byPark } = useParkReports();
+  const { byPark, hazardsByPark } = useParkReports();
   const [searchQuery, setSearchQuery] = useState('');
   const { data: parksMeta } = useParksMeta();
 
@@ -113,13 +113,17 @@ export function SearchPage() {
                 const parkTitle = park.name;
                 const city = getParkCity(parksMeta, park.name);
                 const updatedAgo = formatUpdatedAgo(byPark.get(park.name)?.createdAt);
+                const parkHazards = hazardsByPark.get(park.name) ?? [];
                 return (
                   <button
                     key={park.name}
                     onClick={() => navigate(`/parks/${encodeURIComponent(park.name)}`)}
                     className="bg-white border-[1.5px] border-[#f0ede6] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#2c4a1e] transition-colors p-[15.5px] flex items-center gap-3.5 text-left rounded-[32px]"
                   >
-                    <StatusCircle status={byPark.get(park.name)?.status ?? null} size="md" />
+                    <StatusWithHazards
+                      status={byPark.get(park.name)?.status ?? null}
+                      conditions={parkHazards.map((h) => h.tag)}
+                    />
                     <div className="flex-1 min-w-0">
                       <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
                         {parkTitle}

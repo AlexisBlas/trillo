@@ -8,6 +8,9 @@ import { useTrails } from '../hooks/useTrails';
 import { useParkReports } from '../hooks/useParkReports';
 import { useParkMeta } from '../hooks/useHiddenParks';
 import { StatusCircle } from '../components/trail/StatusCircle';
+import { StatusWithHazards } from '../components/trail/StatusWithHazards';
+import { HazardNotice } from '../components/trail/HazardNotice';
+import { getCriticalHazards, mergeCriticalHazards } from '../lib/hazards';
 import {
   isReportFresh,
   cleanNotes,
@@ -84,6 +87,23 @@ export function ParkDetailPage() {
     return map;
   }, [allReports]);
 
+  const hazardsByTrail = useMemo(() => {
+    const listsByTrail = new Map<string, Array<string[] | null | undefined>>();
+    for (const r of allReports || []) {
+      if (!isValidTrailId(r.trail_id)) continue;
+      if (!isReportFresh(r.created_at, r.conditions)) continue;
+      const lists = listsByTrail.get(r.trail_id) ?? [];
+      lists.push(r.conditions);
+      listsByTrail.set(r.trail_id, lists);
+    }
+    const map = new Map<string, ReturnType<typeof getCriticalHazards>>();
+    for (const [trailId, lists] of listsByTrail) {
+      const hazards = mergeCriticalHazards(...lists);
+      if (hazards.length > 0) map.set(trailId, hazards);
+    }
+    return map;
+  }, [allReports]);
+
   const parkTrails = useMemo(
     () => (trails || []).filter((trail) => (trail.location || 'Other') === decoded),
     [trails, decoded]
@@ -102,6 +122,7 @@ export function ParkDetailPage() {
 
   const summary = byPark.get(decoded);
   const summaryNotes = cleanNotes(summary?.notes);
+  const summaryHazards = getCriticalHazards(summary?.conditions);
   const statusText = summary ? STATUS_TEXT[summary.status] : null;
 
   const updateMeta = useMemo(() => {
@@ -223,6 +244,12 @@ export function ParkDetailPage() {
             </div>
           </div>
 
+          {summaryHazards.length > 0 ? (
+            <div className="mx-4 mb-3">
+              <HazardNotice conditions={summary?.conditions} />
+            </div>
+          ) : null}
+
           {summaryNotes ? (
             <div className="mx-4 mb-4 rounded-[16px] bg-[#f5f2ec] px-4 py-3.5">
               <p className="text-[14px] leading-[21px] text-[#374151] text-pretty">
@@ -278,13 +305,15 @@ export function ParkDetailPage() {
                   ? trail.name.split(' - ').slice(1).join(' - ')
                   : trail.name;
                 const status = statusByTrail.get(trail.id) ?? null;
+                const trailHazards = hazardsByTrail.get(trail.id) ?? [];
+                const hazardTags = trailHazards.map((h) => h.tag);
                 return (
                   <button
                     key={trail.id}
                     onClick={() => navigate(`/trails/${trail.id}`)}
-                    className="bg-white border border-[#ebe6dc] hover:border-[#2c4a1e]/40 transition-colors px-4 py-3.5 flex items-center gap-3.5 text-left rounded-[20px] active:scale-[0.99]"
+                    className="bg-white border border-[#ebe6dc] hover:border-[#2c4a1e]/40 transition-colors pl-4 pr-4 py-3.5 flex items-center gap-3.5 text-left rounded-[20px] active:scale-[0.99] overflow-visible"
                   >
-                    <StatusCircle status={status} />
+                    <StatusWithHazards status={status} conditions={hazardTags} />
                     <div className="flex-1 min-w-0">
                       <h3 className="text-[15px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
                         {displayName}
