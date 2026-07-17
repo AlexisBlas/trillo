@@ -291,17 +291,17 @@ export function Home() {
         )}
 
         {!isLoading && (
-          <div className="mt-6 pt-5 border-t border-[#e5e0d5]">
-            <p className="text-[15px] font-bold tracking-[-0.2px] text-[#1a3010]">
+          <div className="mt-6 pt-5 border-t border-[#e5e0d5] min-w-0">
+            <p className="text-[15px] font-bold tracking-[-0.2px] text-[#1a3010] text-balance">
               {t('home_suggest_title')}
             </p>
-            <p className="text-[13px] text-[#4b5563] mt-1 leading-[19px]">
+            <p className="text-[13px] text-[#4b5563] mt-1 leading-[19px] text-pretty">
               {t('home_suggest_body')}
             </p>
             <button
               type="button"
               onClick={() => setSuggestOpen(true)}
-              className="mt-3.5 w-full h-[48px] rounded-[14px] border-[1.5px] border-[#2c4a1e] text-[#2c4a1e] text-[13px] font-bold tracking-[1.2px] bg-white active:scale-[0.99] transition-transform"
+              className="mt-3.5 w-full min-h-[48px] h-auto py-3 px-4 rounded-[14px] border-[1.5px] border-[#2c4a1e] text-[#2c4a1e] text-[13px] font-bold tracking-[0.6px] leading-snug bg-white active:scale-[0.99] transition-transform whitespace-normal text-center"
             >
               {t('home_suggest_cta')}
             </button>
