@@ -134,7 +134,7 @@ export function TopNav() {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-5 pt-6 pb-8 flex flex-col gap-8">
+            <div className="flex-1 overflow-y-auto px-5 pt-6 pb-6 flex flex-col gap-8 min-h-0">
               {/* Language */}
               <section>
                 <div className="flex items-center gap-2 mb-3">
@@ -199,6 +199,20 @@ export function TopNav() {
                   </p>
                 </div>
               </section>
+            </div>
+
+            <div className="shrink-0 px-5 pt-3 pb-[max(1.25rem,env(safe-area-inset-bottom))] border-t border-[#e5e0d5]">
+              <p className="text-center text-[12px] text-[#374151] leading-[18px]">
+                {t('menu_made_by')}{' '}
+                <a
+                  href="https://humbol.studio"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-bold text-[#2c4a1e] underline underline-offset-2"
+                >
+                  humbol.studio
+                </a>
+              </p>
             </div>
           </motion.div>
         )}
