@@ -102,7 +102,7 @@ export function TopNav() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22 }}
-            className="fixed inset-0 z-50 bg-black/30"
+            className="fixed inset-0 z-[60] bg-black/30"
             onClick={() => {
               setMenuOpen(false);
               setNotifOpen(false);
@@ -120,7 +120,7 @@ export function TopNav() {
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
             transition={{ type: 'spring', stiffness: 340, damping: 34 }}
-            className="fixed top-0 left-0 bottom-0 z-50 w-[82vw] max-w-[320px] bg-[#F5F0E8] flex flex-col shadow-[4px_0_32px_rgba(0,0,0,0.12)]"
+            className="fixed top-0 left-0 bottom-0 z-[60] w-[82vw] max-w-[320px] bg-[#F5F0E8] flex flex-col shadow-[4px_0_32px_rgba(0,0,0,0.12)]"
           >
             {/* Header */}
             <div className="flex items-center justify-between h-[60px] px-5 border-b border-[#e5e0d5]">
@@ -227,7 +227,7 @@ export function TopNav() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', stiffness: 340, damping: 34 }}
-            className="fixed top-0 right-0 bottom-0 z-50 w-[86vw] max-w-[360px] bg-[#F5F0E8] flex flex-col shadow-[-4px_0_32px_rgba(0,0,0,0.12)]"
+            className="fixed top-0 right-0 bottom-0 z-[60] w-[86vw] max-w-[360px] bg-[#F5F0E8] flex flex-col shadow-[-4px_0_32px_rgba(0,0,0,0.12)]"
           >
             <div className="flex items-center justify-between h-[60px] px-5 border-b border-[#e5e0d5]">
               <h2 className="text-[15px] font-bold text-[#1a3010]">{t('notif_title')}</h2>
