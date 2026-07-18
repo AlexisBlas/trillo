@@ -125,9 +125,16 @@ export function AdminParksPage() {
   const toggleVisibility = useToggleParkVisibility();
 
   const [search, setSearch] = useState('');
-  const filtered = (parks ?? []).filter((p) =>
-    !search || p.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = (parks ?? []).filter((p) => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    return (
+      p.name.toLowerCase().includes(q) ||
+      (p.city?.toLowerCase().includes(q) ?? false) ||
+      (p.description?.toLowerCase().includes(q) ?? false) ||
+      (p.description_es?.toLowerCase().includes(q) ?? false)
+    );
+  });
   const allHidden = (parks ?? []).length > 0 && (parks ?? []).every((p) => p.isHidden);
   const allVisible = (parks ?? []).length > 0 && (parks ?? []).every((p) => !p.isHidden);
 
@@ -196,8 +203,9 @@ export function AdminParksPage() {
       )}
 
       <div className="bg-white rounded-[16px] border border-[#e5e0d5] overflow-hidden">
-        <div className="grid grid-cols-[1fr_80px_100px_120px] px-5 py-3 border-b border-[#f0ede6] bg-[#fafaf8]">
+        <div className="grid grid-cols-[minmax(160px,1.1fr)_minmax(220px,1.6fr)_80px_100px_120px] px-5 py-3 border-b border-[#f0ede6] bg-[#fafaf8]">
           <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588]">Park Name</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588] pr-4">Description</p>
           <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588] text-right">Trails</p>
           <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588] text-center">Visible</p>
           <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588] text-right">Actions</p>
@@ -217,7 +225,7 @@ export function AdminParksPage() {
           <div
             key={park.name}
             className={cn(
-              'grid grid-cols-[1fr_80px_100px_120px] px-5 py-3.5 items-center transition-opacity',
+              'grid grid-cols-[minmax(160px,1.1fr)_minmax(220px,1.6fr)_80px_100px_120px] px-5 py-3.5 items-center transition-opacity',
               i !== filtered.length - 1 ? 'border-b border-[#f0ede6]' : '',
               park.isHidden ? 'opacity-50' : ''
             )}
@@ -228,6 +236,23 @@ export function AdminParksPage() {
                 <p className="text-[14px] font-semibold text-[#1a1a1a] truncate">{park.name}</p>
                 {park.city && <p className="text-[12px] text-[#687588] truncate">{park.city}</p>}
               </div>
+            </div>
+            <div className="min-w-0 pr-4">
+              {park.description ? (
+                <p className="text-[13px] text-[#374151] line-clamp-2" title={park.description}>
+                  {park.description}
+                </p>
+              ) : (
+                <p className="text-[13px] text-[#687588]">—</p>
+              )}
+              {park.description_es ? (
+                <p
+                  className="text-[11px] text-[#687588] mt-0.5 line-clamp-1"
+                  title={park.description_es}
+                >
+                  ES: {park.description_es}
+                </p>
+              ) : null}
             </div>
             <p className="text-[13px] text-[#687588] text-right">{park.trailCount}</p>
             <div className="flex justify-center">
