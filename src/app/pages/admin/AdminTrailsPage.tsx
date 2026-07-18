@@ -10,6 +10,7 @@ import {
 } from '../../hooks/useAdminData';
 import { Trail } from '../../lib/supabase';
 import { toast } from 'sonner';
+import { AdminTablePagination, useAdminPagination } from './AdminTablePagination';
 
 type TrailFormData = Pick<Trail, 'name' | 'location' | 'qr_code'>;
 
@@ -216,6 +217,8 @@ export function AdminTrailsPage() {
   const filtered = (trails ?? []).filter(
     (t) => !parkFilter || t.location === parkFilter
   );
+  const { page, setPage, pageCount, pageItems, total, pageSize, from, to } =
+    useAdminPagination(filtered, parkFilter);
 
   return (
     <div className="p-8">
@@ -269,14 +272,14 @@ export function AdminTrailsPage() {
           <div className="px-5 py-12 text-center text-[13px] text-[#687588]">No trails found.</div>
         )}
 
-        {filtered.map((trail, i) => {
+        {pageItems.map((trail, i) => {
           const displayName = trail.name.includes(' - ')
             ? trail.name.split(' - ').slice(1).join(' - ')
             : trail.name;
           return (
             <div
               key={trail.id}
-              className={`grid grid-cols-[1fr_1fr_80px] px-5 py-3.5 items-center ${i !== filtered.length - 1 ? 'border-b border-[#f0ede6]' : ''}`}
+              className={`grid grid-cols-[1fr_1fr_80px] px-5 py-3.5 items-center ${i !== pageItems.length - 1 ? 'border-b border-[#f0ede6]' : ''}`}
             >
               <p className="text-[13.5px] font-semibold text-[#1a1a1a] truncate pr-4">{displayName}</p>
               <p className="text-[13px] text-[#687588] truncate pr-4">{trail.location ?? '—'}</p>
@@ -297,6 +300,16 @@ export function AdminTrailsPage() {
             </div>
           );
         })}
+
+        <AdminTablePagination
+          page={page}
+          pageCount={pageCount}
+          total={total}
+          pageSize={pageSize}
+          from={from}
+          to={to}
+          onPageChange={setPage}
+        />
       </div>
 
       {importOpen && <CsvImportModal onClose={() => setImportOpen(false)} />}

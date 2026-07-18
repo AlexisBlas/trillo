@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import { useAdminReports, useUpdateReport, useDeleteReport, useAdminTrails, AdminReport } from '../../hooks/useAdminData';
 import { toast } from 'sonner';
 import { cn } from '../../components/ui/utils';
+import { AdminTablePagination, useAdminPagination } from './AdminTablePagination';
 
 const STATUS_COLORS: Record<string, string> = {
   green: 'bg-green-100 text-green-700',
@@ -179,6 +180,8 @@ export function AdminReportsPage() {
     }
     return true;
   });
+  const { page, setPage, pageCount, pageItems, total, pageSize, from, to } =
+    useAdminPagination(filtered, `${search}|${statusFilter}`);
 
   return (
     <div className="p-8">
@@ -226,10 +229,10 @@ export function AdminReportsPage() {
           <div className="px-5 py-12 text-center text-[13px] text-[#687588]">No reports found.</div>
         )}
 
-        {filtered.map((report, i) => (
+        {pageItems.map((report, i) => (
           <div
             key={report.id}
-            className={cn('grid grid-cols-[1fr_1fr_80px_120px_80px] px-5 py-3 items-center', i < filtered.length - 1 && 'border-b border-[#f0ede6]')}
+            className={cn('grid grid-cols-[1fr_1fr_80px_120px_80px] px-5 py-3 items-center', i < pageItems.length - 1 && 'border-b border-[#f0ede6]')}
           >
             <div className="min-w-0 pr-3">
               <p className="text-[13px] font-semibold text-[#1a1a1a] truncate">{report.trail_name}</p>
@@ -264,6 +267,16 @@ export function AdminReportsPage() {
             </div>
           </div>
         ))}
+
+        <AdminTablePagination
+          page={page}
+          pageCount={pageCount}
+          total={total}
+          pageSize={pageSize}
+          from={from}
+          to={to}
+          onPageChange={setPage}
+        />
       </div>
 
       {editing && <EditModal report={editing} onClose={() => setEditing(null)} />}

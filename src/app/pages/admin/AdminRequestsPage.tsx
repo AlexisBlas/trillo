@@ -10,6 +10,7 @@ import {
   PlaceRequest,
 } from '../../hooks/useAdminData';
 import { cn } from '../../components/ui/utils';
+import { AdminTablePagination, useAdminPagination } from './AdminTablePagination';
 
 type Filter = 'open' | 'all' | 'done' | 'dismissed';
 
@@ -23,6 +24,8 @@ export function AdminRequestsPage() {
   const filtered = (requests ?? []).filter((r) =>
     filter === 'all' ? true : r.status === filter
   );
+  const { page, setPage, pageCount, pageItems, total, pageSize, from, to } =
+    useAdminPagination(filtered, filter);
   const openCount = (requests ?? []).filter((r) => r.status === 'open').length;
 
   const setStatus = async (req: PlaceRequest, status: PlaceRequest['status']) => {
@@ -112,7 +115,7 @@ export function AdminRequestsPage() {
         </div>
       ) : (
         <div className="flex flex-col gap-3">
-          {filtered.map((req) => (
+          {pageItems.map((req) => (
             <div
               key={req.id}
               className="bg-white rounded-[16px] border border-[#e5e0d5] p-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"
@@ -188,6 +191,16 @@ export function AdminRequestsPage() {
               </div>
             </div>
           ))}
+          <AdminTablePagination
+            page={page}
+            pageCount={pageCount}
+            total={total}
+            pageSize={pageSize}
+            from={from}
+            to={to}
+            onPageChange={setPage}
+            className="rounded-[16px] border border-[#e5e0d5] bg-white"
+          />
         </div>
       )}
     </div>

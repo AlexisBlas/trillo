@@ -4,6 +4,7 @@ import { useAdminUsers, useUpdateProfile, AdminUser } from '../../hooks/useAdmin
 import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import { AdminTablePagination, useAdminPagination } from './AdminTablePagination';
 
 function ConfirmModal({
   title,
@@ -60,6 +61,8 @@ export function AdminUsersPage() {
   const filtered = (users ?? []).filter((u) =>
     !search || u.email?.toLowerCase().includes(search.toLowerCase())
   );
+  const { page, setPage, pageCount, pageItems, total, pageSize, from, to } =
+    useAdminPagination(filtered, search);
 
   const handleConfirm = async () => {
     if (!pending) return;
@@ -118,12 +121,12 @@ export function AdminUsersPage() {
           <div className="px-5 py-12 text-center text-[13px] text-[#687588]">No users found.</div>
         )}
 
-        {filtered.map((user, i) => {
+        {pageItems.map((user, i) => {
           const isSelf = user.id === me?.id;
           return (
             <div
               key={user.id}
-              className={`grid grid-cols-[1fr_80px_80px_120px] px-5 py-3.5 items-center ${i !== filtered.length - 1 ? 'border-b border-[#f0ede6]' : ''} ${user.is_banned ? 'opacity-60' : ''}`}
+              className={`grid grid-cols-[1fr_80px_80px_120px] px-5 py-3.5 items-center ${i !== pageItems.length - 1 ? 'border-b border-[#f0ede6]' : ''} ${user.is_banned ? 'opacity-60' : ''}`}
             >
               <div className="min-w-0 pr-4">
                 <p className="text-[13.5px] font-semibold text-[#1a1a1a] truncate">{user.email ?? '—'}</p>
@@ -192,6 +195,16 @@ export function AdminUsersPage() {
             </div>
           );
         })}
+
+        <AdminTablePagination
+          page={page}
+          pageCount={pageCount}
+          total={total}
+          pageSize={pageSize}
+          from={from}
+          to={to}
+          onPageChange={setPage}
+        />
       </div>
 
       {pending && (
