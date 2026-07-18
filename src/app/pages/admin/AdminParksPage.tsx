@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Pencil, Trash2, X, AlertTriangle, Eye, EyeOff, Plus } from 'lucide-react';
+import { Pencil, Trash2, X, AlertTriangle, Eye, EyeOff, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAdminParks, useRenamepark, useDeletePark, useToggleParkVisibility, AdminPark } from '../../hooks/useAdminData';
 import { toast } from 'sonner';
 import { cn } from '../../components/ui/utils';
+
+const PAGE_SIZE = 10;
 
 function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange: () => void; disabled?: boolean }) {
   return (
@@ -125,16 +127,34 @@ export function AdminParksPage() {
   const toggleVisibility = useToggleParkVisibility();
 
   const [search, setSearch] = useState('');
-  const filtered = (parks ?? []).filter((p) => {
-    if (!search) return true;
-    const q = search.toLowerCase();
-    return (
-      p.name.toLowerCase().includes(q) ||
-      (p.city?.toLowerCase().includes(q) ?? false) ||
-      (p.description?.toLowerCase().includes(q) ?? false) ||
-      (p.description_es?.toLowerCase().includes(q) ?? false)
-    );
-  });
+  const [page, setPage] = useState(1);
+
+  const filtered = useMemo(() => {
+    return (parks ?? []).filter((p) => {
+      if (!search) return true;
+      const q = search.toLowerCase();
+      return (
+        p.name.toLowerCase().includes(q) ||
+        (p.city?.toLowerCase().includes(q) ?? false) ||
+        (p.description?.toLowerCase().includes(q) ?? false) ||
+        (p.description_es?.toLowerCase().includes(q) ?? false)
+      );
+    });
+  }, [parks, search]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const pageItems = filtered.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
+  const rangeStart = filtered.length === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
+  const rangeEnd = Math.min(currentPage * PAGE_SIZE, filtered.length);
+
+  useEffect(() => {
+    setPage(1);
+  }, [search]);
+
   const allHidden = (parks ?? []).length > 0 && (parks ?? []).every((p) => p.isHidden);
   const allVisible = (parks ?? []).length > 0 && (parks ?? []).every((p) => !p.isHidden);
 
@@ -221,12 +241,12 @@ export function AdminParksPage() {
           </div>
         )}
 
-        {filtered.map((park, i) => (
+        {pageItems.map((park, i) => (
           <div
             key={park.name}
             className={cn(
               'grid grid-cols-[minmax(160px,1.1fr)_minmax(220px,1.6fr)_80px_100px_120px] px-5 py-3.5 items-center transition-opacity',
-              i !== filtered.length - 1 ? 'border-b border-[#f0ede6]' : '',
+              i !== pageItems.length - 1 ? 'border-b border-[#f0ede6]' : '',
               park.isHidden ? 'opacity-50' : ''
             )}
           >
@@ -281,6 +301,37 @@ export function AdminParksPage() {
           </div>
         ))}
       </div>
+
+      {!isLoading && filtered.length > PAGE_SIZE && (
+        <div className="flex items-center justify-between mt-4 px-1">
+          <p className="text-[13px] text-[#687588]">
+            Showing {rangeStart}–{rangeEnd} of {filtered.length}
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage <= 1}
+              className="size-9 flex items-center justify-center rounded-[10px] border border-[#e5e0d5] bg-white text-[#374151] hover:border-[#2c4a1e] hover:text-[#2c4a1e] disabled:opacity-40 disabled:hover:border-[#e5e0d5] disabled:hover:text-[#374151] transition-colors"
+              aria-label="Previous page"
+            >
+              <ChevronLeft className="size-4" />
+            </button>
+            <p className="text-[13px] font-bold text-[#374151] tabular-nums min-w-[4.5rem] text-center">
+              {currentPage} / {totalPages}
+            </p>
+            <button
+              type="button"
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage >= totalPages}
+              className="size-9 flex items-center justify-center rounded-[10px] border border-[#e5e0d5] bg-white text-[#374151] hover:border-[#2c4a1e] hover:text-[#2c4a1e] disabled:opacity-40 disabled:hover:border-[#e5e0d5] disabled:hover:text-[#374151] transition-colors"
+              aria-label="Next page"
+            >
+              <ChevronRight className="size-4" />
+            </button>
+          </div>
+        </div>
+      )}
 
       {deleting && <DeleteModal park={deleting} onClose={() => setDeleting(null)} />}
     </div>
