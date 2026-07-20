@@ -34,6 +34,12 @@ export interface Profile {
   updated_at: string;
 }
 
+export interface ParkFollow {
+  user_id: string;
+  park_name: string;
+  created_at: string;
+}
+
 export interface TrailReportWithDetails extends TrailReport {
   trails: Trail | null;
   profiles: {

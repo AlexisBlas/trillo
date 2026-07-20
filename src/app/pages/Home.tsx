@@ -15,17 +15,21 @@ import { useParkReports } from '../hooks/useParkReports';
 import { StatusWithHazards } from '../components/trail/StatusWithHazards';
 import { isReportFresh, formatUpdatedAgo, normalizeSearchText, searchIncludes } from '../lib/text';
 import { useLang } from '../contexts/LangContext';
+import { useAuth } from '../contexts/AuthContext';
 import { getParkCity, useParksMeta } from '../hooks/useParksMeta';
+import { useParkFollows } from '../hooks/useParkFollows';
 
 type Park = { name: string; city: string | null; trails: TrailWithCity[] };
 
 export function Home() {
   const navigate = useNavigate();
   const { t } = useLang();
+  const { user } = useAuth();
   const { data: trails, isLoading, error } = useTrails();
   const { data: reports } = useTrailReports(200);
   const { byPark, hazardsByPark } = useParkReports();
   const { data: parksMeta } = useParksMeta();
+  const { data: follows, isLoading: followsLoading } = useParkFollows();
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestOpen, setSuggestOpen] = useState(false);
 
@@ -95,6 +99,45 @@ export function Home() {
       })
       .slice(0, 5);
   }, [parks, byPark]);
+
+  const followingParks = useMemo<Park[]>(() => {
+    if (!follows?.length) return [];
+    const byName = new Map(parks.map((p) => [p.name, p]));
+    return follows
+      .map((f) => byName.get(f.park_name))
+      .filter((p): p is Park => !!p);
+  }, [follows, parks]);
+
+  const renderParkCard = (park: Park) => {
+    const updatedAgo = formatUpdatedAgo(byPark.get(park.name)?.createdAt);
+    const parkHazards = hazardsByPark.get(park.name) ?? [];
+    return (
+      <button
+        key={park.name}
+        type="button"
+        onClick={() => navigate(`/parks/${encodeURIComponent(park.name)}`)}
+        className="bg-white border-[1.5px] border-[#f0ede6] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#2c4a1e] transition-colors p-[15.5px] flex items-center gap-3.5 text-left rounded-[32px]"
+      >
+        <StatusWithHazards
+          status={byPark.get(park.name)?.status ?? null}
+          conditions={parkHazards.map((h) => h.tag)}
+        />
+        <div className="flex-1 min-w-0">
+          <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
+            {park.name}
+          </h3>
+          <p className="text-[13px] text-[#374151] truncate">
+            {park.city ?? ''}
+          </p>
+          <p className="text-[12px] text-[#4b5563] mt-0.5">
+            {park.trails.length} {park.trails.length === 1 ? t('trail_singular') : t('trail_plural')}
+            {updatedAgo && <span> · {updatedAgo}</span>}
+          </p>
+        </div>
+        <ChevronRight className="size-5 text-[#4b5563] shrink-0" />
+      </button>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-[#F5F0E8]">
@@ -209,8 +252,51 @@ export function Home() {
         </div>
       </div>
 
-      {/* Recently Reported Parks */}
+      {/* Following + Recently Reported */}
       <div className="px-[20px] pt-[32px] pb-[40px]">
+        <div className="mb-8">
+          <div className="flex items-center justify-between mx-[4px] mt-[0px] mb-[12px]">
+            <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#374151]">
+              {t('home_following')}
+            </h2>
+            {!user && (
+              <button
+                type="button"
+                className="text-[13px] font-bold text-[#2c4a1e]"
+                onClick={() =>
+                  navigate('/auth/signin', { state: { redirectAfter: '/' } })
+                }
+              >
+                {t('follow_signin_cta')}
+              </button>
+            )}
+          </div>
+
+          {!user ? (
+            <div className="bg-white rounded-[16px] border-[1.5px] border-[#f0ede6] px-4 py-5">
+              <p className="text-[13px] text-[#374151] leading-[19px]">
+                {t('home_following_signin')}
+              </p>
+            </div>
+          ) : followsLoading || isLoading ? (
+            <div className="flex flex-col gap-[10px]">
+              {[...Array(2)].map((_, i) => (
+                <Skeleton key={i} className="h-[88px] w-full rounded-[16px]" />
+              ))}
+            </div>
+          ) : followingParks.length === 0 ? (
+            <div className="bg-white rounded-[16px] border-[1.5px] border-[#f0ede6] px-4 py-5">
+              <p className="text-[13px] text-[#374151] leading-[19px]">
+                {t('home_following_empty')}
+              </p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-[10px]">
+              {followingParks.map(renderParkCard)}
+            </div>
+          )}
+        </div>
+
         <div className="flex items-center justify-between mx-[4px] mt-[0px] mb-[12px]">
           <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#374151]">
             {t('home_recently_reported')}
@@ -261,36 +347,7 @@ export function Home() {
 
         {!isLoading && recentParks.length > 0 && (
           <div className="flex flex-col gap-[10px]">
-            {recentParks.map((park) => {
-              const parkTitle = park.name;
-              const updatedAgo = formatUpdatedAgo(byPark.get(park.name)?.createdAt);
-              const parkHazards = hazardsByPark.get(park.name) ?? [];
-              return (
-                <button
-                  key={park.name}
-                  onClick={() => navigate(`/parks/${encodeURIComponent(park.name)}`)}
-                  className="bg-white border-[1.5px] border-[#f0ede6] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#2c4a1e] transition-colors p-[15.5px] flex items-center gap-3.5 text-left rounded-[32px]"
-                >
-                  <StatusWithHazards
-                    status={byPark.get(park.name)?.status ?? null}
-                    conditions={parkHazards.map((h) => h.tag)}
-                  />
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
-                      {parkTitle}
-                    </h3>
-                    <p className="text-[13px] text-[#374151] truncate">
-                      {park.city ?? ''}
-                    </p>
-                    <p className="text-[12px] text-[#4b5563] mt-0.5">
-                      {park.trails.length} {park.trails.length === 1 ? t('trail_singular') : t('trail_plural')}
-                      {updatedAgo && <span> · {updatedAgo}</span>}
-                    </p>
-                  </div>
-                  <ChevronRight className="size-5 text-[#4b5563] shrink-0" />
-                </button>
-              );
-            })}
+            {recentParks.map(renderParkCard)}
           </div>
         )}
 

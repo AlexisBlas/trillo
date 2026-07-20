@@ -4,6 +4,7 @@ import { Mountain, ChevronRight } from 'lucide-react';
 import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { BackButton } from '../components/layout/BackButton';
+import { FollowParkButton } from '../components/trail/FollowParkButton';
 import { useTrails } from '../hooks/useTrails';
 import { useParkReports } from '../hooks/useParkReports';
 import { useParkMeta } from '../hooks/useHiddenParks';
@@ -200,9 +201,12 @@ export function ParkDetailPage() {
             .filter(Boolean)
             .join(' · ')}
         </p>
-        <h2 className="text-[28px] font-bold text-[#1a3010] leading-[32px] tracking-[-0.6px] mt-1 text-balance">
-          {decoded}
-        </h2>
+        <div className="mt-1 flex items-start justify-between gap-3">
+          <h2 className="text-[28px] font-bold text-[#1a3010] leading-[32px] tracking-[-0.6px] text-balance min-w-0">
+            {decoded}
+          </h2>
+          <FollowParkButton parkName={decoded} variant="pill" className="shrink-0 mt-0.5" />
+        </div>
 
         {parkDescription && (
           <div className="mt-3 max-w-[36rem]">

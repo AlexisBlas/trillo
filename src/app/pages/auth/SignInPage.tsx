@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useLocation } from 'react-router';
 import { Mountain } from 'lucide-react';
 import { Alert, AlertDescription } from '../../components/ui/alert';
 import { BackButton } from '../../components/layout/BackButton';
@@ -10,14 +10,17 @@ import { SignInFormData } from '../../lib/schemas';
 
 export function SignInPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { signIn, user } = useAuth();
   const { t } = useLang();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const redirectAfter =
+    (location.state as { redirectAfter?: string } | null)?.redirectAfter || '/';
 
   useEffect(() => {
-    if (user) navigate('/');
-  }, [user, navigate]);
+    if (user) navigate(redirectAfter, { replace: true });
+  }, [user, navigate, redirectAfter]);
 
   const handleSubmit = async (data: SignInFormData) => {
     setIsLoading(true);
@@ -25,7 +28,7 @@ export function SignInPage() {
     try {
       const { error } = await signIn(data.email, data.password);
       if (error) setError(error.message);
-      else navigate('/');
+      else navigate(redirectAfter, { replace: true });
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');
       console.error('Sign in error:', err);
