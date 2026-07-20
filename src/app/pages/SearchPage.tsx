@@ -12,6 +12,7 @@ import { StatusWithHazards } from '../components/trail/StatusWithHazards';
 import { formatUpdatedAgo, normalizeSearchText, searchIncludes } from '../lib/text';
 import { useLang } from '../contexts/LangContext';
 import { getParkCity, useParksMeta } from '../hooks/useParksMeta';
+import { useFollowedParkNames } from '../hooks/useParkFollows';
 
 export function SearchPage() {
   const navigate = useNavigate();
@@ -20,10 +21,12 @@ export function SearchPage() {
   const { byPark, hazardsByPark } = useParkReports();
   const [searchQuery, setSearchQuery] = useState('');
   const { data: parksMeta } = useParksMeta();
+  const followedNames = useFollowedParkNames();
 
   const q = normalizeSearchText(searchQuery);
 
   // Group trails by park. When searching, match park name, city, or trail name.
+  // Followed parks are pinned to the top of the list.
   const parks = useMemo(() => {
     const filtered = (trails || []).filter((trail) => {
       if (!q) return true;
@@ -44,9 +47,14 @@ export function SearchPage() {
     }
 
     return Array.from(map.entries())
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([name, parkTrails]) => ({ name, trails: parkTrails }));
-  }, [trails, q, parksMeta]);
+      .map(([name, parkTrails]) => ({ name, trails: parkTrails }))
+      .sort((a, b) => {
+        const aFollowed = followedNames.has(a.name);
+        const bFollowed = followedNames.has(b.name);
+        if (aFollowed !== bFollowed) return aFollowed ? -1 : 1;
+        return a.name.localeCompare(b.name);
+      });
+  }, [trails, q, parksMeta, followedNames]);
 
   return (
     <div className="min-h-screen bg-[#F5F0E8]">

@@ -108,6 +108,8 @@ export function Home() {
       .filter((p): p is Park => !!p);
   }, [follows, parks]);
 
+  const followingPreview = followingParks.slice(0, 2);
+
   const renderParkCard = (park: Park) => {
     const updatedAgo = formatUpdatedAgo(byPark.get(park.name)?.createdAt);
     const parkHazards = hazardsByPark.get(park.name) ?? [];
@@ -259,7 +261,7 @@ export function Home() {
             <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#374151]">
               {t('home_following')}
             </h2>
-            {!user && (
+            {!user ? (
               <button
                 type="button"
                 className="text-[13px] font-bold text-[#2c4a1e]"
@@ -269,7 +271,15 @@ export function Home() {
               >
                 {t('follow_signin_cta')}
               </button>
-            )}
+            ) : followingParks.length > 2 ? (
+              <button
+                type="button"
+                className="text-[13px] font-bold text-[#2c4a1e]"
+                onClick={() => navigate('/search')}
+              >
+                {t('home_see_all')}
+              </button>
+            ) : null}
           </div>
 
           {!user ? (
@@ -292,7 +302,7 @@ export function Home() {
             </div>
           ) : (
             <div className="flex flex-col gap-[10px]">
-              {followingParks.map(renderParkCard)}
+              {followingPreview.map(renderParkCard)}
             </div>
           )}
         </div>

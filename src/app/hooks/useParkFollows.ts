@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -27,7 +28,10 @@ export function useParkFollows() {
 
 export function useFollowedParkNames() {
   const { data } = useParkFollows();
-  return new Set((data ?? []).map((f) => f.park_name));
+  return useMemo(
+    () => new Set((data ?? []).map((f) => f.park_name)),
+    [data]
+  );
 }
 
 export function useToggleParkFollow() {
