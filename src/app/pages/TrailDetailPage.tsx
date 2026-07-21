@@ -78,7 +78,7 @@ export function TrailDetailPage() {
   return (
     <div className="min-h-screen bg-[#F5F0E8]">
       {/* Header: back + centered park name */}
-      <div className="relative px-4 pt-3.5 h-[52px] flex items-center border-b border-[#ede9e0]">
+      <div className="relative px-4 pt-3.5 h-[52px] flex items-center">
         <BackButton />
         <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-[#1a3010] truncate max-w-[60%] text-center">
           {headerTitle}

@@ -186,7 +186,7 @@ export function ParkDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#F5F0E8]">
-      <div className="sticky top-0 z-40 bg-[#F5F0E8]/95 backdrop-blur-sm px-4 pt-3.5 h-[52px] flex items-center border-b border-[#ede9e0]">
+      <div className="sticky top-0 z-40 bg-[#F5F0E8]/95 backdrop-blur-sm px-4 pt-3.5 h-[52px] flex items-center">
         <BackButton />
         <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-[#1a3010] truncate max-w-[60%] text-center">
           {decoded}
