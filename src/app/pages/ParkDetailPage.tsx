@@ -235,15 +235,15 @@ export function ParkDetailPage() {
           className="mt-4 bg-white rounded-[24px] border border-[#ebe6dc] overflow-hidden"
           aria-label={t('park_current_conditions')}
         >
-          <div className="grid grid-cols-[1.35fr_1fr] gap-0 px-5 pt-5 pb-5">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-0 px-5 pt-5 pb-5">
             <div className="pr-4 min-w-0">
               <p className="text-[13px] text-[#6b7280] leading-none">
                 {t('park_current_conditions')}
               </p>
-              <div className="mt-3 flex items-center gap-3 min-w-0">
-                <StatusCircle status={summary?.status ?? null} />
+              <div className="mt-3 flex items-center gap-2.5 min-w-0">
+                <StatusCircle status={summary?.status ?? null} className="shrink-0" />
                 <p
-                  className="text-[44px] font-bold tracking-[-1.8px] leading-[0.95] break-words min-w-0"
+                  className="text-[clamp(1.75rem,8.2vw,2.75rem)] font-bold tracking-[-1.2px] leading-none whitespace-nowrap"
                   style={{ color: statusText ?? '#1a1a1a' }}
                 >
                   {summary ? t(STATUS_LABEL[summary.status]) : '—'}
@@ -251,18 +251,18 @@ export function ParkDetailPage() {
               </div>
             </div>
 
-            <div className="pl-4 border-l border-[#e5e7eb] flex flex-col justify-center min-w-0">
+            <div className="pl-4 border-l border-[#e5e7eb] flex flex-col justify-center shrink-0 max-w-[38%]">
               {updateMeta ? (
                 <div>
                   <p className="text-[13px] font-normal text-[#6b7280] leading-none">
                     {updateMeta.label}
                   </p>
-                  <p className="mt-1.5 text-[20px] font-bold tracking-[-0.4px] text-[#1a1a1a] leading-none tabular-nums">
+                  <p className="mt-1.5 text-[18px] sm:text-[20px] font-bold tracking-[-0.4px] text-[#1a1a1a] leading-none tabular-nums whitespace-nowrap">
                     {updateMeta.value}
                   </p>
                 </div>
               ) : (
-                <p className="text-[13px] font-normal text-[#6b7280] leading-snug">
+                <p className="text-[13px] font-normal text-[#6b7280] leading-snug max-w-[7.5rem]">
                   {t('park_report_to_update')}
                 </p>
               )}
