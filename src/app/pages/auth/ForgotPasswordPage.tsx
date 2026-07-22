@@ -21,6 +21,8 @@ export function ForgotPasswordPage() {
       redirectTo: `${window.location.origin}/auth/reset-password`,
     });
     setLoading(false);
+    // Always show the success state for valid emails to avoid account enumeration;
+    // still surface real API/config errors (e.g. redirect URL not allowlisted).
     if (error) {
       setError(error.message);
     } else {

@@ -1,8 +1,27 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
-import { Lock, CheckCircle } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router';
+import { Lock, CheckCircle, AlertTriangle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useLang } from '../../contexts/LangContext';
+
+const MIN_PASSWORD_LENGTH = 8;
+const RECOVERY_TIMEOUT_MS = 12000;
+
+function looksLikeRecoveryUrl() {
+  const { href, search, hash } = window.location;
+  return (
+    href.includes('type=recovery') ||
+    hash.includes('type=recovery') ||
+    search.includes('code=') ||
+    hash.includes('access_token=')
+  );
+}
+
+function cleanRecoveryUrl() {
+  if (window.location.pathname !== '/auth/reset-password') return;
+  if (!window.location.search && !window.location.hash) return;
+  window.history.replaceState({}, document.title, '/auth/reset-password');
+}
 
 export function ResetPasswordPage() {
   const { t } = useLang();
@@ -13,41 +32,94 @@ export function ResetPasswordPage() {
   const [done, setDone] = useState(false);
   const [error, setError] = useState('');
   const [ready, setReady] = useState(false);
+  const [linkError, setLinkError] = useState(false);
+  const readyRef = useRef(false);
 
   useEffect(() => {
-    // Capture URL before Supabase may strip the code param
-    const isRecoveryLink =
-      window.location.href.includes('type=recovery') ||
-      window.location.search.includes('code=') ||
-      window.location.hash.includes('type=recovery');
+    let cancelled = false;
+    const fromRecoveryLink = looksLikeRecoveryUrl();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') setReady(true);
+    const markReady = () => {
+      if (cancelled || readyRef.current) return;
+      readyRef.current = true;
+      setReady(true);
+      setLinkError(false);
+      cleanRecoveryUrl();
+    };
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        markReady();
+        return;
+      }
+      // Session may already be established before PASSWORD_RECOVERY is observed
+      if (session && (fromRecoveryLink || event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
+        markReady();
+      }
     });
 
-    // Fallback: Supabase may have already exchanged the code before our listener
-    // registered. If we arrived on this page via a recovery link and have a
-    // live session, we're ready.
-    if (isRecoveryLink) {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session) setReady(true);
-      });
-    }
+    (async () => {
+      try {
+        const url = new URL(window.location.href);
+        const code = url.searchParams.get('code');
+        if (code) {
+          const { error } = await supabase.auth.exchangeCodeForSession(code);
+          if (!cancelled && !error) {
+            markReady();
+            return;
+          }
+        }
 
-    return () => subscription.unsubscribe();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (!cancelled && session) {
+          markReady();
+        }
+      } catch {
+        // Timeout / link-error UI handles failure
+      }
+    })();
+
+    const timer = window.setTimeout(() => {
+      if (cancelled || readyRef.current) return;
+      setLinkError(true);
+    }, RECOVERY_TIMEOUT_MS);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+      subscription.unsubscribe();
+    };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (password.length < 8) { setError(t('password_min_length')); return; }
-    if (password !== confirm) { setError(t('passwords_no_match')); return; }
+    if (password.length < MIN_PASSWORD_LENGTH) {
+      setError(t('password_min_length'));
+      return;
+    }
+    if (password !== confirm) {
+      setError(t('passwords_no_match'));
+      return;
+    }
+
     setLoading(true);
-    const { error } = await supabase.auth.updateUser({ password });
+    const { error: updateError } = await supabase.auth.updateUser({ password });
+    if (updateError) {
+      setLoading(false);
+      setError(updateError.message);
+      return;
+    }
+
+    // End the recovery session so the next visit is a clean password sign-in
+    await supabase.auth.signOut();
     setLoading(false);
-    if (error) { setError(error.message); return; }
     setDone(true);
-    setTimeout(() => navigate('/auth/signin'), 2500);
+    window.setTimeout(() => navigate('/auth/signin', { replace: true }), 2200);
   };
 
   return (
@@ -56,7 +128,9 @@ export function ResetPasswordPage() {
         <div className="size-12 rounded-full bg-[#3a6b35] flex items-center justify-center mb-4">
           <Lock className="size-6 text-white" />
         </div>
-        <h1 className="text-[24px] font-bold text-[#1a3010] leading-tight">{t('reset_password_title')}</h1>
+        <h1 className="text-[24px] font-bold text-[#1a3010] leading-tight">
+          {t('reset_password_title')}
+        </h1>
         <p className="text-[14px] text-[#4b6b3a] mt-1">{t('reset_password_subtitle')}</p>
       </div>
 
@@ -67,8 +141,32 @@ export function ResetPasswordPage() {
             <p className="text-[15px] font-bold text-[#1a1a1a]">{t('password_updated')}</p>
             <p className="text-[13px] text-[#687588] mt-1">{t('redirecting')}</p>
           </div>
+        ) : linkError && !ready ? (
+          <div className="bg-white border-[1.5px] border-[#e5e0d5] rounded-[16px] p-6 text-center">
+            <div className="size-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-3">
+              <AlertTriangle className="size-6 text-amber-600" />
+            </div>
+            <p className="text-[15px] font-bold text-[#1a1a1a]">{t('reset_link_invalid_title')}</p>
+            <p className="text-[13px] text-[#374151] mt-2 leading-relaxed">
+              {t('reset_link_invalid_body')}
+            </p>
+            <Link
+              to="/auth/forgot-password"
+              className="mt-5 inline-flex h-11 items-center justify-center px-4 rounded-[12px] bg-[#2c4a1e] text-white text-[13px] font-bold"
+            >
+              {t('reset_request_new_link')}
+            </Link>
+            <Link
+              to="/auth/signin"
+              className="mt-3 block text-[13px] font-bold text-[#374151]"
+            >
+              {t('back_to_signin')}
+            </Link>
+          </div>
         ) : !ready ? (
-          <div className="text-center text-[13px] text-[#687588] pt-8">{t('verifying_link')}</div>
+          <div className="text-center text-[13px] text-[#687588] pt-8">
+            {t('verifying_link')}
+          </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {error && (
@@ -76,16 +174,23 @@ export function ResetPasswordPage() {
                 {error}
               </div>
             )}
-            {[
-              { key: 'password' as const, label: t('new_password_label'), placeholder: '········' },
-              { key: 'confirm' as const, label: t('confirm_password_label'), placeholder: '········' },
-            ].map(({ key, label, placeholder }) => (
+            {(
+              [
+                { key: 'password' as const, label: t('new_password_label'), placeholder: '········' },
+                { key: 'confirm' as const, label: t('confirm_password_label'), placeholder: '········' },
+              ] as const
+            ).map(({ key, label, placeholder }) => (
               <div key={key}>
-                <label className="block text-[12px] font-bold text-[#374151] mb-1.5">{label}</label>
+                <label className="block text-[12px] font-bold text-[#374151] mb-1.5">
+                  {label}
+                </label>
                 <input
                   type="password"
+                  autoComplete="new-password"
                   value={key === 'password' ? password : confirm}
-                  onChange={(e) => key === 'password' ? setPassword(e.target.value) : setConfirm(e.target.value)}
+                  onChange={(e) =>
+                    key === 'password' ? setPassword(e.target.value) : setConfirm(e.target.value)
+                  }
                   placeholder={placeholder}
                   className="w-full h-[48px] border-[1.5px] border-[#e5e0d5] rounded-[12px] px-4 text-[15px] text-[#1a1a1a] bg-white focus:outline-none focus:border-[#2c4a1e]"
                 />
