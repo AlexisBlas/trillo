@@ -1,6 +1,11 @@
 import { useState } from 'react';
-import { Shield, ShieldOff, Ban, CheckCircle, AlertTriangle } from 'lucide-react';
-import { useAdminUsers, useUpdateProfile, AdminUser } from '../../hooks/useAdminData';
+import { Shield, ShieldOff, Ban, CheckCircle, AlertTriangle, Trash2 } from 'lucide-react';
+import {
+  useAdminUsers,
+  useUpdateProfile,
+  useDeleteUser,
+  AdminUser,
+} from '../../hooks/useAdminData';
 import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -49,12 +54,14 @@ type PendingAction =
   | { type: 'ban'; user: AdminUser }
   | { type: 'unban'; user: AdminUser }
   | { type: 'promote'; user: AdminUser }
-  | { type: 'demote'; user: AdminUser };
+  | { type: 'demote'; user: AdminUser }
+  | { type: 'delete'; user: AdminUser };
 
 export function AdminUsersPage() {
   const { data: users, isLoading } = useAdminUsers();
   const { user: me } = useAuth();
   const update = useUpdateProfile();
+  const remove = useDeleteUser();
   const [pending, setPending] = useState<PendingAction | null>(null);
   const [search, setSearch] = useState('');
 
@@ -73,9 +80,19 @@ export function AdminUsersPage() {
       else if (type === 'unban') await update.mutateAsync({ id: user.id, updates: { is_banned: false } });
       else if (type === 'promote') await update.mutateAsync({ id: user.id, updates: { is_admin: true } });
       else if (type === 'demote') await update.mutateAsync({ id: user.id, updates: { is_admin: false } });
+      else if (type === 'delete') {
+        await remove.mutateAsync(user.id);
+        toast.success('User deleted');
+        return;
+      }
       toast.success('User updated');
-    } catch {
-      toast.error('Failed to update user');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : '';
+      toast.error(
+        type === 'delete'
+          ? message || 'Failed to delete user'
+          : 'Failed to update user'
+      );
     }
   };
 
@@ -83,10 +100,39 @@ export function AdminUsersPage() {
     if (!pending) return { title: '', description: '', confirmLabel: '' };
     const email = pending.user.email ?? 'this user';
     switch (pending.type) {
-      case 'ban': return { title: 'Ban User', description: `Ban ${email}? They will no longer be able to submit reports.`, confirmLabel: 'Ban', danger: true };
-      case 'unban': return { title: 'Unban User', description: `Restore access for ${email}?`, confirmLabel: 'Unban' };
-      case 'promote': return { title: 'Grant Admin', description: `Give admin access to ${email}? They will be able to manage all parks, trails, and users.`, confirmLabel: 'Grant Admin' };
-      case 'demote': return { title: 'Revoke Admin', description: `Revoke admin access from ${email}?`, confirmLabel: 'Revoke', danger: true };
+      case 'ban':
+        return {
+          title: 'Ban User',
+          description: `Ban ${email}? They will no longer be able to submit reports.`,
+          confirmLabel: 'Ban',
+          danger: true,
+        };
+      case 'unban':
+        return {
+          title: 'Unban User',
+          description: `Restore access for ${email}?`,
+          confirmLabel: 'Unban',
+        };
+      case 'promote':
+        return {
+          title: 'Grant Admin',
+          description: `Give admin access to ${email}? They will be able to manage all parks, trails, and users.`,
+          confirmLabel: 'Grant Admin',
+        };
+      case 'demote':
+        return {
+          title: 'Revoke Admin',
+          description: `Revoke admin access from ${email}?`,
+          confirmLabel: 'Revoke',
+          danger: true,
+        };
+      case 'delete':
+        return {
+          title: 'Delete User',
+          description: `Permanently delete ${email}? Their account and follows will be removed. Trail reports stay on the map as anonymous.`,
+          confirmLabel: 'Delete',
+          danger: true,
+        };
     }
   };
 
@@ -106,7 +152,7 @@ export function AdminUsersPage() {
       </div>
 
       <div className="bg-white rounded-[16px] border border-[#e5e0d5] overflow-hidden">
-        <div className="grid grid-cols-[1fr_80px_80px_120px] px-5 py-3 border-b border-[#f0ede6] bg-[#fafaf8]">
+        <div className="grid grid-cols-[1fr_80px_80px_148px] px-5 py-3 border-b border-[#f0ede6] bg-[#fafaf8]">
           <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588]">Email</p>
           <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588] text-center">Reports</p>
           <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588] text-center">Role</p>
@@ -126,7 +172,7 @@ export function AdminUsersPage() {
           return (
             <div
               key={user.id}
-              className={`grid grid-cols-[1fr_80px_80px_120px] px-5 py-3.5 items-center ${i !== pageItems.length - 1 ? 'border-b border-[#f0ede6]' : ''} ${user.is_banned ? 'opacity-60' : ''}`}
+              className={`grid grid-cols-[1fr_80px_80px_148px] px-5 py-3.5 items-center ${i !== pageItems.length - 1 ? 'border-b border-[#f0ede6]' : ''} ${user.is_banned ? 'opacity-60' : ''}`}
             >
               <div className="min-w-0 pr-4">
                 <p className="text-[13.5px] font-semibold text-[#1a1a1a] truncate">{user.email ?? '—'}</p>
@@ -189,6 +235,13 @@ export function AdminUsersPage() {
                         <Shield className="size-3.5" />
                       </button>
                     )}
+                    <button
+                      onClick={() => setPending({ type: 'delete', user })}
+                      title="Delete user"
+                      className="size-8 flex items-center justify-center rounded-[8px] hover:bg-red-50 text-[#687588] hover:text-red-500 transition-colors"
+                    >
+                      <Trash2 className="size-3.5" />
+                    </button>
                   </>
                 )}
               </div>

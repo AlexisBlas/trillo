@@ -184,6 +184,21 @@ export function useUpdateProfile() {
   });
 }
 
+export function useDeleteUser() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.rpc('admin_delete_user', { target_id: id });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin-users'] });
+      qc.invalidateQueries({ queryKey: ['admin-stats'] });
+      qc.invalidateQueries({ queryKey: ['admin-reports'] });
+    },
+  });
+}
+
 // ─── Trails ───────────────────────────────────────────────────────────────────
 
 export function useAdminTrails() {
