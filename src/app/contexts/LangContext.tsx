@@ -195,7 +195,7 @@ const translations = {
     park_trail_status_unknown: 'No report',
     park_no_recent_reports: 'No recent reports',
     park_report_to_update: 'No update yet',
-    park_trails_by_condition: 'Trails by condition',
+    park_trails_by_condition: 'Trails',
     park_show_more: 'Show more',
     park_show_less: 'Show less',
     // Report form
@@ -407,7 +407,7 @@ const translations = {
     park_trail_status_unknown: 'Sin reporte',
     park_no_recent_reports: 'Sin reportes recientes',
     park_report_to_update: 'Sin actualización',
-    park_trails_by_condition: 'Senderos por condición',
+    park_trails_by_condition: 'Senderos',
     park_show_more: 'Ver más',
     park_show_less: 'Ver menos',
     // Report form
