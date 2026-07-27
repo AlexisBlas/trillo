@@ -11,11 +11,12 @@ export function Layout() {
   const { pathname, kind } = useNavKind();
 
   return (
-    <div className="min-h-screen bg-[#F5F0E8] overflow-x-hidden">
+    <div className="min-h-dvh bg-[#F5F0E8] overflow-x-hidden">
       <ScrollToTop />
       <AnalyticsPageViews />
-      <main className="pb-[79px] md:pb-0 relative">
-        <AnimatePresence mode="wait" initial={false}>
+      {/* Fixed-height stage so push/pop pages can stack with absolute positioning */}
+      <main className="relative h-[calc(100dvh-79px)] md:h-dvh overflow-hidden">
+        <AnimatePresence mode="sync" initial={false} custom={kind}>
           <PageTransition key={pathname} kind={kind}>
             <Outlet />
           </PageTransition>

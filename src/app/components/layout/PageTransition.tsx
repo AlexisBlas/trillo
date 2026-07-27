@@ -1,5 +1,11 @@
 import { ReactNode } from 'react';
-import { motion, Transition, Variants } from 'motion/react';
+import {
+  motion,
+  useReducedMotion,
+  type Transition,
+  type Variants,
+} from 'motion/react';
+import { cn } from '../ui/utils';
 import type { NavKind } from './useNavKind';
 
 interface PageTransitionProps {
@@ -7,52 +13,66 @@ interface PageTransitionProps {
   kind: NavKind;
 }
 
-/** Deceleration into place — no overshoot (iOS-like). */
+/** Deceleration into place — iOS-like, no overshoot. */
 const iosEase = [0.32, 0.72, 0, 1] as const;
 
 const tabTransition: Transition = {
-  duration: 0.1,
-  ease: iosEase,
+  duration: 0.14,
+  ease: 'easeOut',
 };
 
 const stackTransition: Transition = {
-  duration: 0.3,
+  duration: 0.32,
   ease: iosEase,
 };
 
 const instant: Transition = { duration: 0 };
 
-const variants: Record<NavKind, Variants> = {
-  tab: {
-    enter: { opacity: 0 },
-    center: { opacity: 1, x: 0 },
-    exit: { opacity: 0 },
+/**
+ * `custom` is the active navigation kind from AnimatePresence, so exiting
+ * pages still animate with the latest direction (push vs pop).
+ */
+const variants: Variants = {
+  enter: (kind: NavKind) => {
+    if (kind === 'tab') return { opacity: 0.01, x: 0 };
+    if (kind === 'pop') return { x: '-24%', opacity: 0.9 };
+    return { x: '100%', opacity: 1 };
   },
-  // Push: only the new screen moves in from the right (opaque)
-  push: {
-    enter: { x: '100%' },
-    center: { x: 0 },
-    exit: { x: 0, transition: instant },
-  },
-  // Pop: current screen slides off to the right; previous is already underneath
-  pop: {
-    enter: { x: 0, transition: instant },
-    center: { x: 0 },
-    exit: { x: '100%' },
+  center: { x: 0, opacity: 1 },
+  exit: (kind: NavKind) => {
+    if (kind === 'tab') return { opacity: 0, x: 0, transition: { duration: 0.1 } };
+    if (kind === 'pop') return { x: '100%', opacity: 1 };
+    return { x: '-24%', opacity: 0.9 };
   },
 };
 
+const reducedVariants: Variants = {
+  enter: { opacity: 1, x: 0 },
+  center: { opacity: 1, x: 0 },
+  exit: { opacity: 1, x: 0, transition: instant },
+};
+
 export function PageTransition({ children, kind }: PageTransitionProps) {
+  const reduceMotion = useReducedMotion();
   const isTab = kind === 'tab';
 
   return (
     <motion.div
-      variants={variants[kind]}
+      data-page-scroll
+      custom={kind}
+      variants={reduceMotion ? reducedVariants : variants}
       initial="enter"
       animate="center"
       exit="exit"
-      transition={isTab ? tabTransition : stackTransition}
-      className="w-full min-h-full bg-[#F5F0E8]"
+      transition={
+        reduceMotion ? instant : isTab ? tabTransition : stackTransition
+      }
+      className={cn(
+        'absolute inset-0 w-full overflow-x-hidden overflow-y-auto overscroll-y-contain bg-[#F5F0E8]',
+        // Push/tab: incoming on top. Pop: incoming underneath so the
+        // outgoing screen can slide off above it.
+        kind === 'pop' ? 'z-[1]' : 'z-[2]'
+      )}
     >
       {children}
     </motion.div>

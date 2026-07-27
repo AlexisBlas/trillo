@@ -1,8 +1,9 @@
 import { useRef } from 'react';
-import { useLocation, useNavigationType, NavigationType } from 'react-router';
+import { useLocation, useNavigationType, type NavigationType } from 'react-router';
 
 export type NavKind = 'push' | 'pop' | 'tab';
 
+/** Bottom-nav destinations — switch with a quiet crossfade, never a stack slide. */
 const TAB_ROOTS = new Set([
   '/',
   '/search',
@@ -28,11 +29,24 @@ export function resolveNavKind(
   to: string,
   navType: NavigationType
 ): NavKind {
-  if (navType === 'POP') return isTabRoot(to) && isTabRoot(from) ? 'tab' : 'pop';
+  // Browser / BackButton history back-forward
+  if (navType === 'POP') {
+    return isTabRoot(from) && isTabRoot(to) ? 'tab' : 'pop';
+  }
+
+  // Auth redirects, etc. — avoid a stack slide
+  if (navType === 'REPLACE') {
+    return 'tab';
+  }
+
   if (isTabRoot(from) && isTabRoot(to)) return 'tab';
   if (!isTabRoot(from) && isTabRoot(to)) return 'pop';
+  if (isTabRoot(from) && !isTabRoot(to)) return 'push';
+
   if (depth(to) > depth(from)) return 'push';
   if (depth(to) < depth(from)) return 'pop';
+
+  // Same-depth stack siblings (e.g. trail A → trail B)
   return 'push';
 }
 
@@ -43,7 +57,11 @@ export function useNavKind(): { pathname: string; kind: NavKind } {
   const kindRef = useRef<NavKind>('tab');
 
   if (prevPath.current !== location.pathname) {
-    kindRef.current = resolveNavKind(prevPath.current, location.pathname, navType);
+    kindRef.current = resolveNavKind(
+      prevPath.current,
+      location.pathname,
+      navType
+    );
     prevPath.current = location.pathname;
   }
 
