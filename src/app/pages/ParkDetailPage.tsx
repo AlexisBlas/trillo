@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { Mountain, ChevronRight } from 'lucide-react';
+import { Mountain, ChevronRight, ChevronDown } from 'lucide-react';
 import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { BackButton } from '../components/layout/BackButton';
@@ -20,6 +20,7 @@ import {
   isValidTrailId,
 } from '../lib/text';
 import { useLang, TranslationKey } from '../contexts/LangContext';
+import { cn } from '../components/ui/utils';
 
 type TrailStatus = 'green' | 'yellow' | 'red';
 
@@ -47,6 +48,7 @@ export function ParkDetailPage() {
   const { data: parkMeta } = useParkMeta(decoded);
   const [descExpanded, setDescExpanded] = useState(false);
   const [descOverflows, setDescOverflows] = useState(false);
+  const [trailsOpen, setTrailsOpen] = useState(false);
   const descRef = useRef<HTMLParagraphElement>(null);
 
   const parkDescription = pickLocalizedText(
@@ -57,6 +59,7 @@ export function ParkDetailPage() {
 
   useEffect(() => {
     setDescExpanded(false);
+    setTrailsOpen(false);
   }, [decoded, parkDescription]);
 
   useEffect(() => {
@@ -321,43 +324,65 @@ export function ParkDetailPage() {
         )}
 
         {!isLoading && sortedTrails.length > 0 && (
-          <>
-            <p className="text-[11px] font-bold tracking-[1.4px] uppercase text-[#8a8478] mb-3 px-0.5">
-              {t('park_trails_by_condition')}
-            </p>
+          <div className="bg-white rounded-[20px] border border-[#ebe6dc] overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setTrailsOpen((v) => !v)}
+              aria-expanded={trailsOpen}
+              className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left active:bg-[#fafaf8] transition-colors"
+            >
+              <div className="min-w-0">
+                <p className="text-[15px] font-bold tracking-[-0.2px] text-[#1a1a1a]">
+                  {t('park_trails_by_condition')}
+                </p>
+                <p className="text-[12px] text-[#8a8478] mt-0.5">
+                  {sortedTrails.length}{' '}
+                  {sortedTrails.length === 1 ? t('trail_singular') : t('trail_plural')}
+                </p>
+              </div>
+              <ChevronDown
+                className={cn(
+                  'size-5 text-[#8a8478] shrink-0 transition-transform duration-200',
+                  trailsOpen && 'rotate-180'
+                )}
+              />
+            </button>
 
-            <div className="flex flex-col gap-2">
-              {sortedTrails.map((trail) => {
-                const displayName = trail.name.includes(' - ')
-                  ? trail.name.split(' - ').slice(1).join(' - ')
-                  : trail.name;
-                const status = statusByTrail.get(trail.id) ?? null;
-                const trailHazards = hazardsByTrail.get(trail.id) ?? [];
-                const hazardTags = trailHazards.map((h) => h.tag);
-                return (
-                  <button
-                    key={trail.id}
-                    onClick={() => navigate(`/trails/${trail.id}`)}
-                    className="bg-white border border-[#ebe6dc] hover:border-[#2c4a1e]/40 transition-colors pl-4 pr-4 py-3.5 flex items-center gap-3.5 text-left rounded-[20px] active:scale-[0.99] overflow-visible"
-                  >
-                    <StatusWithHazards status={status} conditions={hazardTags} />
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-[15px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
-                        {displayName}
-                      </h3>
-                    </div>
-                    <span
-                      className="shrink-0 text-[12px] font-bold"
-                      style={{ color: status ? STATUS_TEXT[status] : '#8a8478' }}
+            {trailsOpen && (
+              <div className="flex flex-col gap-2 px-3 pb-3 border-t border-[#f0ede6] pt-3">
+                {sortedTrails.map((trail) => {
+                  const displayName = trail.name.includes(' - ')
+                    ? trail.name.split(' - ').slice(1).join(' - ')
+                    : trail.name;
+                  const status = statusByTrail.get(trail.id) ?? null;
+                  const trailHazards = hazardsByTrail.get(trail.id) ?? [];
+                  const hazardTags = trailHazards.map((h) => h.tag);
+                  return (
+                    <button
+                      key={trail.id}
+                      type="button"
+                      onClick={() => navigate(`/trails/${trail.id}`)}
+                      className="bg-[#fafaf8] border border-[#ebe6dc] hover:border-[#2c4a1e]/40 transition-colors pl-3.5 pr-3.5 py-3 flex items-center gap-3 text-left rounded-[16px] active:scale-[0.99] overflow-visible"
                     >
-                      {statusWord(status)}
-                    </span>
-                    <ChevronRight className="size-4 text-[#c4c0b6] shrink-0" />
-                  </button>
-                );
-              })}
-            </div>
-          </>
+                      <StatusWithHazards status={status} conditions={hazardTags} />
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-[15px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
+                          {displayName}
+                        </h3>
+                      </div>
+                      <span
+                        className="shrink-0 text-[12px] font-bold"
+                        style={{ color: status ? STATUS_TEXT[status] : '#8a8478' }}
+                      >
+                        {statusWord(status)}
+                      </span>
+                      <ChevronRight className="size-4 text-[#c4c0b6] shrink-0" />
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>
