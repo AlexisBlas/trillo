@@ -9,9 +9,10 @@ import { useTrails } from '../hooks/useTrails';
 import type { TrailWithCity } from '../hooks/useTrails';
 import { useParkReports } from '../hooks/useParkReports';
 import { StatusWithHazards } from '../components/trail/StatusWithHazards';
+import { NewParkBadge } from '../components/trail/NewParkBadge';
 import { formatUpdatedAgo, normalizeSearchText, searchIncludes } from '../lib/text';
 import { useLang } from '../contexts/LangContext';
-import { getParkCity, useParksMeta } from '../hooks/useParksMeta';
+import { getParkCity, isParkNameNew, useParksMeta } from '../hooks/useParksMeta';
 import { useFollowedParkNames } from '../hooks/useParkFollows';
 
 export function SearchPage() {
@@ -133,9 +134,12 @@ export function SearchPage() {
                       conditions={parkHazards.map((h) => h.tag)}
                     />
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
-                        {parkTitle}
-                      </h3>
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
+                          {parkTitle}
+                        </h3>
+                        {isParkNameNew(parksMeta, park.name) && <NewParkBadge />}
+                      </div>
                       <p className="text-[13px] text-[#374151] truncate">
                         {city ?? ''}
                       </p>

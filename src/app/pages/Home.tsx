@@ -13,10 +13,11 @@ import type { TrailWithCity } from '../hooks/useTrails';
 import { useTrailReports } from '../hooks/useTrailReports';
 import { useParkReports } from '../hooks/useParkReports';
 import { StatusWithHazards } from '../components/trail/StatusWithHazards';
+import { NewParkBadge } from '../components/trail/NewParkBadge';
 import { isReportFresh, formatUpdatedAgo, normalizeSearchText, searchIncludes } from '../lib/text';
 import { useLang } from '../contexts/LangContext';
 import { useAuth } from '../contexts/AuthContext';
-import { getParkCity, useParksMeta } from '../hooks/useParksMeta';
+import { getParkCity, isParkNameNew, useParksMeta } from '../hooks/useParksMeta';
 import { useParkFollows } from '../hooks/useParkFollows';
 
 type Park = { name: string; city: string | null; trails: TrailWithCity[] };
@@ -113,6 +114,7 @@ export function Home() {
   const renderParkCard = (park: Park) => {
     const updatedAgo = formatUpdatedAgo(byPark.get(park.name)?.createdAt);
     const parkHazards = hazardsByPark.get(park.name) ?? [];
+    const showNew = isParkNameNew(parksMeta, park.name);
     return (
       <button
         key={park.name}
@@ -125,9 +127,12 @@ export function Home() {
           conditions={parkHazards.map((h) => h.tag)}
         />
         <div className="flex-1 min-w-0">
-          <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
-            {park.name}
-          </h3>
+          <div className="flex items-center gap-1.5 min-w-0">
+            <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
+              {park.name}
+            </h3>
+            {showNew && <NewParkBadge />}
+          </div>
           <p className="text-[13px] text-[#374151] truncate">
             {park.city ?? ''}
           </p>
@@ -199,9 +204,12 @@ export function Home() {
                               <MapPin className="size-4 text-white" />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-[14px] font-bold text-[#1a1a1a] truncate">
-                                {parkTitle}
-                              </p>
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <p className="text-[14px] font-bold text-[#1a1a1a] truncate">
+                                  {parkTitle}
+                                </p>
+                                {isParkNameNew(parksMeta, p.name) && <NewParkBadge />}
+                              </div>
                               <p className="text-[12px] text-[#374151] truncate">
                                 {p.city ? `${p.city} · ` : ''}{p.trails.length} {p.trails.length === 1 ? t('trail_singular') : t('trail_plural')}
                               </p>

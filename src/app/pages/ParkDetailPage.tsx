@@ -5,6 +5,7 @@ import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { BackButton } from '../components/layout/BackButton';
 import { FollowParkButton } from '../components/trail/FollowParkButton';
+import { NewParkBadge } from '../components/trail/NewParkBadge';
 import { useTrails } from '../hooks/useTrails';
 import { useParkReports } from '../hooks/useParkReports';
 import { useParkMeta } from '../hooks/useHiddenParks';
@@ -20,6 +21,7 @@ import {
   isValidTrailId,
 } from '../lib/text';
 import { useLang, TranslationKey } from '../contexts/LangContext';
+import { isParkNew } from '../hooks/useParksMeta';
 import { cn } from '../components/ui/utils';
 
 type TrailStatus = 'green' | 'yellow' | 'red';
@@ -205,9 +207,14 @@ export function ParkDetailPage() {
             .join(' · ')}
         </p>
         <div className="mt-1 flex items-start justify-between gap-3">
-          <h2 className="text-[28px] font-bold text-[#1a3010] leading-[32px] tracking-[-0.6px] text-balance min-w-0">
-            {decoded}
-          </h2>
+          <div className="min-w-0 flex items-start gap-2">
+            <h2 className="text-[28px] font-bold text-[#1a3010] leading-[32px] tracking-[-0.6px] text-balance min-w-0">
+              {decoded}
+            </h2>
+            {isParkNew(parkMeta?.created_at) && (
+              <NewParkBadge className="mt-2" />
+            )}
+          </div>
           <FollowParkButton parkName={decoded} variant="pill" className="shrink-0 mt-0.5" />
         </div>
 

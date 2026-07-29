@@ -22,7 +22,7 @@ export function useParkMeta(parkName: string | undefined) {
       if (!parkName) return null;
       const { data } = await supabase
         .from('parks')
-        .select('name, city, description, description_es')
+        .select('name, city, description, description_es, created_at')
         .eq('name', parkName)
         .maybeSingle();
       return data as {
@@ -30,6 +30,7 @@ export function useParkMeta(parkName: string | undefined) {
         city: string | null;
         description: string | null;
         description_es: string | null;
+        created_at: string | null;
       } | null;
     },
     enabled: !!parkName,

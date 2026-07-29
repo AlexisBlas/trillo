@@ -156,6 +156,7 @@ const translations = {
     search_no_parks_empty_hint: 'Parks will appear here once trails are added.',
     park_singular: 'Park',
     park_plural: 'Parks',
+    badge_new: 'New',
     // Reports page
     reports_grouped_by: 'Grouped by park',
     reports_search_placeholder: 'Search reports, trails, or hazards',
@@ -368,6 +369,7 @@ const translations = {
     search_no_parks_empty_hint: 'Los parques aparecerán aquí cuando se agreguen senderos.',
     park_singular: 'Parque',
     park_plural: 'Parques',
+    badge_new: 'Nuevo',
     // Reports page
     reports_grouped_by: 'Agrupados por parque',
     reports_search_placeholder: 'Buscar reportes, senderos o peligros',
