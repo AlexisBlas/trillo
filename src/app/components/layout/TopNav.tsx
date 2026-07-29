@@ -253,7 +253,48 @@ export function TopNav() {
 
               {!isLoading && recent.length > 0 && (
                 <div className="flex flex-col gap-2.5">
-                  {recent.map((report) => {
+                  {recent.map((item) => {
+                    if (item.kind === 'trail') {
+                      const { trail } = item;
+                      const displayName = trail.name.includes(' - ')
+                        ? trail.name.split(' - ').slice(1).join(' - ')
+                        : trail.name;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => {
+                            setNotifOpen(false);
+                            navigate(`/trails/${trail.id}`);
+                          }}
+                          className="bg-white border-[1.5px] border-[#e5e0d5] p-4 rounded-[20px] text-left active:scale-[0.99] transition-transform"
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0 flex-1">
+                              <p className="text-[14px] font-bold text-[#1a1a1a] truncate">
+                                {displayName}
+                              </p>
+                              <p className="text-[12px] text-[#4b5563] truncate mt-0.5">
+                                {trail.location || t('notif_new_trail')}
+                              </p>
+                              <p className="text-[11px] text-[#687588] mt-1">
+                                {formatDistanceToNow(new Date(trail.created_at), {
+                                  addSuffix: true,
+                                })}
+                              </p>
+                            </div>
+                            <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-[#D97706] text-white">
+                              {t('notif_new_trail_badge')}
+                            </span>
+                          </div>
+                          <p className="text-[13px] leading-[19px] text-[#374151] mt-2.5">
+                            {t('notif_new_trail')}
+                          </p>
+                        </button>
+                      );
+                    }
+
+                    const report = item.report;
                     const parkName = report.trails?.location || report.park_name;
                     const trailName = report.trails?.name;
                     const title = trailName
@@ -268,7 +309,7 @@ export function TopNav() {
 
                     return (
                       <button
-                        key={report.id}
+                        key={item.id}
                         type="button"
                         onClick={() => {
                           setNotifOpen(false);

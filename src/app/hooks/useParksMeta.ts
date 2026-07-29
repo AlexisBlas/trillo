@@ -8,7 +8,7 @@ export type ParkMetaPublic = {
 };
 
 /** Parks newer than this (days) show a "New" badge. */
-export const NEW_PARK_DAYS = 14;
+export const NEW_PARK_DAYS = 5;
 
 /** Map of park name → city + createdAt for list UI. */
 export function useParksMeta() {

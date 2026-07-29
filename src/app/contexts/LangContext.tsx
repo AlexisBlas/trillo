@@ -57,10 +57,12 @@ const translations = {
     menu_made_by: 'Supported and made by',
     // Notifications
     notif_open: 'Open notifications',
-    notif_title: 'Recent reports',
-    notif_empty: 'No recent reports yet.',
+    notif_title: 'Notifications',
+    notif_empty: 'No recent updates yet.',
     notif_view_all: 'View all reports',
     notif_park_overview: 'Park overview',
+    notif_new_trail: 'New trail added',
+    notif_new_trail_badge: 'New',
     // Report pages
     report_conditions: 'Report Conditions',
     park_report: 'Park Overview Report',
@@ -270,10 +272,12 @@ const translations = {
     menu_made_by: 'Apoyado y creado por',
     // Notifications
     notif_open: 'Abrir notificaciones',
-    notif_title: 'Reportes recientes',
-    notif_empty: 'Aún no hay reportes recientes.',
+    notif_title: 'Notificaciones',
+    notif_empty: 'Aún no hay actualizaciones recientes.',
     notif_view_all: 'Ver todos los reportes',
     notif_park_overview: 'Resumen del parque',
+    notif_new_trail: 'Nuevo sendero agregado',
+    notif_new_trail_badge: 'Nuevo',
     // Report pages
     report_conditions: 'Reportar Condiciones',
     park_report: 'Reporte General del Parque',
