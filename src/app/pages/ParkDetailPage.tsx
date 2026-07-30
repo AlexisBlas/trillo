@@ -205,6 +205,24 @@ export function ParkDetailPage() {
           text={t('share_report_text').replace('{name}', decoded)}
           status={summary?.status ?? null}
           statusLabel={summary ? t(STATUS_LABEL[summary.status]) : null}
+          notes={summaryNotes}
+          conditions={summary?.conditions ?? null}
+          hazards={
+            trailHazardSlides.length > 0
+              ? trailHazardSlides
+                  .flatMap((slide) =>
+                    getCriticalHazards(slide.conditions).map((h) => ({
+                      label: t(h.labelKey),
+                      detail: slide.trailName,
+                      note: t(h.noteKey),
+                      kind: h.id,
+                    }))
+                  )
+                  .slice(0, 2)
+              : undefined
+          }
+          updatedLabel={updateMeta?.label}
+          updatedValue={updateMeta?.value}
         />
       </div>
 

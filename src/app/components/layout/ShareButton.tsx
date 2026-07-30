@@ -3,7 +3,13 @@ import { Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '../ui/utils';
 import { useLang } from '../../contexts/LangContext';
-import { shareContent, type SharePayload, type ShareStatus } from '../../lib/share';
+import { getCriticalHazards } from '../../lib/hazards';
+import {
+  shareContent,
+  type ShareHazard,
+  type SharePayload,
+  type ShareStatus,
+} from '../../lib/share';
 
 type ShareButtonProps = {
   title: string;
@@ -12,6 +18,16 @@ type ShareButtonProps = {
   subtitle?: string | null;
   status?: ShareStatus | null;
   statusLabel?: string | null;
+  conditionsLabel?: string | null;
+  updatedLabel?: string | null;
+  updatedValue?: string | null;
+  notes?: string | null;
+  /** Raw report condition tags — used to build hazard callouts on the story card. */
+  conditions?: string[] | null;
+  /** Trail name shown under a hazard label (when sharing a trail-level report). */
+  hazardTrailName?: string | null;
+  /** Prebuilt hazards (overrides conditions-derived list when provided). */
+  hazards?: ShareHazard[];
   className?: string;
   /** Larger glove-friendly target for standalone CTAs. */
   size?: 'header' | 'cta';
@@ -24,6 +40,13 @@ export function ShareButton({
   subtitle,
   status,
   statusLabel,
+  conditionsLabel,
+  updatedLabel,
+  updatedValue,
+  notes,
+  conditions,
+  hazardTrailName,
+  hazards: hazardsProp,
   className,
   size = 'header',
 }: ShareButtonProps) {
@@ -34,6 +57,15 @@ export function ShareButton({
     if (busy) return;
     setBusy(true);
     try {
+      const hazards: ShareHazard[] =
+        hazardsProp ??
+        getCriticalHazards(conditions).map((h) => ({
+          label: t(h.labelKey),
+          detail: hazardTrailName || null,
+          note: t(h.noteKey),
+          kind: h.id,
+        }));
+
       const payload: SharePayload = {
         title,
         text: text || t('share_report_text').replace('{name}', title),
@@ -41,11 +73,15 @@ export function ShareButton({
         subtitle,
         status,
         statusLabel,
+        conditionsLabel: conditionsLabel || t('park_current_conditions'),
+        updatedLabel: updatedLabel || t('park_updated'),
+        updatedValue: updatedValue || null,
+        notes,
+        hazards,
       };
       const result = await shareContent(payload);
       if (result === 'copied') toast.success(t('share_copied'));
       if (result === 'failed') toast.error(t('share_failed'));
-      // 'shared' / 'cancelled' — no toast needed
     } finally {
       setBusy(false);
     }

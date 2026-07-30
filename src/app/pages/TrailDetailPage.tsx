@@ -100,6 +100,14 @@ export function TrailDetailPage() {
           statusLabel={
             latestReport ? t(statusShareLabel(latestReport.status)) : null
           }
+          notes={cleanNotes(latestReport?.notes)}
+          conditions={latestReport?.conditions ?? null}
+          hazardTrailName={trailDisplayName}
+          updatedValue={
+            latestReport
+              ? formatDistanceToNow(new Date(latestReport.created_at), { addSuffix: true })
+              : null
+          }
         />
       </div>
 
@@ -191,6 +199,12 @@ export function TrailDetailPage() {
                     text={t('share_report_text').replace('{name}', trailDisplayName)}
                     status={report.status}
                     statusLabel={t(statusShareLabel(report.status))}
+                    notes={cleanNotes(report.notes)}
+                    conditions={report.conditions}
+                    hazardTrailName={trailDisplayName}
+                    updatedValue={formatDistanceToNow(new Date(report.created_at), {
+                      addSuffix: true,
+                    })}
                     className="shadow-none border-[1.5px] border-[#e5e7eb] bg-white"
                   />
                 </div>

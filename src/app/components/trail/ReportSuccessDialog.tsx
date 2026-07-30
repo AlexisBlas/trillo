@@ -25,6 +25,10 @@ interface ReportSuccessDialogProps {
     subtitle?: string | null;
     status?: ShareStatus | null;
     statusLabel?: string | null;
+    notes?: string | null;
+    conditions?: string[] | null;
+    hazardTrailName?: string | null;
+    updatedValue?: string | null;
   };
 }
 
@@ -72,6 +76,10 @@ export function ReportSuccessDialog({
               subtitle={share.subtitle}
               status={share.status}
               statusLabel={share.statusLabel}
+              notes={share.notes}
+              conditions={share.conditions}
+              hazardTrailName={share.hazardTrailName}
+              updatedValue={share.updatedValue}
             />
           )}
         </div>

@@ -24,6 +24,8 @@ export function ReportPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
   const [lastStatus, setLastStatus] = useState<'green' | 'yellow' | 'red' | null>(null);
+  const [lastNotes, setLastNotes] = useState<string | null>(null);
+  const [lastConditions, setLastConditions] = useState<string[] | null>(null);
 
   const handleSubmit = async (data: ReportFormData) => {
     if (!trailId) return;
@@ -40,6 +42,8 @@ export function ReportPage() {
       if (error) throw error;
       queryClient.invalidateQueries({ queryKey: ['trail-reports'] });
       setLastStatus(data.status);
+      setLastNotes(data.notes?.trim() || null);
+      setLastConditions(data.conditions?.length ? data.conditions : null);
       setSuccessOpen(true);
     } catch (err) {
       console.error('Error submitting report:', err);
@@ -138,6 +142,12 @@ export function ReportPage() {
                     : 'park_trail_status_poor'
               )
             : null,
+          notes: lastNotes,
+          conditions: lastConditions,
+          hazardTrailName: trail.name.includes(' - ')
+            ? trail.name.split(' - ').slice(1).join(' - ')
+            : trail.name,
+          updatedValue: t('park_updated_just_now'),
         }}
       />
     </div>
