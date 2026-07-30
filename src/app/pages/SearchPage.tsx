@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
-import { Search, Mountain, ChevronRight } from 'lucide-react';
+import { Search, Mountain, ChevronRight, SlidersHorizontal } from 'lucide-react';
 import { Input } from '../components/ui/input';
 import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription } from '../components/ui/alert';
+import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
 import { BackButton } from '../components/layout/BackButton';
 import { useTrails } from '../hooks/useTrails';
 import type { TrailWithCity } from '../hooks/useTrails';
@@ -11,9 +12,56 @@ import { useParkReports } from '../hooks/useParkReports';
 import { StatusWithHazards } from '../components/trail/StatusWithHazards';
 import { NewParkBadge } from '../components/trail/NewParkBadge';
 import { formatUpdatedAgo, normalizeSearchText, searchIncludes } from '../lib/text';
-import { useLang } from '../contexts/LangContext';
+import { getCityRegion, type ParkRegion } from '../lib/regions';
+import { useLang, type TranslationKey } from '../contexts/LangContext';
 import { getParkCity, isParkNameNew, useParksMeta } from '../hooks/useParksMeta';
 import { useFollowedParkNames } from '../hooks/useParkFollows';
+import { cn } from '../components/ui/utils';
+
+type ConditionFilter = 'all' | 'green' | 'yellow' | 'red';
+type RegionFilter = 'all' | ParkRegion;
+
+const REGION_FILTERS: { value: RegionFilter; labelKey: TranslationKey }[] = [
+  { value: 'all', labelKey: 'search_filter_all' },
+  { value: 'north', labelKey: 'search_region_north' },
+  { value: 'east', labelKey: 'search_region_east' },
+  { value: 'south', labelKey: 'search_region_south' },
+  { value: 'west', labelKey: 'search_region_west' },
+  { value: 'metro', labelKey: 'search_region_metro' },
+];
+
+const CONDITION_FILTERS: { value: ConditionFilter; labelKey: TranslationKey }[] = [
+  { value: 'all', labelKey: 'search_filter_all' },
+  { value: 'green', labelKey: 'reports_filter_good' },
+  { value: 'yellow', labelKey: 'reports_filter_caution' },
+  { value: 'red', labelKey: 'reports_filter_closed' },
+];
+
+/** Large tap targets for outdoor / gloved use (~48–52px). */
+function OptionButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        'min-h-[52px] px-3 py-3 rounded-[14px] border-[1.5px] text-[15px] font-bold leading-tight transition-colors touch-manipulation',
+        active
+          ? 'bg-[#1a3010] text-white border-[#1a3010]'
+          : 'bg-white text-[#1a1a1a] border-[#e5e7eb] active:bg-[#f0ede6]'
+      )}
+    >
+      {children}
+    </button>
+  );
+}
 
 export function SearchPage() {
   const navigate = useNavigate();
@@ -21,23 +69,62 @@ export function SearchPage() {
   const { data: trails, isLoading, error } = useTrails();
   const { byPark, hazardsByPark } = useParkReports();
   const [searchQuery, setSearchQuery] = useState('');
+  const [regionFilter, setRegionFilter] = useState<RegionFilter>('all');
+  const [conditionFilter, setConditionFilter] = useState<ConditionFilter>('all');
+  const [cityFilter, setCityFilter] = useState<string>('all');
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const { data: parksMeta } = useParksMeta();
   const followedNames = useFollowedParkNames();
 
   const q = normalizeSearchText(searchQuery);
+  const activeFilterCount =
+    (regionFilter !== 'all' ? 1 : 0) +
+    (conditionFilter !== 'all' ? 1 : 0) +
+    (cityFilter !== 'all' ? 1 : 0);
+  const filtersActive = activeFilterCount > 0;
 
-  // Group trails by park. When searching, match park name, city, or trail name.
-  // Followed parks are pinned to the top of the list.
-  const parks = useMemo(() => {
-    const filtered = (trails || []).filter((trail) => {
-      if (!q) return true;
+  const clearFilters = () => {
+    setRegionFilter('all');
+    setConditionFilter('all');
+    setCityFilter('all');
+  };
+
+  const availableCities = useMemo(() => {
+    const cities = new Set<string>();
+    for (const trail of trails || []) {
       const parkName = trail.location || 'Other';
       const city = trail.city ?? getParkCity(parksMeta, parkName);
-      return (
-        searchIncludes(trail.name, q) ||
-        searchIncludes(parkName, q) ||
-        searchIncludes(city, q)
-      );
+      if (city) cities.add(city);
+    }
+    return Array.from(cities).sort((a, b) => a.localeCompare(b));
+  }, [trails, parksMeta]);
+
+  const parks = useMemo(() => {
+    const filtered = (trails || []).filter((trail) => {
+      const parkName = trail.location || 'Other';
+      const city = trail.city ?? getParkCity(parksMeta, parkName);
+
+      if (q) {
+        const matchesSearch =
+          searchIncludes(trail.name, q) ||
+          searchIncludes(parkName, q) ||
+          searchIncludes(city, q);
+        if (!matchesSearch) return false;
+      }
+
+      if (cityFilter !== 'all' && city !== cityFilter) return false;
+
+      if (regionFilter !== 'all') {
+        const region = getCityRegion(city);
+        if (region !== regionFilter) return false;
+      }
+
+      if (conditionFilter !== 'all') {
+        const status = byPark.get(parkName)?.status ?? null;
+        if (status !== conditionFilter) return false;
+      }
+
+      return true;
     });
 
     const map = new Map<string, TrailWithCity[]>();
@@ -55,7 +142,16 @@ export function SearchPage() {
         if (aFollowed !== bFollowed) return aFollowed ? -1 : 1;
         return a.name.localeCompare(b.name);
       });
-  }, [trails, q, parksMeta, followedNames]);
+  }, [
+    trails,
+    q,
+    parksMeta,
+    followedNames,
+    regionFilter,
+    conditionFilter,
+    cityFilter,
+    byPark,
+  ]);
 
   return (
     <div className="min-h-screen bg-[#F5F0E8]">
@@ -63,19 +159,122 @@ export function SearchPage() {
         <BackButton />
       </div>
 
-      {/* Header */}
       <div className="px-5 pt-6 pb-4">
         <h1 className="text-[24px] font-bold text-[#1a3010] mb-5">{t('search_title')}</h1>
 
-        <div className="relative">
-          <Search className="absolute left-[17.5px] top-1/2 -translate-y-1/2 size-[18px] text-[#4b5563]" />
-          <Input
-            type="text"
-            placeholder={t('search_placeholder')}
-            className="h-[45.5px] pl-[45px] pr-4 border-[1.5px] border-[#e5e7eb] bg-white text-[16px] shadow-sm rounded-[24px]"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+        <div className="flex flex-col gap-3">
+          <div className="relative">
+            <Search className="absolute left-[17.5px] top-1/2 -translate-y-1/2 size-[20px] text-[#4b5563] pointer-events-none" />
+            <Input
+              type="text"
+              placeholder={t('search_placeholder')}
+              className="h-[52px] pl-[48px] pr-4 border-[1.5px] border-[#e5e7eb] bg-white text-[16px] shadow-sm rounded-[24px]"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          <Popover open={filtersOpen} onOpenChange={setFiltersOpen}>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                aria-label={t('search_filters')}
+                className={cn(
+                  'relative w-full min-h-[52px] px-4 inline-flex items-center justify-center gap-2.5 rounded-[24px] border-[2px] bg-white shadow-sm transition-colors touch-manipulation active:scale-[0.99]',
+                  filtersActive
+                    ? 'border-[#2c4a1e] text-[#2c4a1e]'
+                    : 'border-[#e5e7eb] text-[#1a3010]'
+                )}
+              >
+                <SlidersHorizontal className="size-5" strokeWidth={2.25} />
+                <span className="text-[16px] font-bold">{t('search_filters')}</span>
+                {filtersActive && (
+                  <span className="min-w-[28px] h-[28px] px-1.5 rounded-full bg-[#D97706] text-white text-[13px] font-bold flex items-center justify-center">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="center"
+              sideOffset={10}
+              className="w-[calc(100vw-2.5rem)] max-w-none max-h-[min(70vh,560px)] overflow-y-auto p-4 rounded-[20px] border-[1.5px] border-[#e5e0d5] bg-[#F5F0E8] shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
+            >
+              <div className="flex flex-col gap-5">
+                <div>
+                  <p className="text-[12px] font-bold tracking-[1.1px] uppercase text-[#687588] mb-2.5">
+                    {t('search_filter_region')}
+                  </p>
+                  <div className="grid grid-cols-2 gap-2.5">
+                    {REGION_FILTERS.map((f) => (
+                      <OptionButton
+                        key={f.value}
+                        active={regionFilter === f.value}
+                        onClick={() => setRegionFilter(f.value)}
+                      >
+                        {t(f.labelKey)}
+                      </OptionButton>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-[12px] font-bold tracking-[1.1px] uppercase text-[#687588] mb-2.5">
+                    {t('search_filter_condition')}
+                  </p>
+                  <div className="grid grid-cols-2 gap-2.5">
+                    {CONDITION_FILTERS.map((f) => (
+                      <OptionButton
+                        key={f.value}
+                        active={conditionFilter === f.value}
+                        onClick={() => setConditionFilter(f.value)}
+                      >
+                        {t(f.labelKey)}
+                      </OptionButton>
+                    ))}
+                  </div>
+                </div>
+
+                {availableCities.length > 0 && (
+                  <div>
+                    <p className="text-[12px] font-bold tracking-[1.1px] uppercase text-[#687588] mb-2.5">
+                      {t('search_filter_city')}
+                    </p>
+                    <div className="grid grid-cols-1 gap-2.5">
+                      <OptionButton
+                        active={cityFilter === 'all'}
+                        onClick={() => setCityFilter('all')}
+                      >
+                        {t('search_filter_all')}
+                      </OptionButton>
+                      {availableCities.map((city) => (
+                        <OptionButton
+                          key={city}
+                          active={cityFilter === city}
+                          onClick={() => setCityFilter(city)}
+                        >
+                          {city}
+                        </OptionButton>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {filtersActive && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      clearFilters();
+                      setFiltersOpen(false);
+                    }}
+                    className="w-full min-h-[52px] rounded-[14px] border-[1.5px] border-[#e5e7eb] bg-white text-[15px] font-bold text-[#2c4a1e] touch-manipulation active:bg-[#f0ede6]"
+                  >
+                    {t('search_clear_filters')}
+                  </button>
+                )}
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
 
@@ -97,18 +296,27 @@ export function SearchPage() {
         {!isLoading && parks.length === 0 && (
           <div className="bg-white rounded-[16px] border-[1.5px] border-[#f0ede6] shadow-sm p-8 text-center">
             <div className="size-12 rounded-full bg-[#f0ede6] flex items-center justify-center mx-auto mb-4">
-              {q ? (
+              {q || filtersActive ? (
                 <Search className="size-6 text-[#374151]" />
               ) : (
                 <Mountain className="size-6 text-[#374151]" />
               )}
             </div>
             <h3 className="text-[15.5px] font-bold text-[#1a1a1a] mb-2">
-              {q ? t('search_no_parks_found') : t('search_no_parks_available')}
+              {q || filtersActive ? t('search_no_parks_found') : t('search_no_parks_available')}
             </h3>
             <p className="text-[13px] text-[#374151]">
-              {q ? t('search_no_parks_search_hint') : t('search_no_parks_empty_hint')}
+              {q || filtersActive ? t('search_no_parks_search_hint') : t('search_no_parks_empty_hint')}
             </p>
+            {filtersActive && (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="mt-5 w-full min-h-[52px] rounded-[14px] border-[1.5px] border-[#e5e7eb] bg-[#F5F0E8] text-[15px] font-bold text-[#2c4a1e] touch-manipulation"
+              >
+                {t('search_clear_filters')}
+              </button>
+            )}
           </div>
         )}
 
