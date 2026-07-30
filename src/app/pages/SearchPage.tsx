@@ -1,10 +1,16 @@
-import { useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router';
-import { Search, Mountain, ChevronRight, SlidersHorizontal } from 'lucide-react';
+import {
+  Search,
+  Mountain,
+  ChevronRight,
+  ChevronLeft,
+  SlidersHorizontal,
+} from 'lucide-react';
 import { Input } from '../components/ui/input';
 import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription } from '../components/ui/alert';
-import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
 import { BackButton } from '../components/layout/BackButton';
 import { useTrails } from '../hooks/useTrails';
 import type { TrailWithCity } from '../hooks/useTrails';
@@ -89,6 +95,17 @@ export function SearchPage() {
     setCityFilter('all');
   };
 
+  const closeFilters = () => setFiltersOpen(false);
+
+  useEffect(() => {
+    if (!filtersOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [filtersOpen]);
+
   const availableCities = useMemo(() => {
     const cities = new Set<string>();
     for (const trail of trails || []) {
@@ -153,6 +170,119 @@ export function SearchPage() {
     byPark,
   ]);
 
+  const filtersOverlay =
+    filtersOpen &&
+    createPortal(
+      <div
+        className="fixed inset-0 z-[80] bg-[#F5F0E8] flex flex-col"
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('search_filters')}
+      >
+        <div className="shrink-0 flex items-center gap-3 h-[60px] px-4 border-b border-[#e5e0d5] pt-[env(safe-area-inset-top)]">
+          <button
+            type="button"
+            onClick={closeFilters}
+            aria-label={t('search_filters_close')}
+            className="size-[48px] rounded-full bg-white border-[1.5px] border-[#e5e7eb] shadow-sm flex items-center justify-center touch-manipulation active:bg-[#f0ede6]"
+          >
+            <ChevronLeft className="size-6 text-[#1a3010]" strokeWidth={2} />
+          </button>
+          <h2 className="flex-1 text-[18px] font-bold text-[#1a3010]">
+            {t('search_filters')}
+          </h2>
+          {filtersActive && (
+            <span className="min-w-[28px] h-[28px] px-1.5 rounded-full bg-[#D97706] text-white text-[13px] font-bold flex items-center justify-center">
+              {activeFilterCount}
+            </span>
+          )}
+        </div>
+
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 pt-5 pb-4">
+          <div className="flex flex-col gap-6">
+            <div>
+              <p className="text-[12px] font-bold tracking-[1.1px] uppercase text-[#687588] mb-2.5">
+                {t('search_filter_region')}
+              </p>
+              <div className="grid grid-cols-2 gap-2.5">
+                {REGION_FILTERS.map((f) => (
+                  <OptionButton
+                    key={f.value}
+                    active={regionFilter === f.value}
+                    onClick={() => setRegionFilter(f.value)}
+                  >
+                    {t(f.labelKey)}
+                  </OptionButton>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="text-[12px] font-bold tracking-[1.1px] uppercase text-[#687588] mb-2.5">
+                {t('search_filter_condition')}
+              </p>
+              <div className="grid grid-cols-2 gap-2.5">
+                {CONDITION_FILTERS.map((f) => (
+                  <OptionButton
+                    key={f.value}
+                    active={conditionFilter === f.value}
+                    onClick={() => setConditionFilter(f.value)}
+                  >
+                    {t(f.labelKey)}
+                  </OptionButton>
+                ))}
+              </div>
+            </div>
+
+            {availableCities.length > 0 && (
+              <div>
+                <p className="text-[12px] font-bold tracking-[1.1px] uppercase text-[#687588] mb-2.5">
+                  {t('search_filter_city')}
+                </p>
+                <div className="grid grid-cols-1 gap-2.5">
+                  <OptionButton
+                    active={cityFilter === 'all'}
+                    onClick={() => setCityFilter('all')}
+                  >
+                    {t('search_filter_all')}
+                  </OptionButton>
+                  {availableCities.map((city) => (
+                    <OptionButton
+                      key={city}
+                      active={cityFilter === city}
+                      onClick={() => setCityFilter(city)}
+                    >
+                      {city}
+                    </OptionButton>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="shrink-0 px-5 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-[#e5e0d5] bg-[#F5F0E8] flex flex-col gap-2.5">
+          {filtersActive && (
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="w-full min-h-[52px] rounded-[14px] border-[1.5px] border-[#e5e7eb] bg-white text-[15px] font-bold text-[#2c4a1e] touch-manipulation active:bg-[#f0ede6]"
+            >
+              {t('search_clear_filters')}
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={closeFilters}
+            className="w-full min-h-[52px] rounded-[14px] bg-[#1a3010] text-white text-[16px] font-bold touch-manipulation active:bg-[#2c4a1e]"
+          >
+            {t('search_filters_done')}
+          </button>
+        </div>
+      </div>,
+      document.body
+    );
+
   return (
     <div className="min-h-screen bg-[#F5F0E8]">
       <div className="px-4 pt-3.5">
@@ -174,108 +304,26 @@ export function SearchPage() {
             />
           </div>
 
-          <Popover open={filtersOpen} onOpenChange={setFiltersOpen}>
-            <PopoverTrigger asChild>
-              <button
-                type="button"
-                aria-label={t('search_filters')}
-                className={cn(
-                  'relative w-full min-h-[52px] px-4 inline-flex items-center justify-center gap-2.5 rounded-[24px] border-[2px] bg-white shadow-sm transition-colors touch-manipulation active:scale-[0.99]',
-                  filtersActive
-                    ? 'border-[#2c4a1e] text-[#2c4a1e]'
-                    : 'border-[#e5e7eb] text-[#1a3010]'
-                )}
-              >
-                <SlidersHorizontal className="size-5" strokeWidth={2.25} />
-                <span className="text-[16px] font-bold">{t('search_filters')}</span>
-                {filtersActive && (
-                  <span className="min-w-[28px] h-[28px] px-1.5 rounded-full bg-[#D97706] text-white text-[13px] font-bold flex items-center justify-center">
-                    {activeFilterCount}
-                  </span>
-                )}
-              </button>
-            </PopoverTrigger>
-            <PopoverContent
-              align="center"
-              sideOffset={10}
-              collisionPadding={{ top: 16, bottom: 96, left: 12, right: 12 }}
-              className="z-[70] w-[calc(100vw-2.5rem)] max-w-none max-h-[calc(100dvh-79px-5.5rem)] overflow-y-auto overscroll-contain p-4 pb-5 rounded-[20px] border-[1.5px] border-[#e5e0d5] bg-[#F5F0E8] shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
-            >
-              <div className="flex flex-col gap-5">
-                <div>
-                  <p className="text-[12px] font-bold tracking-[1.1px] uppercase text-[#687588] mb-2.5">
-                    {t('search_filter_region')}
-                  </p>
-                  <div className="grid grid-cols-2 gap-2.5">
-                    {REGION_FILTERS.map((f) => (
-                      <OptionButton
-                        key={f.value}
-                        active={regionFilter === f.value}
-                        onClick={() => setRegionFilter(f.value)}
-                      >
-                        {t(f.labelKey)}
-                      </OptionButton>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-[12px] font-bold tracking-[1.1px] uppercase text-[#687588] mb-2.5">
-                    {t('search_filter_condition')}
-                  </p>
-                  <div className="grid grid-cols-2 gap-2.5">
-                    {CONDITION_FILTERS.map((f) => (
-                      <OptionButton
-                        key={f.value}
-                        active={conditionFilter === f.value}
-                        onClick={() => setConditionFilter(f.value)}
-                      >
-                        {t(f.labelKey)}
-                      </OptionButton>
-                    ))}
-                  </div>
-                </div>
-
-                {availableCities.length > 0 && (
-                  <div>
-                    <p className="text-[12px] font-bold tracking-[1.1px] uppercase text-[#687588] mb-2.5">
-                      {t('search_filter_city')}
-                    </p>
-                    <div className="grid grid-cols-1 gap-2.5">
-                      <OptionButton
-                        active={cityFilter === 'all'}
-                        onClick={() => setCityFilter('all')}
-                      >
-                        {t('search_filter_all')}
-                      </OptionButton>
-                      {availableCities.map((city) => (
-                        <OptionButton
-                          key={city}
-                          active={cityFilter === city}
-                          onClick={() => setCityFilter(city)}
-                        >
-                          {city}
-                        </OptionButton>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {filtersActive && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      clearFilters();
-                      setFiltersOpen(false);
-                    }}
-                    className="w-full min-h-[52px] rounded-[14px] border-[1.5px] border-[#e5e7eb] bg-white text-[15px] font-bold text-[#2c4a1e] touch-manipulation active:bg-[#f0ede6]"
-                  >
-                    {t('search_clear_filters')}
-                  </button>
-                )}
-              </div>
-            </PopoverContent>
-          </Popover>
+          <button
+            type="button"
+            aria-label={t('search_filters')}
+            aria-expanded={filtersOpen}
+            onClick={() => setFiltersOpen(true)}
+            className={cn(
+              'relative w-full min-h-[52px] px-4 inline-flex items-center justify-center gap-2.5 rounded-[24px] border-[2px] bg-white shadow-sm transition-colors touch-manipulation active:scale-[0.99]',
+              filtersActive
+                ? 'border-[#2c4a1e] text-[#2c4a1e]'
+                : 'border-[#e5e7eb] text-[#1a3010]'
+            )}
+          >
+            <SlidersHorizontal className="size-5" strokeWidth={2.25} />
+            <span className="text-[16px] font-bold">{t('search_filters')}</span>
+            {filtersActive && (
+              <span className="min-w-[28px] h-[28px] px-1.5 rounded-full bg-[#D97706] text-white text-[13px] font-bold flex items-center justify-center">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
         </div>
       </div>
 
@@ -365,6 +413,8 @@ export function SearchPage() {
           </>
         )}
       </div>
+
+      {filtersOverlay}
     </div>
   );
 }
