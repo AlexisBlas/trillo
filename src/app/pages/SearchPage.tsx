@@ -198,7 +198,8 @@ export function SearchPage() {
             <PopoverContent
               align="center"
               sideOffset={10}
-              className="w-[calc(100vw-2.5rem)] max-w-none max-h-[min(70vh,560px)] overflow-y-auto p-4 rounded-[20px] border-[1.5px] border-[#e5e0d5] bg-[#F5F0E8] shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
+              collisionPadding={{ top: 16, bottom: 96, left: 12, right: 12 }}
+              className="z-[70] w-[calc(100vw-2.5rem)] max-w-none max-h-[calc(100dvh-79px-5.5rem)] overflow-y-auto overscroll-contain p-4 pb-5 rounded-[20px] border-[1.5px] border-[#e5e0d5] bg-[#F5F0E8] shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
             >
               <div className="flex flex-col gap-5">
                 <div>
