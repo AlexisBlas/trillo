@@ -4,8 +4,10 @@ import { Mountain, ChevronRight, ChevronDown } from 'lucide-react';
 import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { BackButton } from '../components/layout/BackButton';
+import { ShareButton } from '../components/layout/ShareButton';
 import { FollowParkButton } from '../components/trail/FollowParkButton';
 import { NewParkBadge } from '../components/trail/NewParkBadge';
+import { shareUrlFor } from '../lib/share';
 import { useTrails } from '../hooks/useTrails';
 import { useParkReports } from '../hooks/useParkReports';
 import { useParkMeta } from '../hooks/useHiddenParks';
@@ -191,11 +193,19 @@ export function ParkDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#F5F0E8]">
-      <div className="sticky top-0 z-40 bg-[#F5F0E8]/95 backdrop-blur-sm px-4 pt-3.5 h-[52px] flex items-center">
+      <div className="sticky top-0 z-40 bg-[#F5F0E8]/95 backdrop-blur-sm px-4 pt-3.5 h-[52px] flex items-center justify-between">
         <BackButton />
-        <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-[#1a3010] truncate max-w-[60%] text-center">
+        <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-[#1a3010] truncate max-w-[55%] text-center">
           {decoded}
         </h1>
+        <ShareButton
+          title={decoded}
+          subtitle={parkMeta?.city}
+          url={shareUrlFor(`/parks/${encodeURIComponent(decoded)}`)}
+          text={t('share_report_text').replace('{name}', decoded)}
+          status={summary?.status ?? null}
+          statusLabel={summary ? t(STATUS_LABEL[summary.status]) : null}
+        />
       </div>
 
       <div className="px-5 pt-6 pb-4">

@@ -5,13 +5,21 @@ import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { Input } from '../components/ui/input';
 import { BackButton } from '../components/layout/BackButton';
+import { ShareButton } from '../components/layout/ShareButton';
 import { StatusWithHazards } from '../components/trail/StatusWithHazards';
 import { useParkReports } from '../hooks/useParkReports';
 import { cleanNotes, formatUpdatedAgo, isReportFresh, getReportPath, normalizeSearchText, searchIncludes } from '../lib/text';
+import { shareUrlFor } from '../lib/share';
 import { useTrailReports } from '../hooks/useTrailReports';
 import { formatDistanceToNow } from 'date-fns';
 import { useLang, TranslationKey } from '../contexts/LangContext';
 import { getParkCity, useParksMeta } from '../hooks/useParksMeta';
+
+function statusShareLabel(status: 'green' | 'yellow' | 'red'): TranslationKey {
+  if (status === 'green') return 'park_trail_status_good';
+  if (status === 'yellow') return 'park_trail_status_fair';
+  return 'park_trail_status_poor';
+}
 
 const STATUS_FILTERS: { value: 'all' | 'green' | 'yellow' | 'red'; labelKey: TranslationKey; dot: string | null; bg: string; text: string }[] = [
   { value: 'all', labelKey: 'reports_all', dot: null, bg: '#1a3010', text: '#ffffff' },
@@ -230,34 +238,50 @@ export function ReportsPage() {
                           const notes = cleanNotes(report.notes);
                           const path = getReportPath(report);
                           return (
-                            <button
+                            <div
                               key={report.id}
-                              onClick={() => path && navigate(path)}
-                              disabled={!path}
-                              className="w-full pl-[18px] pr-[15.5px] py-3 flex items-start gap-3 text-left border-b-[1.5px] border-[#f5f2ec] last:border-b-0 hover:bg-[#faf8f4] transition-colors disabled:opacity-50"
+                              className="w-full pl-[18px] pr-2 py-3 flex items-start gap-2 border-b-[1.5px] border-[#f5f2ec] last:border-b-0"
                             >
-                              <StatusWithHazards
-                                status={report.status}
-                                conditions={report.conditions}
-                                className="mt-0.5"
-                              />
-                              <div className="flex-1 min-w-0">
-                                <h4 className="text-[14px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
-                                  {trailName}
-                                </h4>
-                                <p className="text-[12px] text-[#4b5563]">
-                                  {formatDistanceToNow(new Date(report.created_at), {
-                                    addSuffix: true,
-                                  })}
-                                </p>
-                                {notes && (
-                                  <p className="text-[13px] text-[#374151] leading-[19px] mt-1 line-clamp-2">
-                                    {notes}
+                              <button
+                                type="button"
+                                onClick={() => path && navigate(path)}
+                                disabled={!path}
+                                className="flex-1 min-w-0 flex items-start gap-3 text-left hover:bg-[#faf8f4] transition-colors rounded-[12px] py-0.5 disabled:opacity-50"
+                              >
+                                <StatusWithHazards
+                                  status={report.status}
+                                  conditions={report.conditions}
+                                  className="mt-0.5"
+                                />
+                                <div className="flex-1 min-w-0">
+                                  <h4 className="text-[14px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
+                                    {trailName}
+                                  </h4>
+                                  <p className="text-[12px] text-[#4b5563]">
+                                    {formatDistanceToNow(new Date(report.created_at), {
+                                      addSuffix: true,
+                                    })}
                                   </p>
-                                )}
-                              </div>
-                              <ChevronRight className="size-4 text-[#4b5563] shrink-0 mt-1" />
-                            </button>
+                                  {notes && (
+                                    <p className="text-[13px] text-[#374151] leading-[19px] mt-1 line-clamp-2">
+                                      {notes}
+                                    </p>
+                                  )}
+                                </div>
+                                <ChevronRight className="size-4 text-[#4b5563] shrink-0 mt-1" />
+                              </button>
+                              {path && (
+                                <ShareButton
+                                  title={trailName}
+                                  subtitle={parkTitle}
+                                  url={shareUrlFor(path)}
+                                  text={t('share_report_text').replace('{name}', trailName)}
+                                  status={report.status}
+                                  statusLabel={t(statusShareLabel(report.status))}
+                                  className="shadow-none border-[1.5px] border-[#e5e7eb] bg-white mt-0.5"
+                                />
+                              )}
+                            </div>
                           );
                         })}
                       </div>

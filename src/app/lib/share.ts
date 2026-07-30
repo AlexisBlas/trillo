@@ -13,6 +13,12 @@ export type SharePayload = {
 
 export type ShareResult = 'shared' | 'copied' | 'cancelled' | 'failed';
 
+/** Absolute URL for a trail or park share target. */
+export function shareUrlFor(path: string): string {
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://eltrillo.app';
+  return `${origin}${path.startsWith('/') ? path : `/${path}`}`;
+}
+
 const STATUS_FILL: Record<ShareStatus, string> = {
   green: '#10b981',
   yellow: '#f59e0b',

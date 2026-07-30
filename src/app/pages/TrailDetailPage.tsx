@@ -3,14 +3,22 @@ import { Mountain } from 'lucide-react';
 import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { BackButton } from '../components/layout/BackButton';
+import { ShareButton } from '../components/layout/ShareButton';
 import { StatusBadge } from '../components/trail/StatusBadge';
 import { HazardNotice } from '../components/trail/HazardNotice';
 import { getCriticalHazards } from '../lib/hazards';
 import { useTrail } from '../hooks/useTrails';
 import { useTrailReportsByTrail } from '../hooks/useTrailReports';
 import { cleanNotes, isReportFresh, isValidTrailId } from '../lib/text';
+import { shareUrlFor } from '../lib/share';
 import { formatDistanceToNow } from 'date-fns';
-import { useLang } from '../contexts/LangContext';
+import { useLang, type TranslationKey } from '../contexts/LangContext';
+
+function statusShareLabel(status: 'green' | 'yellow' | 'red'): TranslationKey {
+  if (status === 'green') return 'park_trail_status_good';
+  if (status === 'yellow') return 'park_trail_status_fair';
+  return 'park_trail_status_poor';
+}
 
 export function TrailDetailPage() {
   const { trailId } = useParams<{ trailId: string }>();
@@ -77,12 +85,22 @@ export function TrailDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#F5F0E8]">
-      {/* Header: back + centered park name */}
-      <div className="relative px-4 pt-3.5 h-[52px] flex items-center">
+      {/* Header: back + centered park name + share */}
+      <div className="relative px-4 pt-3.5 h-[52px] flex items-center justify-between">
         <BackButton />
-        <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-[#1a3010] truncate max-w-[60%] text-center">
+        <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-[#1a3010] truncate max-w-[55%] text-center">
           {headerTitle}
         </h1>
+        <ShareButton
+          title={trailDisplayName}
+          subtitle={parkName}
+          url={shareUrlFor(`/trails/${trail.id}`)}
+          text={t('share_report_text').replace('{name}', trailDisplayName)}
+          status={latestReport?.status ?? null}
+          statusLabel={
+            latestReport ? t(statusShareLabel(latestReport.status)) : null
+          }
+        />
       </div>
 
       {/* Trail info card */}
@@ -166,6 +184,15 @@ export function TrailDetailPage() {
                     </p>
                   </div>
                   <StatusBadge status={report.status} />
+                  <ShareButton
+                    title={trailDisplayName}
+                    subtitle={parkName}
+                    url={shareUrlFor(`/trails/${trail.id}`)}
+                    text={t('share_report_text').replace('{name}', trailDisplayName)}
+                    status={report.status}
+                    statusLabel={t(statusShareLabel(report.status))}
+                    className="shadow-none border-[1.5px] border-[#e5e7eb] bg-white"
+                  />
                 </div>
                 <HazardNotice
                   conditions={report.conditions}

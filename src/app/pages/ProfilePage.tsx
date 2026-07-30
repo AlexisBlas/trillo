@@ -2,12 +2,20 @@ import { useNavigate } from 'react-router';
 import { User, Mail, LogOut, FileText, Clock, MapPin } from 'lucide-react';
 import { Skeleton } from '../components/ui/skeleton';
 import { BackButton } from '../components/layout/BackButton';
+import { ShareButton } from '../components/layout/ShareButton';
 import { StatusBadge } from '../components/trail/StatusBadge';
 import { useAuth } from '../contexts/AuthContext';
 import { useUserReports } from '../hooks/useTrailReports';
 import { cleanNotes, isReportFresh, getReportPath } from '../lib/text';
+import { shareUrlFor } from '../lib/share';
 import { formatDistanceToNow } from 'date-fns';
-import { useLang } from '../contexts/LangContext';
+import { useLang, type TranslationKey } from '../contexts/LangContext';
+
+function statusShareLabel(status: 'green' | 'yellow' | 'red'): TranslationKey {
+  if (status === 'green') return 'park_trail_status_good';
+  if (status === 'yellow') return 'park_trail_status_fair';
+  return 'park_trail_status_poor';
+}
 
 function reportTitle(
   report: {
@@ -118,33 +126,53 @@ export function ProfilePage() {
                 }
               })();
 
+              const displayTitle = title.includes(' - ')
+                ? title.split(' - ').slice(1).join(' - ')
+                : title;
+
               return (
-                <button
+                <div
                   key={report.id}
-                  type="button"
-                  onClick={() => path && navigate(path)}
-                  disabled={!path}
-                  className="bg-white border-[1.5px] border-[#f0ede6] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#2c4a1e] transition-colors p-4 text-left rounded-[32px] disabled:opacity-50"
+                  className="bg-white border-[1.5px] border-[#f0ede6] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] p-4 rounded-[32px]"
                 >
-                  <div className="flex items-center justify-between gap-3 mb-1.5">
-                    <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate flex items-center gap-2">
-                      <MapPin className="size-4 text-[#2c4a1e] shrink-0" />
-                      {title}
-                    </h3>
-                    <StatusBadge status={report.status} />
+                  <div className="flex items-start gap-2">
+                    <button
+                      type="button"
+                      onClick={() => path && navigate(path)}
+                      disabled={!path}
+                      className="flex-1 min-w-0 text-left hover:opacity-90 transition-opacity disabled:opacity-50"
+                    >
+                      <div className="flex items-center justify-between gap-3 mb-1.5">
+                        <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate flex items-center gap-2">
+                          <MapPin className="size-4 text-[#2c4a1e] shrink-0" />
+                          {displayTitle}
+                        </h3>
+                        <StatusBadge status={report.status} />
+                      </div>
+                      {notes ? (
+                        <p className="text-[13px] text-[#374151] leading-[19px] line-clamp-2 mb-1.5">
+                          {notes}
+                        </p>
+                      ) : null}
+                      {createdLabel ? (
+                        <div className="flex items-center gap-1.5 text-[12px] text-[#4b5563]">
+                          <Clock className="size-3.5" />
+                          <span>{createdLabel}</span>
+                        </div>
+                      ) : null}
+                    </button>
+                    {path && (
+                      <ShareButton
+                        title={displayTitle}
+                        url={shareUrlFor(path)}
+                        text={t('share_report_text').replace('{name}', displayTitle)}
+                        status={report.status}
+                        statusLabel={t(statusShareLabel(report.status))}
+                        className="shadow-none border-[1.5px] border-[#e5e7eb] bg-white"
+                      />
+                    )}
                   </div>
-                  {notes ? (
-                    <p className="text-[13px] text-[#374151] leading-[19px] line-clamp-2 mb-1.5">
-                      {notes}
-                    </p>
-                  ) : null}
-                  {createdLabel ? (
-                    <div className="flex items-center gap-1.5 text-[12px] text-[#4b5563]">
-                      <Clock className="size-3.5" />
-                      <span>{createdLabel}</span>
-                    </div>
-                  ) : null}
-                </button>
+                </div>
               );
             })}
           </div>
