@@ -6,6 +6,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from '../ui/dialog';
+import { ShareButton } from '../layout/ShareButton';
+import type { ShareStatus } from '../../lib/share';
 
 interface ReportSuccessDialogProps {
   open: boolean;
@@ -15,6 +17,15 @@ interface ReportSuccessDialogProps {
   actionLabel?: string;
   /** Called when the user confirms (primary button). */
   onAction: () => void;
+  /** Optional share target shown under the primary action. */
+  share?: {
+    title: string;
+    text?: string;
+    url: string;
+    subtitle?: string | null;
+    status?: ShareStatus | null;
+    statusLabel?: string | null;
+  };
 }
 
 /**
@@ -28,6 +39,7 @@ export function ReportSuccessDialog({
   description = 'Thanks for sharing! Your report helps fellow hikers know what to expect on the trail.',
   actionLabel = 'Done',
   onAction,
+  share,
 }: ReportSuccessDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -44,12 +56,25 @@ export function ReportSuccessDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <button
-          onClick={onAction}
-          className="mt-5 h-12 w-full inline-flex items-center justify-center rounded-[14px] bg-[#2c4a1e] text-white text-[15px] font-bold hover:bg-[#1a3010] transition-colors"
-        >
-          {actionLabel}
-        </button>
+        <div className="mt-5 flex flex-col gap-2.5">
+          <button
+            onClick={onAction}
+            className="h-12 w-full inline-flex items-center justify-center rounded-[14px] bg-[#2c4a1e] text-white text-[15px] font-bold hover:bg-[#1a3010] transition-colors"
+          >
+            {actionLabel}
+          </button>
+          {share && (
+            <ShareButton
+              size="cta"
+              title={share.title}
+              text={share.text}
+              url={share.url}
+              subtitle={share.subtitle}
+              status={share.status}
+              statusLabel={share.statusLabel}
+            />
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );

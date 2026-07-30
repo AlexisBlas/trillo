@@ -26,6 +26,7 @@ export function ParkReportPage() {
   const { data: trails, isLoading } = useTrails();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
+  const [lastStatus, setLastStatus] = useState<'green' | 'yellow' | 'red' | null>(null);
 
   const parkTrails = useMemo(
     () => (trails || []).filter((t) => (t.location || 'Other') === decoded),
@@ -50,6 +51,7 @@ export function ParkReportPage() {
 
       if (error) throw error;
       queryClient.invalidateQueries({ queryKey: ['trail-reports'] });
+      setLastStatus(data.status);
       setSuccessOpen(true);
     } catch (error) {
       console.error('Error submitting park report:', error);
@@ -118,6 +120,21 @@ export function ParkReportPage() {
         onAction={() => {
           setSuccessOpen(false);
           navigate(`/parks/${encodeURIComponent(decoded)}`);
+        }}
+        share={{
+          title: decoded,
+          url: `${window.location.origin}/parks/${encodeURIComponent(decoded)}`,
+          text: t('share_report_text').replace('{name}', decoded),
+          status: lastStatus,
+          statusLabel: lastStatus
+            ? t(
+                lastStatus === 'green'
+                  ? 'park_trail_status_good'
+                  : lastStatus === 'yellow'
+                    ? 'park_trail_status_fair'
+                    : 'park_trail_status_poor'
+              )
+            : null,
         }}
       />
     </div>

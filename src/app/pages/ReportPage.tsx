@@ -23,6 +23,7 @@ export function ReportPage() {
   const { data: trail, isLoading } = useTrail(trailId);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
+  const [lastStatus, setLastStatus] = useState<'green' | 'yellow' | 'red' | null>(null);
 
   const handleSubmit = async (data: ReportFormData) => {
     if (!trailId) return;
@@ -38,6 +39,7 @@ export function ReportPage() {
       });
       if (error) throw error;
       queryClient.invalidateQueries({ queryKey: ['trail-reports'] });
+      setLastStatus(data.status);
       setSuccessOpen(true);
     } catch (err) {
       console.error('Error submitting report:', err);
@@ -113,6 +115,29 @@ export function ReportPage() {
         onAction={() => {
           setSuccessOpen(false);
           navigate(`/trails/${trailId}`);
+        }}
+        share={{
+          title: trail.name.includes(' - ')
+            ? trail.name.split(' - ').slice(1).join(' - ')
+            : trail.name,
+          subtitle: trail.location,
+          url: `${window.location.origin}/trails/${trail.id}`,
+          text: t('share_report_text').replace(
+            '{name}',
+            trail.name.includes(' - ')
+              ? trail.name.split(' - ').slice(1).join(' - ')
+              : trail.name
+          ),
+          status: lastStatus,
+          statusLabel: lastStatus
+            ? t(
+                lastStatus === 'green'
+                  ? 'park_trail_status_good'
+                  : lastStatus === 'yellow'
+                    ? 'park_trail_status_fair'
+                    : 'park_trail_status_poor'
+              )
+            : null,
         }}
       />
     </div>
