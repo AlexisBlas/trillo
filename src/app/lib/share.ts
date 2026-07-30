@@ -177,13 +177,18 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     ctx.fillStyle = '#F5F0E8';
     ctx.fillRect(0, 0, width, height);
 
+    // Keep main content clear of Instagram / Stories chrome
+    // (progress bars + avatar on top, reply/share tray on bottom).
+    const TOP_SAFE = 460;
+    const BOTTOM_SAFE = 280;
+
     // Soft green wash
     ctx.fillStyle = 'rgba(52, 101, 56, 0.07)';
     ctx.beginPath();
-    ctx.ellipse(width * 0.82, height * 0.16, 360, 300, 0, 0, Math.PI * 2);
+    ctx.ellipse(width * 0.82, height * 0.28, 360, 300, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
-    ctx.ellipse(width * 0.12, height * 0.82, 420, 340, 0, 0, Math.PI * 2);
+    ctx.ellipse(width * 0.12, height * 0.78, 420, 340, 0, 0, Math.PI * 2);
     ctx.fill();
 
     // Brand
@@ -192,7 +197,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     const brand = 'TRILLO';
     let brandX = 80;
     for (const ch of brand) {
-      ctx.fillText(ch, brandX, 140);
+      ctx.fillText(ch, brandX, TOP_SAFE);
       brandX += ctx.measureText(ch).width + 12;
     }
 
@@ -200,7 +205,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     ctx.fillStyle = '#1a3010';
     ctx.font = '800 64px system-ui, -apple-system, sans-serif';
     const titleLines = wrapLines(ctx, payload.title, width - 160, 2);
-    let titleY = 240;
+    let titleY = TOP_SAFE + 88;
     for (const line of titleLines) {
       ctx.fillText(line, 80, titleY);
       titleY += 74;
@@ -214,7 +219,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
 
     // White conditions card
     const cardX = 56;
-    const cardY = Math.max(titleY + 36, 380);
+    const cardY = titleY + 40;
     const cardW = width - cardX * 2;
     const cardPad = 48;
     let contentY = cardY + cardPad;
@@ -226,7 +231,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     let estimatedH = cardPad * 2 + 160; // header block
     if (hazards.length) estimatedH += hazards.length * 210 + 24;
     if (notes) estimatedH += 180;
-    estimatedH = Math.min(Math.max(estimatedH, 420), height - cardY - 220);
+    estimatedH = Math.min(Math.max(estimatedH, 420), height - cardY - BOTTOM_SAFE - 100);
 
     ctx.fillStyle = '#ffffff';
     roundRect(ctx, cardX, cardY, cardW, estimatedH, 48);
@@ -361,13 +366,13 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
       }
     }
 
-    // Footer
+    // Footer — above Stories bottom tray
     ctx.fillStyle = '#2c4a1e';
     ctx.font = '700 30px system-ui, -apple-system, sans-serif';
-    ctx.fillText('eltrillo.app', 80, height - 140);
+    ctx.fillText('eltrillo.app', 80, height - BOTTOM_SAFE + 40);
     ctx.fillStyle = '#687588';
     ctx.font = '500 26px system-ui, -apple-system, sans-serif';
-    ctx.fillText('Real-time trail conditions for Puerto Rico', 80, height - 96);
+    ctx.fillText('Real-time trail conditions for Puerto Rico', 80, height - BOTTOM_SAFE + 84);
 
     const blob = await new Promise<Blob | null>((resolve) =>
       canvas.toBlob((b) => resolve(b), 'image/png')
