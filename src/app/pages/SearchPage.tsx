@@ -7,6 +7,7 @@ import {
   ChevronRight,
   ChevronLeft,
   SlidersHorizontal,
+  Check,
 } from 'lucide-react';
 import { Input } from '../components/ui/input';
 import { Skeleton } from '../components/ui/skeleton';
@@ -27,6 +28,8 @@ import { cn } from '../components/ui/utils';
 type ConditionFilter = 'all' | 'green' | 'yellow' | 'red';
 type RegionFilter = 'all' | ParkRegion;
 
+type OptionTone = 'default' | 'green' | 'yellow' | 'red';
+
 const REGION_FILTERS: { value: RegionFilter; labelKey: TranslationKey }[] = [
   { value: 'all', labelKey: 'search_filter_all' },
   { value: 'north', labelKey: 'search_region_north' },
@@ -36,35 +39,77 @@ const REGION_FILTERS: { value: RegionFilter; labelKey: TranslationKey }[] = [
   { value: 'metro', labelKey: 'search_region_metro' },
 ];
 
-const CONDITION_FILTERS: { value: ConditionFilter; labelKey: TranslationKey }[] = [
-  { value: 'all', labelKey: 'search_filter_all' },
-  { value: 'green', labelKey: 'reports_filter_good' },
-  { value: 'yellow', labelKey: 'reports_filter_caution' },
-  { value: 'red', labelKey: 'reports_filter_closed' },
+const CONDITION_FILTERS: {
+  value: ConditionFilter;
+  labelKey: TranslationKey;
+  tone: OptionTone;
+  dot: string | null;
+}[] = [
+  { value: 'all', labelKey: 'search_filter_all', tone: 'default', dot: null },
+  { value: 'green', labelKey: 'reports_filter_good', tone: 'green', dot: '#10b981' },
+  { value: 'yellow', labelKey: 'reports_filter_caution', tone: 'yellow', dot: '#f59e0b' },
+  { value: 'red', labelKey: 'reports_filter_closed', tone: 'red', dot: '#ef4444' },
 ];
 
-/** Large tap targets for outdoor / gloved use (~48–52px). */
+const ACTIVE_TONES: Record<OptionTone, { bg: string; border: string; text: string }> = {
+  default: { bg: '#EDF3EC', border: '#2c4a1e', text: '#1a3010' },
+  green: { bg: '#d1fae5', border: '#059669', text: '#065f46' },
+  yellow: { bg: '#fef3c7', border: '#d97706', text: '#92400e' },
+  red: { bg: '#fee2e2', border: '#dc2626', text: '#991b1b' },
+};
+
+/** Large tap targets — outline idle, tinted + check when selected. */
 function OptionButton({
   active,
   onClick,
   children,
+  tone = 'default',
+  dot,
 }: {
   active: boolean;
   onClick: () => void;
   children: ReactNode;
+  tone?: OptionTone;
+  dot?: string | null;
 }) {
+  const activeTone = ACTIVE_TONES[tone];
+
   return (
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={active}
       className={cn(
-        'min-h-[52px] px-3 py-3 rounded-[14px] border-[1.5px] text-[15px] font-bold leading-tight transition-colors touch-manipulation',
+        'min-h-[52px] px-3.5 py-3 rounded-[14px] border-[2px] text-[15px] font-bold leading-tight transition-colors touch-manipulation inline-flex items-center justify-between gap-2 text-left',
         active
-          ? 'bg-[#1a3010] text-white border-[#1a3010]'
-          : 'bg-white text-[#1a1a1a] border-[#e5e7eb] active:bg-[#f0ede6]'
+          ? ''
+          : 'bg-white text-[#4b5563] border-[#e5e7eb] active:bg-[#f8f5ef]'
       )}
+      style={
+        active
+          ? {
+              backgroundColor: activeTone.bg,
+              borderColor: activeTone.border,
+              color: activeTone.text,
+            }
+          : undefined
+      }
     >
-      {children}
+      <span className="inline-flex items-center gap-2 min-w-0">
+        {dot && (
+          <span
+            className="size-2.5 rounded-full shrink-0"
+            style={{ backgroundColor: dot }}
+            aria-hidden
+          />
+        )}
+        <span className="truncate">{children}</span>
+      </span>
+      {active ? (
+        <Check className="size-5 shrink-0" strokeWidth={2.5} aria-hidden />
+      ) : (
+        <span className="size-5 shrink-0 rounded-full border-[1.5px] border-[#d1d5db]" aria-hidden />
+      )}
     </button>
   );
 }
@@ -227,6 +272,8 @@ export function SearchPage() {
                     key={f.value}
                     active={conditionFilter === f.value}
                     onClick={() => setConditionFilter(f.value)}
+                    tone={f.tone}
+                    dot={f.dot}
                   >
                     {t(f.labelKey)}
                   </OptionButton>
