@@ -15,7 +15,7 @@ export const NEW_PARK_DAYS = 5;
 /** Map of park name → city + region + createdAt for list UI. */
 export function useParksMeta() {
   return useQuery({
-    queryKey: ['parks-meta-public', 'v5'],
+    queryKey: ['parks-meta-public', 'v6'],
     queryFn: async () => {
       let rows: Array<{
         name: string;

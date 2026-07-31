@@ -10,7 +10,13 @@ import {
   useRenamepark,
 } from '../../hooks/useAdminData';
 import { Trail } from '../../lib/supabase';
-import { getCityRegion, isParkRegion, PARK_REGIONS, type ParkRegion } from '../../lib/regions';
+import {
+  getCityRegion,
+  isParkRegion,
+  PARK_REGION_LABELS,
+  PARK_REGIONS,
+  type ParkRegion,
+} from '../../lib/regions';
 import { toast } from 'sonner';
 
 const PR_MUNICIPALITIES = [
@@ -245,7 +251,7 @@ export function EditParkPage() {
               <option value="">Select region…</option>
               {PARK_REGIONS.map((r) => (
                 <option key={r} value={r}>
-                  {r.charAt(0).toUpperCase() + r.slice(1)}
+                  {PARK_REGION_LABELS[r]}
                 </option>
               ))}
             </select>

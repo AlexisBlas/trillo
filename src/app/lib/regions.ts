@@ -1,107 +1,148 @@
 import { normalizeSearchText } from './text';
 
-/** Island region used for park list filters. */
-export type ParkRegion = 'north' | 'east' | 'south' | 'west' | 'metro';
+/**
+ * Island region used for park list filters.
+ * Classification reference provided for Trillo park filters.
+ */
+export type ParkRegion =
+  | 'north'
+  | 'metro'
+  | 'east'
+  | 'central'
+  | 'mountain'
+  | 'west'
+  | 'southwest'
+  | 'south';
 
-export const PARK_REGIONS: ParkRegion[] = ['north', 'east', 'south', 'west', 'metro'];
+export const PARK_REGIONS: ParkRegion[] = [
+  'north',
+  'metro',
+  'east',
+  'central',
+  'mountain',
+  'west',
+  'southwest',
+  'south',
+];
+
+/** English labels for admin selects. */
+export const PARK_REGION_LABELS: Record<ParkRegion, string> = {
+  north: 'North',
+  metro: 'Metro',
+  east: 'East',
+  central: 'Central',
+  mountain: 'Mountain',
+  west: 'West',
+  southwest: 'Southwest',
+  south: 'South',
+};
 
 export function isParkRegion(value: string | null | undefined): value is ParkRegion {
   return !!value && (PARK_REGIONS as string[]).includes(value);
 }
 
 /**
- * Puerto Rico municipality → rough geographic region.
- * Used as a default/fallback when parks.region is unset.
+ * Puerto Rico municipality → geographic region.
  * Keys are accent-stripped lowercase so "Bayamón" and "Bayamon" both match.
+ *
+ * Municipalities not in the provided reference (Caguas, Gurabo, Aibonito, Cayey)
+ * are assigned to the nearest matching region.
  */
 const MUNICIPALITY_REGION: Record<string, ParkRegion> = {
-  // Metro / San Juan area
-  'san juan': 'metro',
-  bayamon: 'metro',
-  guaynabo: 'metro',
-  carolina: 'metro',
-  'trujillo alto': 'metro',
-  catano: 'metro',
-  'toa baja': 'metro',
-  'toa alta': 'metro',
-  dorado: 'metro',
-  loiza: 'metro',
-  canovanas: 'metro',
-  'aguas buenas': 'metro',
-  gurabo: 'metro',
-  caguas: 'metro',
-
-  // North / north-central coast & karst
+  // North (Norte)
   arecibo: 'north',
-  camuy: 'north',
-  hatillo: 'north',
-  quebradillas: 'north',
-  isabela: 'north',
   barceloneta: 'north',
+  camuy: 'north',
+  ciales: 'north',
+  dorado: 'north',
+  florida: 'north',
+  hatillo: 'north',
   manati: 'north',
+  morovis: 'north',
+  quebradillas: 'north',
+  'toa alta': 'north',
+  'toa baja': 'north',
   'vega alta': 'north',
   'vega baja': 'north',
-  florida: 'north',
-  ciales: 'north',
-  morovis: 'north',
-  corozal: 'north',
-  naranjito: 'north',
-  utuado: 'north',
-  lares: 'north',
-  orocovis: 'north',
 
-  // East / southeast & islands
-  fajardo: 'east',
+  // Metro (Área Metropolitana)
+  bayamon: 'metro',
+  catano: 'metro',
+  guaynabo: 'metro',
+  'san juan': 'metro',
+  'trujillo alto': 'metro',
+  carolina: 'metro',
+  loiza: 'metro',
+
+  // East (Este)
+  canovanas: 'east',
   ceiba: 'east',
-  naguabo: 'east',
+  fajardo: 'east',
   humacao: 'east',
-  yabucoa: 'east',
-  maunabo: 'east',
-  'las piedras': 'east',
   juncos: 'east',
-  'san lorenzo': 'east',
-  cayey: 'east',
-  patillas: 'east',
+  'las piedras': 'east',
   luquillo: 'east',
+  maunabo: 'east',
+  naguabo: 'east',
   'rio grande': 'east',
+  'san lorenzo': 'east',
   vieques: 'east',
   culebra: 'east',
-  arroyo: 'east',
-  guayama: 'east',
-  cidra: 'east',
-  aibonito: 'east',
-  barranquitas: 'east',
-  comerio: 'east',
+  yabucoa: 'east',
 
-  // South / southwest inland
-  ponce: 'south',
+  // Central (Centro)
+  'aguas buenas': 'central',
+  barranquitas: 'central',
+  cidra: 'central',
+  comerio: 'central',
+  corozal: 'central',
+  naranjito: 'central',
+  orocovis: 'central',
+  // Not in source list — nearest fit
+  caguas: 'central',
+  gurabo: 'central',
+  aibonito: 'central',
+  cayey: 'central',
+
+  // Mountain (La Montaña / Centro-Oeste)
+  adjuntas: 'mountain',
+  jayuya: 'mountain',
+  lares: 'mountain',
+  maricao: 'mountain',
+  utuado: 'mountain',
+
+  // West (Oeste)
+  aguada: 'west',
+  aguadilla: 'west',
+  anasco: 'west',
+  hormigueros: 'west',
+  isabela: 'west',
+  lajas: 'west',
+  'las marias': 'west',
+  mayaguez: 'west',
+  moca: 'west',
+  rincon: 'west',
+  'sabana grande': 'west',
+  'san german': 'west',
+  'san sebastian': 'west',
+  'cabo rojo': 'west',
+
+  // Southwest (Suroeste)
+  guanica: 'southwest',
+  guayanilla: 'southwest',
+  penuelas: 'southwest',
+  ponce: 'southwest',
+  yauco: 'southwest',
+
+  // South / Southeast (Sur)
+  arroyo: 'south',
+  coamo: 'south',
+  guayama: 'south',
+  'juana diaz': 'south',
+  patillas: 'south',
   salinas: 'south',
   'santa isabel': 'south',
-  'juana diaz': 'south',
-  coamo: 'south',
-  guanica: 'south',
-  yauco: 'south',
-  guayanilla: 'south',
-  penuelas: 'south',
   villalba: 'south',
-  adjuntas: 'south',
-  jayuya: 'south',
-  'sabana grande': 'south',
-
-  // West coast
-  mayaguez: 'west',
-  aguadilla: 'west',
-  aguada: 'west',
-  rincon: 'west',
-  'cabo rojo': 'west',
-  lajas: 'west',
-  'san german': 'west',
-  hormigueros: 'west',
-  anasco: 'west',
-  moca: 'west',
-  'san sebastian': 'west',
-  'las marias': 'west',
-  maricao: 'west',
 };
 
 /** Suggest a region from a municipality / city string (admin defaults + fallback). */
@@ -111,8 +152,11 @@ export function getCityRegion(city: string | null | undefined): ParkRegion | nul
   if (!key) return null;
   if (MUNICIPALITY_REGION[key]) return MUNICIPALITY_REGION[key];
 
-  // Partial match for compound park city strings that include the municipality.
-  for (const [muni, region] of Object.entries(MUNICIPALITY_REGION)) {
+  // Prefer longer municipality names first for partial matches.
+  const entries = Object.entries(MUNICIPALITY_REGION).sort(
+    (a, b) => b[0].length - a[0].length
+  );
+  for (const [muni, region] of entries) {
     if (key.includes(muni)) return region;
   }
   return null;

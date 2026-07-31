@@ -38,10 +38,13 @@ type OptionTone = 'default' | 'green' | 'yellow' | 'red';
 const REGION_FILTERS: { value: RegionFilter; labelKey: TranslationKey }[] = [
   { value: 'all', labelKey: 'search_filter_all' },
   { value: 'north', labelKey: 'search_region_north' },
-  { value: 'east', labelKey: 'search_region_east' },
-  { value: 'south', labelKey: 'search_region_south' },
-  { value: 'west', labelKey: 'search_region_west' },
   { value: 'metro', labelKey: 'search_region_metro' },
+  { value: 'east', labelKey: 'search_region_east' },
+  { value: 'central', labelKey: 'search_region_central' },
+  { value: 'mountain', labelKey: 'search_region_mountain' },
+  { value: 'west', labelKey: 'search_region_west' },
+  { value: 'southwest', labelKey: 'search_region_southwest' },
+  { value: 'south', labelKey: 'search_region_south' },
 ];
 
 const CONDITION_FILTERS: {

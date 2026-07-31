@@ -2,7 +2,12 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { Plus, Trash2, ChevronLeft } from 'lucide-react';
 import { useCreatePark, useUpdatePlaceRequest } from '../../hooks/useAdminData';
-import { getCityRegion, PARK_REGIONS, type ParkRegion } from '../../lib/regions';
+import {
+  getCityRegion,
+  PARK_REGION_LABELS,
+  PARK_REGIONS,
+  type ParkRegion,
+} from '../../lib/regions';
 import { toast } from 'sonner';
 
 interface TrailRow {
@@ -193,7 +198,7 @@ export function AddParkPage() {
               <option value="">Select region…</option>
               {PARK_REGIONS.map((r) => (
                 <option key={r} value={r}>
-                  {r.charAt(0).toUpperCase() + r.slice(1)}
+                  {PARK_REGION_LABELS[r]}
                 </option>
               ))}
             </select>
