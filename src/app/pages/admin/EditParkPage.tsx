@@ -10,6 +10,7 @@ import {
   useRenamepark,
 } from '../../hooks/useAdminData';
 import { Trail } from '../../lib/supabase';
+import { getCityRegion, isParkRegion, PARK_REGIONS, type ParkRegion } from '../../lib/regions';
 import { toast } from 'sonner';
 
 const PR_MUNICIPALITIES = [
@@ -60,6 +61,7 @@ export function EditParkPage() {
   const [description, setDescription] = useState('');
   const [descriptionEs, setDescriptionEs] = useState('');
   const [city, setCity] = useState('');
+  const [region, setRegion] = useState<ParkRegion | ''>('');
   const [editingTrails, setEditingTrails] = useState<Record<string, Trail>>({});
   const [newTrails, setNewTrails] = useState<NewTrailRow[]>([]);
   const [saving, setSaving] = useState(false);
@@ -70,6 +72,11 @@ export function EditParkPage() {
       setDescription(park.description ?? '');
       setDescriptionEs(park.description_es ?? '');
       setCity(park.city ?? '');
+      setRegion(
+        isParkRegion(park.region)
+          ? park.region
+          : getCityRegion(park.city) ?? ''
+      );
       const map: Record<string, Trail> = {};
       park.trails.forEach((t) => { map[t.id] = { ...t }; });
       setEditingTrails(map);
@@ -120,6 +127,7 @@ export function EditParkPage() {
         description: description.trim() || null,
         description_es: descriptionEs.trim() || null,
         city: city.trim() || null,
+        region: region || getCityRegion(city.trim()) || null,
       });
 
       // Update existing trails
@@ -208,13 +216,36 @@ export function EditParkPage() {
             <input
               list="pr-municipalities-edit"
               value={city}
-              onChange={(e) => setCity(e.target.value)}
+              onChange={(e) => {
+                const next = e.target.value;
+                setCity(next);
+                const suggested = getCityRegion(next);
+                if (suggested) setRegion(suggested);
+              }}
               placeholder="e.g. Vega Alta"
               className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[13px] text-[#1a1a1a] focus:outline-none focus:border-[#2c4a1e]"
             />
             <datalist id="pr-municipalities-edit">
               {PR_MUNICIPALITIES.map((m) => <option key={m} value={m} />)}
             </datalist>
+          </div>
+          <div>
+            <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Region</label>
+            <select
+              value={region}
+              onChange={(e) => setRegion((e.target.value || '') as ParkRegion | '')}
+              className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[13px] text-[#1a1a1a] focus:outline-none focus:border-[#2c4a1e] bg-white"
+            >
+              <option value="">Select region…</option>
+              {PARK_REGIONS.map((r) => (
+                <option key={r} value={r}>
+                  {r.charAt(0).toUpperCase() + r.slice(1)}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-[11px] text-[#687588]">
+              Used by park filters. Auto-fills from city; override if needed.
+            </p>
           </div>
           <div>
             <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Description (English)</label>

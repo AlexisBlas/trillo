@@ -273,6 +273,7 @@ export interface AdminPark {
   description: string | null;
   description_es: string | null;
   city: string | null;
+  region: string | null;
   trailCount: number;
   trails: Trail[];
   isHidden: boolean;
@@ -284,7 +285,7 @@ export function useAdminParks() {
     queryFn: async () => {
       const [trailsRes, parksRes] = await Promise.all([
         supabase.from('trails').select('*').order('location', { ascending: true }),
-        supabase.from('parks').select('name, is_hidden, description, description_es, city'),
+        supabase.from('parks').select('name, is_hidden, description, description_es, city, region'),
       ]);
       if (trailsRes.error) throw trailsRes.error;
 
@@ -296,6 +297,7 @@ export function useAdminParks() {
             description: p.description ?? null,
             description_es: p.description_es ?? null,
             city: p.city ?? null,
+            region: p.region ?? null,
           },
         ])
       );
@@ -312,6 +314,7 @@ export function useAdminParks() {
         description: parkMeta.get(name)?.description ?? null,
         description_es: parkMeta.get(name)?.description_es ?? null,
         city: parkMeta.get(name)?.city ?? null,
+        region: parkMeta.get(name)?.region ?? null,
         trailCount: trails.length,
         trails,
         isHidden: parkMeta.get(name)?.isHidden ?? false,
@@ -328,18 +331,20 @@ export function useCreatePark() {
       description,
       description_es,
       city,
+      region,
       trails,
     }: {
       name: string;
       description: string | null;
       description_es: string | null;
       city: string | null;
+      region: string | null;
       trails: Array<{ name: string; description: string | null; difficulty: string | null }>;
     }) => {
       const { error: parkError } = await supabase
         .from('parks')
         .upsert(
-          { name, description, description_es, city, is_hidden: false },
+          { name, description, description_es, city, region, is_hidden: false },
           { onConflict: 'name' }
         );
       if (parkError) throw parkError;
@@ -357,6 +362,7 @@ export function useCreatePark() {
       qc.invalidateQueries({ queryKey: ['trails'] });
       qc.invalidateQueries({ queryKey: ['admin-stats'] });
       qc.invalidateQueries({ queryKey: ['park-meta'] });
+      qc.invalidateQueries({ queryKey: ['parks-meta-public'] });
     },
   });
 }
@@ -369,20 +375,23 @@ export function useUpdatePark() {
       description,
       description_es,
       city,
+      region,
     }: {
       name: string;
       description: string | null;
       description_es: string | null;
       city: string | null;
+      region: string | null;
     }) => {
       const { error } = await supabase
         .from('parks')
-        .upsert({ name, description, description_es, city }, { onConflict: 'name' });
+        .upsert({ name, description, description_es, city, region }, { onConflict: 'name' });
       if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['admin-parks'] });
       qc.invalidateQueries({ queryKey: ['park-meta'] });
+      qc.invalidateQueries({ queryKey: ['parks-meta-public'] });
     },
   });
 }
@@ -438,6 +447,7 @@ export function useRenamepark() {
             name: newName,
             is_hidden: existingPark.is_hidden,
             city: existingPark.city ?? null,
+            region: existingPark.region ?? null,
             description: existingPark.description ?? null,
             description_es: existingPark.description_es ?? null,
             created_at: existingPark.created_at,
@@ -476,6 +486,8 @@ export function useRenamepark() {
       qc.invalidateQueries({ queryKey: ['trails'] });
       qc.invalidateQueries({ queryKey: ['hidden-parks'] });
       qc.invalidateQueries({ queryKey: ['trail-reports'] });
+      qc.invalidateQueries({ queryKey: ['parks-meta-public'] });
+      qc.invalidateQueries({ queryKey: ['park-meta'] });
     },
   });
 }

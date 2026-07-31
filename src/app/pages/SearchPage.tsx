@@ -19,9 +19,14 @@ import { useParkReports } from '../hooks/useParkReports';
 import { StatusWithHazards } from '../components/trail/StatusWithHazards';
 import { NewParkBadge } from '../components/trail/NewParkBadge';
 import { formatUpdatedAgo, normalizeSearchText, searchIncludes } from '../lib/text';
-import { getCityRegion, type ParkRegion } from '../lib/regions';
+import type { ParkRegion } from '../lib/regions';
 import { useLang, type TranslationKey } from '../contexts/LangContext';
-import { getParkCity, isParkNameNew, useParksMeta } from '../hooks/useParksMeta';
+import {
+  getParkCity,
+  getParkRegion,
+  isParkNameNew,
+  useParksMeta,
+} from '../hooks/useParksMeta';
 import { useFollowedParkNames } from '../hooks/useParkFollows';
 import { cn } from '../components/ui/utils';
 
@@ -177,7 +182,7 @@ export function SearchPage() {
       if (cityFilter !== 'all' && city !== cityFilter) return false;
 
       if (regionFilter !== 'all') {
-        const region = getCityRegion(city);
+        const region = getParkRegion(parksMeta, parkName);
         if (region !== regionFilter) return false;
       }
 

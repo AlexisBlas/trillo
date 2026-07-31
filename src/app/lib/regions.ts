@@ -3,8 +3,15 @@ import { normalizeSearchText } from './text';
 /** Island region used for park list filters. */
 export type ParkRegion = 'north' | 'east' | 'south' | 'west' | 'metro';
 
+export const PARK_REGIONS: ParkRegion[] = ['north', 'east', 'south', 'west', 'metro'];
+
+export function isParkRegion(value: string | null | undefined): value is ParkRegion {
+  return !!value && (PARK_REGIONS as string[]).includes(value);
+}
+
 /**
  * Puerto Rico municipality → rough geographic region.
+ * Used as a default/fallback when parks.region is unset.
  * Keys are accent-stripped lowercase so "Bayamón" and "Bayamon" both match.
  */
 const MUNICIPALITY_REGION: Record<string, ParkRegion> = {
@@ -97,7 +104,7 @@ const MUNICIPALITY_REGION: Record<string, ParkRegion> = {
   maricao: 'west',
 };
 
-/** Resolve a municipality / city string to a park region, or null if unknown. */
+/** Suggest a region from a municipality / city string (admin defaults + fallback). */
 export function getCityRegion(city: string | null | undefined): ParkRegion | null {
   if (!city) return null;
   const key = normalizeSearchText(city);

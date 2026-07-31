@@ -1,33 +1,44 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import { resolveParkCity } from '../lib/text';
+import { getCityRegion, isParkRegion, type ParkRegion } from '../lib/regions';
 
 export type ParkMetaPublic = {
   city: string | null;
+  region: ParkRegion | null;
   createdAt: string | null;
 };
 
 /** Parks newer than this (days) show a "New" badge. */
 export const NEW_PARK_DAYS = 5;
 
-/** Map of park name → city + createdAt for list UI. */
+/** Map of park name → city + region + createdAt for list UI. */
 export function useParksMeta() {
   return useQuery({
-    queryKey: ['parks-meta-public', 'v3'],
+    queryKey: ['parks-meta-public', 'v4'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('parks')
-        .select('name, city, created_at');
+        .select('name, city, region, created_at');
       if (error) throw error;
       return new Map(
         (data ?? []).map(
-          (p: { name: string; city: string | null; created_at: string | null }) => [
-            p.name,
-            {
-              city: resolveParkCity(p.name, p.city),
-              createdAt: p.created_at ?? null,
-            } satisfies ParkMetaPublic,
-          ]
+          (p: {
+            name: string;
+            city: string | null;
+            region: string | null;
+            created_at: string | null;
+          }) => {
+            const city = resolveParkCity(p.name, p.city);
+            return [
+              p.name,
+              {
+                city,
+                region: isParkRegion(p.region) ? p.region : getCityRegion(city),
+                createdAt: p.created_at ?? null,
+              } satisfies ParkMetaPublic,
+            ] as const;
+          }
         )
       );
     },
@@ -41,6 +52,17 @@ export function getParkCity(
 ): string | null {
   if (!parkName) return null;
   return parksMeta?.get(parkName)?.city ?? resolveParkCity(parkName, null);
+}
+
+/** Prefer parks.region; fall back to city→region map when unset. */
+export function getParkRegion(
+  parksMeta: Map<string, ParkMetaPublic> | undefined,
+  parkName: string | null | undefined
+): ParkRegion | null {
+  if (!parkName) return null;
+  const meta = parksMeta?.get(parkName);
+  if (meta?.region) return meta.region;
+  return getCityRegion(meta?.city ?? resolveParkCity(parkName, null));
 }
 
 export function getParkCreatedAt(

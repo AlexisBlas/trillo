@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { Plus, Trash2, ChevronLeft } from 'lucide-react';
 import { useCreatePark, useUpdatePlaceRequest } from '../../hooks/useAdminData';
+import { getCityRegion, PARK_REGIONS, type ParkRegion } from '../../lib/regions';
 import { toast } from 'sonner';
 
 interface TrailRow {
@@ -61,6 +62,7 @@ export function AddParkPage() {
     fromRequest?.kind === 'park' ? fromRequest.name : ''
   );
   const [parkCity, setParkCity] = useState('');
+  const [parkRegion, setParkRegion] = useState<ParkRegion | ''>('');
   const [parkDescription, setParkDescription] = useState(() =>
     fromRequest?.details?.trim() || ''
   );
@@ -95,6 +97,7 @@ export function AddParkPage() {
         description: parkDescription.trim() || null,
         description_es: parkDescriptionEs.trim() || null,
         city: parkCity.trim() || null,
+        region: parkRegion || getCityRegion(parkCity.trim()) || null,
         trails: validTrails.map((t) => ({
           name: t.name.trim(),
           description: null,
@@ -165,7 +168,12 @@ export function AddParkPage() {
               <input
                 list="pr-municipalities"
                 value={parkCity}
-                onChange={(e) => setParkCity(e.target.value)}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setParkCity(next);
+                  const suggested = getCityRegion(next);
+                  if (suggested) setParkRegion(suggested);
+                }}
                 placeholder="e.g. Vega Alta"
                 className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[13px] text-[#1a1a1a] focus:outline-none focus:border-[#2c4a1e]"
               />
@@ -173,6 +181,25 @@ export function AddParkPage() {
                 {PR_MUNICIPALITIES.map((m) => <option key={m} value={m} />)}
               </datalist>
             </div>
+          </div>
+
+          <div>
+            <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Region</label>
+            <select
+              value={parkRegion}
+              onChange={(e) => setParkRegion((e.target.value || '') as ParkRegion | '')}
+              className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[13px] text-[#1a1a1a] focus:outline-none focus:border-[#2c4a1e] bg-white"
+            >
+              <option value="">Select region…</option>
+              {PARK_REGIONS.map((r) => (
+                <option key={r} value={r}>
+                  {r.charAt(0).toUpperCase() + r.slice(1)}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-[11px] text-[#687588]">
+              Auto-fills from city; override if needed for filters.
+            </p>
           </div>
 
           <div>
