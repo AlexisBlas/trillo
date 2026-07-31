@@ -2,9 +2,21 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Pencil, Trash2, X, AlertTriangle, Eye, EyeOff, Plus } from 'lucide-react';
 import { useAdminParks, useRenamepark, useDeletePark, useToggleParkVisibility, AdminPark } from '../../hooks/useAdminData';
+import {
+  getCityRegion,
+  isParkRegion,
+  PARK_REGION_LABELS,
+} from '../../lib/regions';
 import { toast } from 'sonner';
 import { cn } from '../../components/ui/utils';
 import { AdminTablePagination, useAdminPagination } from './AdminTablePagination';
+
+function parkRegionLabel(park: AdminPark): string {
+  const region = isParkRegion(park.region)
+    ? park.region
+    : getCityRegion(park.city);
+  return region ? PARK_REGION_LABELS[region] : '—';
+}
 
 function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange: () => void; disabled?: boolean }) {
   return (
@@ -129,9 +141,11 @@ export function AdminParksPage() {
   const filtered = (parks ?? []).filter((p) => {
     if (!search) return true;
     const q = search.toLowerCase();
+    const regionLabel = parkRegionLabel(p).toLowerCase();
     return (
       p.name.toLowerCase().includes(q) ||
       (p.city?.toLowerCase().includes(q) ?? false) ||
+      regionLabel.includes(q) ||
       (p.description?.toLowerCase().includes(q) ?? false) ||
       (p.description_es?.toLowerCase().includes(q) ?? false)
     );
@@ -205,8 +219,9 @@ export function AdminParksPage() {
       )}
 
       <div className="bg-white rounded-[16px] border border-[#e5e0d5] overflow-hidden">
-        <div className="grid grid-cols-[minmax(160px,1.1fr)_minmax(220px,1.6fr)_80px_100px_120px] px-5 py-3 border-b border-[#f0ede6] bg-[#fafaf8]">
+        <div className="grid grid-cols-[minmax(150px,1.1fr)_110px_minmax(200px,1.5fr)_70px_90px_110px] px-5 py-3 border-b border-[#f0ede6] bg-[#fafaf8]">
           <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588]">Park Name</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588]">Region</p>
           <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588] pr-4">Description</p>
           <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588] text-right">Trails</p>
           <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588] text-center">Visible</p>
@@ -227,7 +242,7 @@ export function AdminParksPage() {
           <div
             key={park.name}
             className={cn(
-              'grid grid-cols-[minmax(160px,1.1fr)_minmax(220px,1.6fr)_80px_100px_120px] px-5 py-3.5 items-center transition-opacity',
+              'grid grid-cols-[minmax(150px,1.1fr)_110px_minmax(200px,1.5fr)_70px_90px_110px] px-5 py-3.5 items-center transition-opacity',
               i !== pageItems.length - 1 ? 'border-b border-[#f0ede6]' : '',
               park.isHidden ? 'opacity-50' : ''
             )}
@@ -239,6 +254,9 @@ export function AdminParksPage() {
                 {park.city && <p className="text-[12px] text-[#687588] truncate">{park.city}</p>}
               </div>
             </div>
+            <p className="text-[13px] text-[#374151] truncate pr-3">
+              {parkRegionLabel(park)}
+            </p>
             <div className="min-w-0 pr-4">
               {park.description ? (
                 <p className="text-[13px] text-[#374151] line-clamp-2" title={park.description}>
