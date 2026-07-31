@@ -81,7 +81,13 @@ export function EditParkPage() {
       park.trails.forEach((t) => { map[t.id] = { ...t }; });
       setEditingTrails(map);
     }
-  }, [park?.name]);
+  }, [
+    park?.name,
+    park?.description,
+    park?.description_es,
+    park?.city,
+    park?.region,
+  ]);
 
   const addNewTrailRow = () => {
     setNewTrails((prev) => [...prev, { id: nextId++, name: '', difficulty: '' }]);

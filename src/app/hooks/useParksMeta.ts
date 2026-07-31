@@ -15,31 +15,44 @@ export const NEW_PARK_DAYS = 5;
 /** Map of park name → city + region + createdAt for list UI. */
 export function useParksMeta() {
   return useQuery({
-    queryKey: ['parks-meta-public', 'v4'],
+    queryKey: ['parks-meta-public', 'v5'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let rows: Array<{
+        name: string;
+        city: string | null;
+        region: string | null;
+        created_at: string | null;
+      }>;
+
+      const withRegion = await supabase
         .from('parks')
         .select('name, city, region, created_at');
-      if (error) throw error;
+      if (!withRegion.error) {
+        rows = (withRegion.data ?? []) as typeof rows;
+      } else {
+        // Fallback when 012_park_region.sql has not been applied yet.
+        const withoutRegion = await supabase
+          .from('parks')
+          .select('name, city, created_at');
+        if (withoutRegion.error) throw withoutRegion.error;
+        rows = (withoutRegion.data ?? []).map((p) => ({
+          ...p,
+          region: null as string | null,
+        }));
+      }
+
       return new Map(
-        (data ?? []).map(
-          (p: {
-            name: string;
-            city: string | null;
-            region: string | null;
-            created_at: string | null;
-          }) => {
-            const city = resolveParkCity(p.name, p.city);
-            return [
-              p.name,
-              {
-                city,
-                region: isParkRegion(p.region) ? p.region : getCityRegion(city),
-                createdAt: p.created_at ?? null,
-              } satisfies ParkMetaPublic,
-            ] as const;
-          }
-        )
+        rows.map((p) => {
+          const city = resolveParkCity(p.name, p.city);
+          return [
+            p.name,
+            {
+              city,
+              region: isParkRegion(p.region) ? p.region : getCityRegion(city),
+              createdAt: p.created_at ?? null,
+            } satisfies ParkMetaPublic,
+          ] as const;
+        })
       );
     },
     staleTime: 5 * 60 * 1000,

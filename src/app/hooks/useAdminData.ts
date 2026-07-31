@@ -279,18 +279,32 @@ export interface AdminPark {
   isHidden: boolean;
 }
 
+async function fetchParksAdminRows() {
+  const withRegion = await supabase
+    .from('parks')
+    .select('name, is_hidden, description, description_es, city, region');
+  if (!withRegion.error) return withRegion.data ?? [];
+
+  // Fallback when 012_park_region.sql has not been applied yet.
+  const withoutRegion = await supabase
+    .from('parks')
+    .select('name, is_hidden, description, description_es, city');
+  if (withoutRegion.error) throw withoutRegion.error;
+  return (withoutRegion.data ?? []).map((p) => ({ ...p, region: null as string | null }));
+}
+
 export function useAdminParks() {
   return useQuery({
-    queryKey: ['admin-parks'],
+    queryKey: ['admin-parks', 'v2'],
     queryFn: async () => {
-      const [trailsRes, parksRes] = await Promise.all([
+      const [trailsRes, parksRows] = await Promise.all([
         supabase.from('trails').select('*').order('location', { ascending: true }),
-        supabase.from('parks').select('name, is_hidden, description, description_es, city, region'),
+        fetchParksAdminRows(),
       ]);
       if (trailsRes.error) throw trailsRes.error;
 
       const parkMeta = new Map(
-        (parksRes.data ?? []).map((p) => [
+        parksRows.map((p) => [
           p.name,
           {
             isHidden: p.is_hidden,
@@ -383,10 +397,25 @@ export function useUpdatePark() {
       city: string | null;
       region: string | null;
     }) => {
-      const { error } = await supabase
+      // Update existing row when present; insert only if the park row is missing.
+      // Avoids partial-upsert wiping unrelated columns.
+      const { data: updated, error: updateError } = await supabase
         .from('parks')
-        .upsert({ name, description, description_es, city, region }, { onConflict: 'name' });
-      if (error) throw error;
+        .update({ description, description_es, city, region })
+        .eq('name', name)
+        .select('name');
+      if (updateError) throw updateError;
+      if (!updated?.length) {
+        const { error: insertError } = await supabase.from('parks').insert({
+          name,
+          description,
+          description_es,
+          city,
+          region,
+          is_hidden: false,
+        });
+        if (insertError) throw insertError;
+      }
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['admin-parks'] });
@@ -416,14 +445,24 @@ export function useToggleParkVisibility() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ name, isHidden }: { name: string; isHidden: boolean }) => {
-      const { error } = await supabase
+      // Prefer update so we never null out description/city/region via partial upsert.
+      const { data, error } = await supabase
         .from('parks')
-        .upsert({ name, is_hidden: isHidden }, { onConflict: 'name' });
+        .update({ is_hidden: isHidden })
+        .eq('name', name)
+        .select('name');
       if (error) throw error;
+      if (!data?.length) {
+        const { error: insertError } = await supabase
+          .from('parks')
+          .insert({ name, is_hidden: isHidden });
+        if (insertError) throw insertError;
+      }
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['admin-parks'] });
       qc.invalidateQueries({ queryKey: ['hidden-parks'] });
+      qc.invalidateQueries({ queryKey: ['parks-meta-public'] });
     },
   });
 }
@@ -464,7 +503,7 @@ export function useRenamepark() {
       } else {
         const { error: ensureParkError } = await supabase
           .from('parks')
-          .upsert({ name: newName, is_hidden: false }, { onConflict: 'name' });
+          .insert({ name: newName, is_hidden: false });
         if (ensureParkError) throw ensureParkError;
       }
 
