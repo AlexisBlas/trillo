@@ -27,21 +27,36 @@ type ParksMetaRow = {
 };
 
 async function fetchParksMetaRows(): Promise<ParksMetaRow[]> {
-  const withCoords = await supabase
+  const full = await supabase
     .from('parks')
     .select('name, city, region, created_at, lat, lng');
-  if (!withCoords.error) {
-    return (withCoords.data ?? []).map((p) => ({
+  if (!full.error) {
+    return (full.data ?? []).map((p) => ({
       name: p.name,
       city: p.city ?? null,
       region: p.region ?? null,
       created_at: p.created_at ?? null,
-      lat: typeof p.lat === 'number' ? p.lat : null,
-      lng: typeof p.lng === 'number' ? p.lng : null,
+      lat: asNullableNumber(p.lat),
+      lng: asNullableNumber(p.lng),
     }));
   }
 
-  // Fallback when 014_park_coords.sql has not been applied yet.
+  // Coords without region (014 applied, 012/013 not yet).
+  const withCoords = await supabase
+    .from('parks')
+    .select('name, city, created_at, lat, lng');
+  if (!withCoords.error) {
+    return (withCoords.data ?? []).map((p) => ({
+      name: p.name,
+      city: p.city ?? null,
+      region: null,
+      created_at: p.created_at ?? null,
+      lat: asNullableNumber(p.lat),
+      lng: asNullableNumber(p.lng),
+    }));
+  }
+
+  // Region without coords (012 applied, 014 not yet).
   const withRegion = await supabase
     .from('parks')
     .select('name, city, region, created_at');
@@ -56,7 +71,7 @@ async function fetchParksMetaRows(): Promise<ParksMetaRow[]> {
     }));
   }
 
-  // Fallback when 012_park_region.sql has not been applied yet.
+  // Minimal columns.
   const basic = await supabase.from('parks').select('name, city, created_at');
   if (basic.error) throw basic.error;
   return (basic.data ?? []).map((p) => ({
@@ -69,10 +84,19 @@ async function fetchParksMetaRows(): Promise<ParksMetaRow[]> {
   }));
 }
 
+function asNullableNumber(value: unknown): number | null {
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  if (typeof value === 'string' && value.trim()) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : null;
+  }
+  return null;
+}
+
 /** Map of park name → city + region + createdAt for list UI. */
 export function useParksMeta() {
   return useQuery({
-    queryKey: ['parks-meta-public', 'v7'],
+    queryKey: ['parks-meta-public', 'v8'],
     queryFn: async () => {
       const rows = await fetchParksMetaRows();
 

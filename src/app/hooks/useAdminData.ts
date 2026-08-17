@@ -293,15 +293,20 @@ type AdminParkRow = {
 };
 
 function asNullableNumber(value: unknown): number | null {
-  return typeof value === 'number' && Number.isFinite(value) ? value : null;
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  if (typeof value === 'string' && value.trim()) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : null;
+  }
+  return null;
 }
 
 async function fetchParksAdminRows(): Promise<AdminParkRow[]> {
-  const withCoords = await supabase
+  const full = await supabase
     .from('parks')
     .select('name, is_hidden, description, description_es, city, region, lat, lng');
-  if (!withCoords.error) {
-    return (withCoords.data ?? []).map((p) => ({
+  if (!full.error) {
+    return (full.data ?? []).map((p) => ({
       name: p.name,
       is_hidden: p.is_hidden,
       description: p.description ?? null,
@@ -313,7 +318,24 @@ async function fetchParksAdminRows(): Promise<AdminParkRow[]> {
     }));
   }
 
-  // Fallback when 014_park_coords.sql has not been applied yet.
+  // Coords without region (014 applied, 012/013 not yet).
+  const withCoords = await supabase
+    .from('parks')
+    .select('name, is_hidden, description, description_es, city, lat, lng');
+  if (!withCoords.error) {
+    return (withCoords.data ?? []).map((p) => ({
+      name: p.name,
+      is_hidden: p.is_hidden,
+      description: p.description ?? null,
+      description_es: p.description_es ?? null,
+      city: p.city ?? null,
+      region: null,
+      lat: asNullableNumber(p.lat),
+      lng: asNullableNumber(p.lng),
+    }));
+  }
+
+  // Region without coords (012 applied, 014 not yet).
   const withRegion = await supabase
     .from('parks')
     .select('name, is_hidden, description, description_es, city, region');
@@ -330,12 +352,12 @@ async function fetchParksAdminRows(): Promise<AdminParkRow[]> {
     }));
   }
 
-  // Fallback when 012_park_region.sql has not been applied yet.
-  const withoutRegion = await supabase
+  // Minimal columns.
+  const basic = await supabase
     .from('parks')
     .select('name, is_hidden, description, description_es, city');
-  if (withoutRegion.error) throw withoutRegion.error;
-  return (withoutRegion.data ?? []).map((p) => ({
+  if (basic.error) throw basic.error;
+  return (basic.data ?? []).map((p) => ({
     name: p.name,
     is_hidden: p.is_hidden,
     description: p.description ?? null,
@@ -349,7 +371,7 @@ async function fetchParksAdminRows(): Promise<AdminParkRow[]> {
 
 export function useAdminParks() {
   return useQuery({
-    queryKey: ['admin-parks', 'v3'],
+    queryKey: ['admin-parks', 'v4'],
     queryFn: async () => {
       const [trailsRes, parksRows] = await Promise.all([
         supabase.from('trails').select('*').order('location', { ascending: true }),
@@ -395,6 +417,116 @@ export function useAdminParks() {
   });
 }
 
+function isMissingColumnError(error: { message?: string; code?: string } | null): boolean {
+  return error?.code === '42703' || /column .* does not exist/i.test(error?.message ?? '');
+}
+
+type ParkWriteFields = {
+  description: string | null;
+  description_es: string | null;
+  city: string | null;
+  region: string | null;
+  lat: number | null;
+  lng: number | null;
+};
+
+async function updateParkRow(name: string, fields: ParkWriteFields) {
+  const withRegion = await supabase
+    .from('parks')
+    .update({
+      description: fields.description,
+      description_es: fields.description_es,
+      city: fields.city,
+      region: fields.region,
+      lat: fields.lat,
+      lng: fields.lng,
+    })
+    .eq('name', name)
+    .select('name');
+  if (!withRegion.error) return withRegion.data ?? [];
+
+  if (!isMissingColumnError(withRegion.error)) throw withRegion.error;
+
+  // Production may have lat/lng before region migrations are applied.
+  const withoutRegion = await supabase
+    .from('parks')
+    .update({
+      description: fields.description,
+      description_es: fields.description_es,
+      city: fields.city,
+      lat: fields.lat,
+      lng: fields.lng,
+    })
+    .eq('name', name)
+    .select('name');
+  if (withoutRegion.error) throw withoutRegion.error;
+  return withoutRegion.data ?? [];
+}
+
+async function insertParkRow(
+  name: string,
+  fields: ParkWriteFields,
+  isHidden = false
+) {
+  const withRegion = await supabase.from('parks').insert({
+    name,
+    description: fields.description,
+    description_es: fields.description_es,
+    city: fields.city,
+    region: fields.region,
+    lat: fields.lat,
+    lng: fields.lng,
+    is_hidden: isHidden,
+  });
+  if (!withRegion.error) return;
+
+  if (!isMissingColumnError(withRegion.error)) throw withRegion.error;
+
+  const withoutRegion = await supabase.from('parks').insert({
+    name,
+    description: fields.description,
+    description_es: fields.description_es,
+    city: fields.city,
+    lat: fields.lat,
+    lng: fields.lng,
+    is_hidden: isHidden,
+  });
+  if (withoutRegion.error) throw withoutRegion.error;
+}
+
+async function upsertParkRow(name: string, fields: ParkWriteFields) {
+  const withRegion = await supabase.from('parks').upsert(
+    {
+      name,
+      description: fields.description,
+      description_es: fields.description_es,
+      city: fields.city,
+      region: fields.region,
+      lat: fields.lat,
+      lng: fields.lng,
+      is_hidden: false,
+    },
+    { onConflict: 'name' }
+  );
+  if (!withRegion.error) return;
+
+  if (!isMissingColumnError(withRegion.error)) throw withRegion.error;
+
+  const withoutRegion = await supabase.from('parks').upsert(
+    {
+      name,
+      description: fields.description,
+      description_es: fields.description_es,
+      city: fields.city,
+      lat: fields.lat,
+      lng: fields.lng,
+      is_hidden: false,
+    },
+    { onConflict: 'name' }
+  );
+  if (withoutRegion.error) throw withoutRegion.error;
+}
+
 export function useCreatePark() {
   const qc = useQueryClient();
   return useMutation({
@@ -417,22 +549,14 @@ export function useCreatePark() {
       lng: number | null;
       trails: Array<{ name: string; description: string | null; difficulty: string | null }>;
     }) => {
-      const { error: parkError } = await supabase
-        .from('parks')
-        .upsert(
-          {
-            name,
-            description,
-            description_es,
-            city,
-            region,
-            lat,
-            lng,
-            is_hidden: false,
-          },
-          { onConflict: 'name' }
-        );
-      if (parkError) throw parkError;
+      await upsertParkRow(name, {
+        description,
+        description_es,
+        city,
+        region,
+        lat,
+        lng,
+      });
 
       if (trails.length > 0) {
         const { error: trailsError } = await supabase.from('trails').insert(
@@ -475,24 +599,23 @@ export function useUpdatePark() {
     }) => {
       // Update existing row when present; insert only if the park row is missing.
       // Avoids partial-upsert wiping unrelated columns.
-      const { data: updated, error: updateError } = await supabase
-        .from('parks')
-        .update({ description, description_es, city, region, lat, lng })
-        .eq('name', name)
-        .select('name');
-      if (updateError) throw updateError;
-      if (!updated?.length) {
-        const { error: insertError } = await supabase.from('parks').insert({
-          name,
+      const updated = await updateParkRow(name, {
+        description,
+        description_es,
+        city,
+        region,
+        lat,
+        lng,
+      });
+      if (!updated.length) {
+        await insertParkRow(name, {
           description,
           description_es,
           city,
           region,
           lat,
           lng,
-          is_hidden: false,
         });
-        if (insertError) throw insertError;
       }
     },
     onSuccess: () => {
