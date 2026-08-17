@@ -118,3 +118,16 @@ export function resolveParkCoords(
   }
   return getMunicipalityCoords(city);
 }
+
+/** Parse admin lat/lng input. Empty → null; invalid → throws or returns null with flag. */
+export function parseCoordInput(value: string): number | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  const n = Number(trimmed);
+  return Number.isFinite(n) ? n : Number.NaN;
+}
+
+export function formatCoordInput(value: number | null | undefined): string {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return '';
+  return String(value);
+}

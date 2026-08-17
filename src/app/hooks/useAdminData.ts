@@ -274,28 +274,82 @@ export interface AdminPark {
   description_es: string | null;
   city: string | null;
   region: string | null;
+  lat: number | null;
+  lng: number | null;
   trailCount: number;
   trails: Trail[];
   isHidden: boolean;
 }
 
-async function fetchParksAdminRows() {
+type AdminParkRow = {
+  name: string;
+  is_hidden: boolean;
+  description: string | null;
+  description_es: string | null;
+  city: string | null;
+  region: string | null;
+  lat: number | null;
+  lng: number | null;
+};
+
+function asNullableNumber(value: unknown): number | null {
+  return typeof value === 'number' && Number.isFinite(value) ? value : null;
+}
+
+async function fetchParksAdminRows(): Promise<AdminParkRow[]> {
+  const withCoords = await supabase
+    .from('parks')
+    .select('name, is_hidden, description, description_es, city, region, lat, lng');
+  if (!withCoords.error) {
+    return (withCoords.data ?? []).map((p) => ({
+      name: p.name,
+      is_hidden: p.is_hidden,
+      description: p.description ?? null,
+      description_es: p.description_es ?? null,
+      city: p.city ?? null,
+      region: p.region ?? null,
+      lat: asNullableNumber(p.lat),
+      lng: asNullableNumber(p.lng),
+    }));
+  }
+
+  // Fallback when 014_park_coords.sql has not been applied yet.
   const withRegion = await supabase
     .from('parks')
     .select('name, is_hidden, description, description_es, city, region');
-  if (!withRegion.error) return withRegion.data ?? [];
+  if (!withRegion.error) {
+    return (withRegion.data ?? []).map((p) => ({
+      name: p.name,
+      is_hidden: p.is_hidden,
+      description: p.description ?? null,
+      description_es: p.description_es ?? null,
+      city: p.city ?? null,
+      region: p.region ?? null,
+      lat: null,
+      lng: null,
+    }));
+  }
 
   // Fallback when 012_park_region.sql has not been applied yet.
   const withoutRegion = await supabase
     .from('parks')
     .select('name, is_hidden, description, description_es, city');
   if (withoutRegion.error) throw withoutRegion.error;
-  return (withoutRegion.data ?? []).map((p) => ({ ...p, region: null as string | null }));
+  return (withoutRegion.data ?? []).map((p) => ({
+    name: p.name,
+    is_hidden: p.is_hidden,
+    description: p.description ?? null,
+    description_es: p.description_es ?? null,
+    city: p.city ?? null,
+    region: null,
+    lat: null,
+    lng: null,
+  }));
 }
 
 export function useAdminParks() {
   return useQuery({
-    queryKey: ['admin-parks', 'v2'],
+    queryKey: ['admin-parks', 'v3'],
     queryFn: async () => {
       const [trailsRes, parksRows] = await Promise.all([
         supabase.from('trails').select('*').order('location', { ascending: true }),
@@ -312,6 +366,8 @@ export function useAdminParks() {
             description_es: p.description_es ?? null,
             city: p.city ?? null,
             region: p.region ?? null,
+            lat: p.lat,
+            lng: p.lng,
           },
         ])
       );
@@ -329,6 +385,8 @@ export function useAdminParks() {
         description_es: parkMeta.get(name)?.description_es ?? null,
         city: parkMeta.get(name)?.city ?? null,
         region: parkMeta.get(name)?.region ?? null,
+        lat: parkMeta.get(name)?.lat ?? null,
+        lng: parkMeta.get(name)?.lng ?? null,
         trailCount: trails.length,
         trails,
         isHidden: parkMeta.get(name)?.isHidden ?? false,
@@ -346,6 +404,8 @@ export function useCreatePark() {
       description_es,
       city,
       region,
+      lat,
+      lng,
       trails,
     }: {
       name: string;
@@ -353,12 +413,23 @@ export function useCreatePark() {
       description_es: string | null;
       city: string | null;
       region: string | null;
+      lat: number | null;
+      lng: number | null;
       trails: Array<{ name: string; description: string | null; difficulty: string | null }>;
     }) => {
       const { error: parkError } = await supabase
         .from('parks')
         .upsert(
-          { name, description, description_es, city, region, is_hidden: false },
+          {
+            name,
+            description,
+            description_es,
+            city,
+            region,
+            lat,
+            lng,
+            is_hidden: false,
+          },
           { onConflict: 'name' }
         );
       if (parkError) throw parkError;
@@ -377,6 +448,7 @@ export function useCreatePark() {
       qc.invalidateQueries({ queryKey: ['admin-stats'] });
       qc.invalidateQueries({ queryKey: ['park-meta'] });
       qc.invalidateQueries({ queryKey: ['parks-meta-public'] });
+      qc.invalidateQueries({ queryKey: ['park-precip-estimates'] });
     },
   });
 }
@@ -390,18 +462,22 @@ export function useUpdatePark() {
       description_es,
       city,
       region,
+      lat,
+      lng,
     }: {
       name: string;
       description: string | null;
       description_es: string | null;
       city: string | null;
       region: string | null;
+      lat: number | null;
+      lng: number | null;
     }) => {
       // Update existing row when present; insert only if the park row is missing.
       // Avoids partial-upsert wiping unrelated columns.
       const { data: updated, error: updateError } = await supabase
         .from('parks')
-        .update({ description, description_es, city, region })
+        .update({ description, description_es, city, region, lat, lng })
         .eq('name', name)
         .select('name');
       if (updateError) throw updateError;
@@ -412,6 +488,8 @@ export function useUpdatePark() {
           description_es,
           city,
           region,
+          lat,
+          lng,
           is_hidden: false,
         });
         if (insertError) throw insertError;
@@ -421,6 +499,7 @@ export function useUpdatePark() {
       qc.invalidateQueries({ queryKey: ['admin-parks'] });
       qc.invalidateQueries({ queryKey: ['park-meta'] });
       qc.invalidateQueries({ queryKey: ['parks-meta-public'] });
+      qc.invalidateQueries({ queryKey: ['park-precip-estimates'] });
     },
   });
 }
@@ -489,6 +568,8 @@ export function useRenamepark() {
             region: existingPark.region ?? null,
             description: existingPark.description ?? null,
             description_es: existingPark.description_es ?? null,
+            lat: asNullableNumber(existingPark.lat),
+            lng: asNullableNumber(existingPark.lng),
             created_at: existingPark.created_at,
           },
           { onConflict: 'name' }

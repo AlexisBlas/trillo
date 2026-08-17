@@ -8,6 +8,10 @@ import {
   PARK_REGIONS,
   type ParkRegion,
 } from '../../lib/regions';
+import {
+  getMunicipalityCoords,
+  parseCoordInput,
+} from '../../lib/municipalityCoords';
 import { toast } from 'sonner';
 
 interface TrailRow {
@@ -68,6 +72,8 @@ export function AddParkPage() {
   );
   const [parkCity, setParkCity] = useState('');
   const [parkRegion, setParkRegion] = useState<ParkRegion | ''>('');
+  const [parkLat, setParkLat] = useState('');
+  const [parkLng, setParkLng] = useState('');
   const [parkDescription, setParkDescription] = useState(() =>
     fromRequest?.details?.trim() || ''
   );
@@ -95,6 +101,26 @@ export function AddParkPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!parkName.trim()) { toast.error('Park name is required'); return; }
+
+    const parsedLat = parseCoordInput(parkLat);
+    const parsedLng = parseCoordInput(parkLng);
+    if (Number.isNaN(parsedLat) || Number.isNaN(parsedLng)) {
+      toast.error('Coordinates must be valid numbers');
+      return;
+    }
+    if ((parsedLat === null) !== (parsedLng === null)) {
+      toast.error('Enter both latitude and longitude, or leave both blank');
+      return;
+    }
+    if (parsedLat !== null && (parsedLat < -90 || parsedLat > 90)) {
+      toast.error('Latitude must be between -90 and 90');
+      return;
+    }
+    if (parsedLng !== null && (parsedLng < -180 || parsedLng > 180)) {
+      toast.error('Longitude must be between -180 and 180');
+      return;
+    }
+
     const validTrails = trails.filter((t) => t.name.trim());
     try {
       await create.mutateAsync({
@@ -103,6 +129,8 @@ export function AddParkPage() {
         description_es: parkDescriptionEs.trim() || null,
         city: parkCity.trim() || null,
         region: parkRegion || getCityRegion(parkCity.trim()) || null,
+        lat: parsedLat,
+        lng: parsedLng,
         trails: validTrails.map((t) => ({
           name: t.name.trim(),
           description: null,
@@ -122,6 +150,8 @@ export function AddParkPage() {
       toast.error(err.message ?? 'Failed to create park');
     }
   };
+
+  const cityDefaultCoords = getMunicipalityCoords(parkCity);
 
   return (
     <div className="p-8 max-w-2xl">
@@ -204,6 +234,38 @@ export function AddParkPage() {
             </select>
             <p className="mt-1 text-[11px] text-[#687588]">
               Auto-fills from city; override if needed for filters.
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-[12px] font-bold text-[#374151] mb-1.5">
+              Coordinates <span className="font-normal text-[#687588]">(optional)</span>
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <input
+                value={parkLat}
+                onChange={(e) => setParkLat(e.target.value)}
+                inputMode="decimal"
+                placeholder={
+                  cityDefaultCoords ? String(cityDefaultCoords.lat) : 'Latitude'
+                }
+                className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[13px] text-[#1a1a1a] focus:outline-none focus:border-[#2c4a1e]"
+              />
+              <input
+                value={parkLng}
+                onChange={(e) => setParkLng(e.target.value)}
+                inputMode="decimal"
+                placeholder={
+                  cityDefaultCoords ? String(cityDefaultCoords.lng) : 'Longitude'
+                }
+                className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[13px] text-[#1a1a1a] focus:outline-none focus:border-[#2c4a1e]"
+              />
+            </div>
+            <p className="mt-1 text-[11px] text-[#687588]">
+              Leave blank to use the city center for rain estimates.
+              {cityDefaultCoords
+                ? ` Default: ${cityDefaultCoords.lat}, ${cityDefaultCoords.lng}`
+                : ''}
             </p>
           </div>
 

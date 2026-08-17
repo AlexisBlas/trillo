@@ -17,6 +17,11 @@ import {
   PARK_REGIONS,
   type ParkRegion,
 } from '../../lib/regions';
+import {
+  formatCoordInput,
+  getMunicipalityCoords,
+  parseCoordInput,
+} from '../../lib/municipalityCoords';
 import { toast } from 'sonner';
 
 const PR_MUNICIPALITIES = [
@@ -68,6 +73,8 @@ export function EditParkPage() {
   const [descriptionEs, setDescriptionEs] = useState('');
   const [city, setCity] = useState('');
   const [region, setRegion] = useState<ParkRegion | ''>('');
+  const [lat, setLat] = useState('');
+  const [lng, setLng] = useState('');
   const [editingTrails, setEditingTrails] = useState<Record<string, Trail>>({});
   const [newTrails, setNewTrails] = useState<NewTrailRow[]>([]);
   const [saving, setSaving] = useState(false);
@@ -83,6 +90,8 @@ export function EditParkPage() {
           ? park.region
           : getCityRegion(park.city) ?? ''
       );
+      setLat(formatCoordInput(park.lat));
+      setLng(formatCoordInput(park.lng));
       const map: Record<string, Trail> = {};
       park.trails.forEach((t) => { map[t.id] = { ...t }; });
       setEditingTrails(map);
@@ -93,6 +102,8 @@ export function EditParkPage() {
     park?.description_es,
     park?.city,
     park?.region,
+    park?.lat,
+    park?.lng,
   ]);
 
   const addNewTrailRow = () => {
@@ -125,6 +136,26 @@ export function EditParkPage() {
   const handleSave = async () => {
     const trimmedName = parkNameInput.trim();
     if (!trimmedName) { toast.error('Park name is required'); return; }
+
+    const parsedLat = parseCoordInput(lat);
+    const parsedLng = parseCoordInput(lng);
+    if (Number.isNaN(parsedLat) || Number.isNaN(parsedLng)) {
+      toast.error('Coordinates must be valid numbers');
+      return;
+    }
+    if ((parsedLat === null) !== (parsedLng === null)) {
+      toast.error('Enter both latitude and longitude, or leave both blank');
+      return;
+    }
+    if (parsedLat !== null && (parsedLat < -90 || parsedLat > 90)) {
+      toast.error('Latitude must be between -90 and 90');
+      return;
+    }
+    if (parsedLng !== null && (parsedLng < -180 || parsedLng > 180)) {
+      toast.error('Longitude must be between -180 and 180');
+      return;
+    }
+
     setSaving(true);
     try {
       // Rename if name changed (updates all trail locations + parks table key)
@@ -140,6 +171,8 @@ export function EditParkPage() {
         description_es: descriptionEs.trim() || null,
         city: city.trim() || null,
         region: region || getCityRegion(city.trim()) || null,
+        lat: parsedLat,
+        lng: parsedLng,
       });
 
       // Update existing trails
@@ -183,6 +216,7 @@ export function EditParkPage() {
   }
 
   const existingTrails = Object.values(editingTrails);
+  const cityDefaultCoords = getMunicipalityCoords(city);
 
   return (
     <div className="p-8 max-w-2xl">
@@ -257,6 +291,37 @@ export function EditParkPage() {
             </select>
             <p className="mt-1 text-[11px] text-[#687588]">
               Used by park filters. Auto-fills from city; override if needed.
+            </p>
+          </div>
+          <div>
+            <label className="block text-[12px] font-bold text-[#374151] mb-1.5">
+              Coordinates <span className="font-normal text-[#687588]">(optional)</span>
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <input
+                value={lat}
+                onChange={(e) => setLat(e.target.value)}
+                inputMode="decimal"
+                placeholder={
+                  cityDefaultCoords ? String(cityDefaultCoords.lat) : 'Latitude'
+                }
+                className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[13px] text-[#1a1a1a] focus:outline-none focus:border-[#2c4a1e]"
+              />
+              <input
+                value={lng}
+                onChange={(e) => setLng(e.target.value)}
+                inputMode="decimal"
+                placeholder={
+                  cityDefaultCoords ? String(cityDefaultCoords.lng) : 'Longitude'
+                }
+                className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[13px] text-[#1a1a1a] focus:outline-none focus:border-[#2c4a1e]"
+              />
+            </div>
+            <p className="mt-1 text-[11px] text-[#687588]">
+              Leave blank to use the city center for rain estimates.
+              {cityDefaultCoords
+                ? ` Default: ${cityDefaultCoords.lat}, ${cityDefaultCoords.lng}`
+                : ''}
             </p>
           </div>
           <div>
