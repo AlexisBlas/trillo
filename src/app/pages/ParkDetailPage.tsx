@@ -24,6 +24,10 @@ import {
 } from '../lib/text';
 import { useLang, TranslationKey } from '../contexts/LangContext';
 import { isParkNew } from '../hooks/useParksMeta';
+import {
+  getEffectiveParkStatus,
+  useConditionEstimates,
+} from '../hooks/useConditionEstimates';
 import { cn } from '../components/ui/utils';
 
 type TrailStatus = 'green' | 'yellow' | 'red';
@@ -49,6 +53,7 @@ export function ParkDetailPage() {
   const decoded = decodeURIComponent(parkName || '');
   const { data: trails, isLoading, error } = useTrails();
   const { byPark, data: allReports } = useParkReports();
+  const { byPark: estimatesByPark } = useConditionEstimates();
   const { data: parkMeta } = useParkMeta(decoded);
   const [descExpanded, setDescExpanded] = useState(false);
   const [descOverflows, setDescOverflows] = useState(false);
@@ -119,20 +124,26 @@ export function ParkDetailPage() {
   );
 
   const sortedTrails = useMemo(() => {
+    const parkEstimate = estimatesByPark.get(decoded)?.status;
     return [...parkTrails].sort((a, b) => {
-      const aStatus = statusByTrail.get(a.id);
-      const bStatus = statusByTrail.get(b.id);
+      const aStatus = statusByTrail.get(a.id) ?? parkEstimate;
+      const bStatus = statusByTrail.get(b.id) ?? parkEstimate;
       const aRank = aStatus ? STATUS_RANK[aStatus] : 3;
       const bRank = bStatus ? STATUS_RANK[bStatus] : 3;
       if (aRank !== bRank) return aRank - bRank;
       return a.name.localeCompare(b.name);
     });
-  }, [parkTrails, statusByTrail]);
+  }, [parkTrails, statusByTrail, estimatesByPark, decoded]);
 
-  const summary = byPark.get(decoded);
-  const summaryNotes = cleanNotes(summary?.notes);
-  const summaryHazards = getCriticalHazards(summary?.conditions);
-  const statusText = summary ? STATUS_TEXT[summary.status] : null;
+  const reportSummary = byPark.get(decoded);
+  const parkEstimate = estimatesByPark.get(decoded);
+  const { status: effectiveStatus, source: statusSource } = getEffectiveParkStatus(
+    reportSummary?.status,
+    parkEstimate
+  );
+  const summaryNotes = cleanNotes(reportSummary?.notes);
+  const summaryHazards = getCriticalHazards(reportSummary?.conditions);
+  const statusText = effectiveStatus ? STATUS_TEXT[effectiveStatus] : null;
 
   const trailHazardSlides = useMemo(() => {
     return sortedTrails
@@ -155,8 +166,14 @@ export function ParkDetailPage() {
   }, [sortedTrails, hazardsByTrail]);
 
   const updateMeta = useMemo(() => {
-    if (!summary?.createdAt) return null;
-    const diffMs = Date.now() - new Date(summary.createdAt).getTime();
+    if (statusSource === 'estimate') {
+      return {
+        label: t('condition_estimated'),
+        value: t('condition_from_rain'),
+      };
+    }
+    if (!reportSummary?.createdAt) return null;
+    const diffMs = Date.now() - new Date(reportSummary.createdAt).getTime();
     if (Number.isNaN(diffMs)) return null;
     const minutes = Math.floor(diffMs / (60 * 1000));
     if (minutes < 1) {
@@ -179,7 +196,7 @@ export function ParkDetailPage() {
           ? `${t('park_updated_ago')} ${value}`
           : `${value} ${t('park_updated_ago')}`,
     };
-  }, [summary?.createdAt, t, lang]);
+  }, [reportSummary?.createdAt, statusSource, t, lang]);
 
   const handleReport = () => {
     if (!parkTrails.length) return;
@@ -203,10 +220,12 @@ export function ParkDetailPage() {
           subtitle={parkMeta?.city}
           url={shareUrlFor(`/parks/${encodeURIComponent(decoded)}`)}
           text={t('share_report_text').replace('{name}', decoded)}
-          status={summary?.status ?? null}
-          statusLabel={summary ? t(STATUS_LABEL[summary.status]) : null}
+          status={reportSummary?.status ?? null}
+          statusLabel={
+            reportSummary ? t(STATUS_LABEL[reportSummary.status]) : null
+          }
           notes={summaryNotes}
-          conditions={summary?.conditions ?? null}
+          conditions={reportSummary?.conditions ?? null}
           hazards={
             trailHazardSlides.length > 0
               ? trailHazardSlides
@@ -279,12 +298,12 @@ export function ParkDetailPage() {
                 {t('park_current_conditions')}
               </p>
               <div className="mt-3 flex items-center gap-2.5 min-w-0">
-                <StatusCircle status={summary?.status ?? null} className="shrink-0" />
+                <StatusCircle status={effectiveStatus} className="shrink-0" />
                 <p
                   className="text-[clamp(1.75rem,8.2vw,2.75rem)] font-bold tracking-[-1.2px] leading-none whitespace-nowrap"
                   style={{ color: statusText ?? '#1a1a1a' }}
                 >
-                  {summary ? t(STATUS_LABEL[summary.status]) : '—'}
+                  {effectiveStatus ? t(STATUS_LABEL[effectiveStatus]) : '—'}
                 </p>
               </div>
             </div>
@@ -311,7 +330,7 @@ export function ParkDetailPage() {
             <HazardTrailCarousel slides={trailHazardSlides} className="mx-4 mb-3" />
           ) : summaryHazards.length > 0 ? (
             <div className="mx-4 mb-3">
-              <HazardNotice conditions={summary?.conditions} />
+              <HazardNotice conditions={reportSummary?.conditions} />
             </div>
           ) : null}
 
@@ -389,7 +408,9 @@ export function ParkDetailPage() {
                   const displayName = trail.name.includes(' - ')
                     ? trail.name.split(' - ').slice(1).join(' - ')
                     : trail.name;
-                  const status = statusByTrail.get(trail.id) ?? null;
+                  const reportStatus = statusByTrail.get(trail.id) ?? null;
+                  const status = reportStatus ?? parkEstimate?.status ?? null;
+                  const statusIsEstimate = !reportStatus && !!parkEstimate;
                   const trailHazards = hazardsByTrail.get(trail.id) ?? [];
                   const hazardTags = trailHazards.map((h) => h.tag);
                   return (
@@ -404,6 +425,11 @@ export function ParkDetailPage() {
                         <h3 className="text-[15px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
                           {displayName}
                         </h3>
+                        {statusIsEstimate && (
+                          <p className="text-[11px] text-[#8a8478] mt-0.5">
+                            {t('condition_estimated')}
+                          </p>
+                        )}
                       </div>
                       <span
                         className="shrink-0 text-[12px] font-bold"

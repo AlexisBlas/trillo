@@ -28,6 +28,10 @@ import {
   useParksMeta,
 } from '../hooks/useParksMeta';
 import { useFollowedParkNames } from '../hooks/useParkFollows';
+import {
+  getEffectiveParkStatus,
+  useConditionEstimates,
+} from '../hooks/useConditionEstimates';
 import { cn } from '../components/ui/utils';
 
 type ConditionFilter = 'all' | 'green' | 'yellow' | 'red';
@@ -127,6 +131,7 @@ export function SearchPage() {
   const { t } = useLang();
   const { data: trails, isLoading, error } = useTrails();
   const { byPark, hazardsByPark } = useParkReports();
+  const { byPark: estimatesByPark } = useConditionEstimates();
   const [searchQuery, setSearchQuery] = useState('');
   const [regionFilter, setRegionFilter] = useState<RegionFilter>('all');
   const [conditionFilter, setConditionFilter] = useState<ConditionFilter>('all');
@@ -190,7 +195,10 @@ export function SearchPage() {
       }
 
       if (conditionFilter !== 'all') {
-        const status = byPark.get(parkName)?.status ?? null;
+        const { status } = getEffectiveParkStatus(
+          byPark.get(parkName)?.status,
+          estimatesByPark.get(parkName)
+        );
         if (status !== conditionFilter) return false;
       }
 
@@ -221,6 +229,7 @@ export function SearchPage() {
     conditionFilter,
     cityFilter,
     byPark,
+    estimatesByPark,
   ]);
 
   const filtersOverlay =
@@ -433,7 +442,12 @@ export function SearchPage() {
               {parks.map((park) => {
                 const parkTitle = park.name;
                 const city = getParkCity(parksMeta, park.name);
-                const updatedAgo = formatUpdatedAgo(byPark.get(park.name)?.createdAt);
+                const report = byPark.get(park.name);
+                const { status, source } = getEffectiveParkStatus(
+                  report?.status,
+                  estimatesByPark.get(park.name)
+                );
+                const updatedAgo = formatUpdatedAgo(report?.createdAt);
                 const parkHazards = hazardsByPark.get(park.name) ?? [];
                 return (
                   <button
@@ -442,7 +456,7 @@ export function SearchPage() {
                     className="bg-white border-[1.5px] border-[#f0ede6] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#2c4a1e] transition-colors p-[15.5px] flex items-center gap-3.5 text-left rounded-[32px]"
                   >
                     <StatusWithHazards
-                      status={byPark.get(park.name)?.status ?? null}
+                      status={status}
                       conditions={parkHazards.map((h) => h.tag)}
                     />
                     <div className="flex-1 min-w-0">
@@ -457,7 +471,11 @@ export function SearchPage() {
                       </p>
                       <p className="text-[12px] text-[#4b5563] mt-0.5">
                         {park.trails.length} {park.trails.length === 1 ? t('trail_singular') : t('trail_plural')}
-                        {updatedAgo && <span> · {updatedAgo}</span>}
+                        {source === 'estimate' ? (
+                          <span> · {t('condition_estimated')}</span>
+                        ) : updatedAgo ? (
+                          <span> · {updatedAgo}</span>
+                        ) : null}
                       </p>
                     </div>
                     <ChevronRight className="size-5 text-[#4b5563] shrink-0" />

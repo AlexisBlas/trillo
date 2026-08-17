@@ -19,6 +19,10 @@ import { useLang } from '../contexts/LangContext';
 import { useAuth } from '../contexts/AuthContext';
 import { getParkCity, isParkNameNew, useParksMeta } from '../hooks/useParksMeta';
 import { useParkFollows } from '../hooks/useParkFollows';
+import {
+  getEffectiveParkStatus,
+  useConditionEstimates,
+} from '../hooks/useConditionEstimates';
 
 type Park = { name: string; city: string | null; trails: TrailWithCity[] };
 
@@ -29,6 +33,7 @@ export function Home() {
   const { data: trails, isLoading, error } = useTrails();
   const { data: reports } = useTrailReports(200);
   const { byPark, hazardsByPark } = useParkReports();
+  const { byPark: estimatesByPark } = useConditionEstimates();
   const { data: parksMeta } = useParksMeta();
   const { data: follows, isLoading: followsLoading } = useParkFollows();
   const [searchQuery, setSearchQuery] = useState('');
@@ -112,7 +117,12 @@ export function Home() {
   const followingPreview = followingParks.slice(0, 2);
 
   const renderParkCard = (park: Park) => {
-    const updatedAgo = formatUpdatedAgo(byPark.get(park.name)?.createdAt);
+    const report = byPark.get(park.name);
+    const { status, source } = getEffectiveParkStatus(
+      report?.status,
+      estimatesByPark.get(park.name)
+    );
+    const updatedAgo = formatUpdatedAgo(report?.createdAt);
     const parkHazards = hazardsByPark.get(park.name) ?? [];
     const showNew = isParkNameNew(parksMeta, park.name);
     return (
@@ -123,7 +133,7 @@ export function Home() {
         className="bg-white border-[1.5px] border-[#f0ede6] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#2c4a1e] transition-colors p-[15.5px] flex items-center gap-3.5 text-left rounded-[32px]"
       >
         <StatusWithHazards
-          status={byPark.get(park.name)?.status ?? null}
+          status={status}
           conditions={parkHazards.map((h) => h.tag)}
         />
         <div className="flex-1 min-w-0">
@@ -138,7 +148,11 @@ export function Home() {
           </p>
           <p className="text-[12px] text-[#4b5563] mt-0.5">
             {park.trails.length} {park.trails.length === 1 ? t('trail_singular') : t('trail_plural')}
-            {updatedAgo && <span> · {updatedAgo}</span>}
+            {source === 'estimate' ? (
+              <span> · {t('condition_estimated')}</span>
+            ) : updatedAgo ? (
+              <span> · {updatedAgo}</span>
+            ) : null}
           </p>
         </div>
         <ChevronRight className="size-5 text-[#4b5563] shrink-0" />

@@ -5,10 +5,15 @@ import { Alert, AlertDescription } from '../components/ui/alert';
 import { BackButton } from '../components/layout/BackButton';
 import { ShareButton } from '../components/layout/ShareButton';
 import { StatusBadge } from '../components/trail/StatusBadge';
+import { StatusCircle } from '../components/trail/StatusCircle';
 import { HazardNotice } from '../components/trail/HazardNotice';
 import { getCriticalHazards } from '../lib/hazards';
 import { useTrail } from '../hooks/useTrails';
 import { useTrailReportsByTrail } from '../hooks/useTrailReports';
+import {
+  getEffectiveParkStatus,
+  useConditionEstimates,
+} from '../hooks/useConditionEstimates';
 import { cleanNotes, isReportFresh, isValidTrailId } from '../lib/text';
 import { shareUrlFor } from '../lib/share';
 import { formatDistanceToNow } from 'date-fns';
@@ -20,6 +25,18 @@ function statusShareLabel(status: 'green' | 'yellow' | 'red'): TranslationKey {
   return 'park_trail_status_poor';
 }
 
+const STATUS_LABEL: Record<'green' | 'yellow' | 'red', TranslationKey> = {
+  green: 'park_trail_status_good',
+  yellow: 'park_trail_status_fair',
+  red: 'park_trail_status_poor',
+};
+
+const STATUS_TEXT: Record<'green' | 'yellow' | 'red', string> = {
+  green: '#346538',
+  yellow: '#92400e',
+  red: '#9f2f2d',
+};
+
 export function TrailDetailPage() {
   const { trailId } = useParams<{ trailId: string }>();
   const navigate = useNavigate();
@@ -27,6 +44,7 @@ export function TrailDetailPage() {
   const validTrailId = isValidTrailId(trailId) ? trailId : undefined;
   const { data: trail, isLoading: trailLoading } = useTrail(validTrailId);
   const { data: reports, isLoading: reportsLoading } = useTrailReportsByTrail(validTrailId || '');
+  const { byPark: estimatesByPark } = useConditionEstimates();
 
   const isLoading = !!validTrailId && (trailLoading || reportsLoading);
 
@@ -77,6 +95,11 @@ export function TrailDetailPage() {
     .slice(0, 5);
   const latestReport = visibleReports[0];
   const parkName = trail.location || null;
+  const parkEstimate = parkName ? estimatesByPark.get(parkName) : undefined;
+  const { status: estimatedStatus, source: statusSource } = getEffectiveParkStatus(
+    latestReport?.status,
+    parkEstimate
+  );
   const headerTitle = parkName ?? trail.name;
 
   const trailDisplayName = trail.name.includes(' - ')
@@ -127,6 +150,23 @@ export function TrailDetailPage() {
               </p>
             </div>
           </div>
+
+          {statusSource === 'estimate' && estimatedStatus && (
+            <div className="mt-4 flex items-center gap-3 rounded-[16px] bg-[#f5f2ec] px-3.5 py-3">
+              <StatusCircle status={estimatedStatus} className="!size-8" />
+              <div className="min-w-0">
+                <p
+                  className="text-[15px] font-bold leading-none"
+                  style={{ color: STATUS_TEXT[estimatedStatus] }}
+                >
+                  {t(STATUS_LABEL[estimatedStatus])}
+                </p>
+                <p className="text-[12px] text-[#687588] mt-1">
+                  {t('condition_estimated_from_rain')}
+                </p>
+              </div>
+            </div>
+          )}
 
           <button
             onClick={() => navigate(`/trails/${trail.id}/report`)}
