@@ -18,16 +18,42 @@ const sizeMap = {
 
 interface StatusCircleProps {
   status?: Status | null;
+  /** Rain estimate (vs community report) — dashed ring + softer fill. */
+  estimated?: boolean;
   size?: keyof typeof sizeMap;
   className?: string;
 }
 
 /** Solid condition marker — green / yellow / red, no icon. */
-export function StatusCircle({ status, size = 'md', className }: StatusCircleProps) {
+export function StatusCircle({
+  status,
+  estimated = false,
+  size = 'md',
+  className,
+}: StatusCircleProps) {
+  const color = status ? STATUS_DOT[status] : UNKNOWN_DOT;
+
+  if (estimated && status) {
+    return (
+      <span
+        className={cn(
+          'rounded-full shrink-0 box-border',
+          sizeMap[size],
+          className
+        )}
+        style={{
+          backgroundColor: `${color}99`,
+          border: `2.5px dashed ${color}`,
+        }}
+        aria-hidden
+      />
+    );
+  }
+
   return (
     <span
       className={cn('rounded-full shrink-0', sizeMap[size], className)}
-      style={{ backgroundColor: status ? STATUS_DOT[status] : UNKNOWN_DOT }}
+      style={{ backgroundColor: color }}
       aria-hidden
     />
   );

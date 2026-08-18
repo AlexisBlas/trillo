@@ -8,6 +8,8 @@ type Status = 'green' | 'yellow' | 'red';
 interface StatusWithHazardsProps {
   status?: Status | null;
   conditions?: string[] | null;
+  /** Rain estimate marker (dashed) vs solid community report. */
+  estimated?: boolean;
   size?: 'sm' | 'md';
   className?: string;
 }
@@ -19,6 +21,7 @@ interface StatusWithHazardsProps {
 export function StatusWithHazards({
   status,
   conditions,
+  estimated = false,
   size = 'md',
   className,
 }: StatusWithHazardsProps) {
@@ -29,7 +32,12 @@ export function StatusWithHazards({
 
   return (
     <div className={cn('relative shrink-0 size-10', className)}>
-      <StatusCircle status={status} size={size} className="absolute inset-0" />
+      <StatusCircle
+        status={status}
+        estimated={estimated}
+        size={size}
+        className="absolute inset-0"
+      />
       {primary && PrimaryIcon && (
         <span
           className="absolute -bottom-1 -left-1 size-[20px] rounded-full flex items-center justify-center shadow-[0_0_0_2px_#ffffff]"

@@ -17,6 +17,7 @@ import { useTrails } from '../hooks/useTrails';
 import type { TrailWithCity } from '../hooks/useTrails';
 import { useParkReports } from '../hooks/useParkReports';
 import { StatusWithHazards } from '../components/trail/StatusWithHazards';
+import { ConditionSourceLegend } from '../components/trail/ConditionSourceLegend';
 import { NewParkBadge } from '../components/trail/NewParkBadge';
 import { formatUpdatedAgo, normalizeSearchText, searchIncludes } from '../lib/text';
 import type { ParkRegion } from '../lib/regions';
@@ -435,9 +436,12 @@ export function SearchPage() {
 
         {!isLoading && parks.length > 0 && (
           <>
-            <p className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#374151] mb-3 px-[4px] py-[0px]">
-              {parks.length} {parks.length === 1 ? t('park_singular') : t('park_plural')}
-            </p>
+            <div className="flex items-end justify-between gap-3 mb-3 px-[4px]">
+              <p className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#374151]">
+                {parks.length} {parks.length === 1 ? t('park_singular') : t('park_plural')}
+              </p>
+              <ConditionSourceLegend className="justify-end" />
+            </div>
             <div className="flex flex-col gap-[10px]">
               {parks.map((park) => {
                 const parkTitle = park.name;
@@ -457,6 +461,7 @@ export function SearchPage() {
                   >
                     <StatusWithHazards
                       status={status}
+                      estimated={source === 'estimate'}
                       conditions={parkHazards.map((h) => h.tag)}
                     />
                     <div className="flex-1 min-w-0">

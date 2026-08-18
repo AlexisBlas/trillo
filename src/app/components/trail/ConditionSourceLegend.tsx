@@ -1,0 +1,46 @@
+import { cn } from '../ui/utils';
+import { useLang } from '../../contexts/LangContext';
+import { STATUS_DOT } from './StatusCircle';
+
+interface ConditionSourceLegendProps {
+  className?: string;
+}
+
+/**
+ * Compact legend: solid = community report, dashed ring = rain estimate.
+ */
+export function ConditionSourceLegend({ className }: ConditionSourceLegendProps) {
+  const { t } = useLang();
+  const sample = STATUS_DOT.green;
+
+  return (
+    <div
+      className={cn(
+        'flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] text-[#687588]',
+        className
+      )}
+      role="note"
+      aria-label={t('condition_legend_aria')}
+    >
+      <span className="inline-flex items-center gap-1.5">
+        <span
+          className="size-2.5 rounded-full shrink-0"
+          style={{ backgroundColor: sample }}
+          aria-hidden
+        />
+        <span>{t('condition_legend_reported')}</span>
+      </span>
+      <span className="inline-flex items-center gap-1.5">
+        <span
+          className="size-2.5 rounded-full shrink-0 box-border"
+          style={{
+            backgroundColor: `${sample}99`,
+            border: `1px dashed ${sample}`,
+          }}
+          aria-hidden
+        />
+        <span>{t('condition_legend_estimated')}</span>
+      </span>
+    </div>
+  );
+}

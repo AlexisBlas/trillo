@@ -13,6 +13,7 @@ import { useParkReports } from '../hooks/useParkReports';
 import { useParkMeta } from '../hooks/useHiddenParks';
 import { StatusCircle } from '../components/trail/StatusCircle';
 import { StatusWithHazards } from '../components/trail/StatusWithHazards';
+import { ConditionSourceLegend } from '../components/trail/ConditionSourceLegend';
 import { HazardNotice } from '../components/trail/HazardNotice';
 import { HazardTrailCarousel } from '../components/trail/HazardTrailCarousel';
 import { getCriticalHazards, mergeCriticalHazards } from '../lib/hazards';
@@ -298,7 +299,11 @@ export function ParkDetailPage() {
                 {t('park_current_conditions')}
               </p>
               <div className="mt-3 flex items-center gap-2.5 min-w-0">
-                <StatusCircle status={effectiveStatus} className="shrink-0" />
+                <StatusCircle
+                  status={effectiveStatus}
+                  estimated={statusSource === 'estimate'}
+                  className="shrink-0"
+                />
                 <p
                   className="text-[clamp(1.75rem,8.2vw,2.75rem)] font-bold tracking-[-1.2px] leading-none whitespace-nowrap"
                   style={{ color: statusText ?? '#1a1a1a' }}
@@ -306,6 +311,7 @@ export function ParkDetailPage() {
                   {effectiveStatus ? t(STATUS_LABEL[effectiveStatus]) : '—'}
                 </p>
               </div>
+              <ConditionSourceLegend className="mt-3" />
             </div>
 
             <div className="pl-4 border-l border-[#e5e7eb] flex flex-col justify-center shrink-0 max-w-[38%]">
@@ -420,7 +426,11 @@ export function ParkDetailPage() {
                       onClick={() => navigate(`/trails/${trail.id}`)}
                       className="bg-[#fafaf8] border border-[#ebe6dc] hover:border-[#2c4a1e]/40 transition-colors pl-3.5 pr-3.5 py-3 flex items-center gap-3 text-left rounded-[16px] active:scale-[0.99] overflow-visible"
                     >
-                      <StatusWithHazards status={status} conditions={hazardTags} />
+                      <StatusWithHazards
+                        status={status}
+                        estimated={statusIsEstimate}
+                        conditions={hazardTags}
+                      />
                       <div className="flex-1 min-w-0">
                         <h3 className="text-[15px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
                           {displayName}

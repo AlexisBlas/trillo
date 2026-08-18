@@ -13,6 +13,7 @@ import type { TrailWithCity } from '../hooks/useTrails';
 import { useTrailReports } from '../hooks/useTrailReports';
 import { useParkReports } from '../hooks/useParkReports';
 import { StatusWithHazards } from '../components/trail/StatusWithHazards';
+import { ConditionSourceLegend } from '../components/trail/ConditionSourceLegend';
 import { NewParkBadge } from '../components/trail/NewParkBadge';
 import { isReportFresh, formatUpdatedAgo, normalizeSearchText, searchIncludes } from '../lib/text';
 import { useLang } from '../contexts/LangContext';
@@ -134,6 +135,7 @@ export function Home() {
       >
         <StatusWithHazards
           status={status}
+          estimated={source === 'estimate'}
           conditions={parkHazards.map((h) => h.tag)}
         />
         <div className="flex-1 min-w-0">
@@ -278,6 +280,7 @@ export function Home() {
 
       {/* Following + Recently Reported */}
       <div className="px-[20px] pt-[32px] pb-[40px]">
+        <ConditionSourceLegend className="mb-5 px-1" />
         <div className="mb-8">
           <div className="flex items-center justify-between mx-[4px] mt-[0px] mb-[12px]">
             <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#374151]">
