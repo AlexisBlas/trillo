@@ -1,13 +1,13 @@
 import { cn } from '../ui/utils';
 import { useLang } from '../../contexts/LangContext';
-import { STATUS_DOT } from './StatusCircle';
+import { estimatedStatusFill, STATUS_DOT } from './StatusCircle';
 
 interface ConditionSourceLegendProps {
   className?: string;
 }
 
 /**
- * Compact legend: solid = community report, dashed ring = rain estimate.
+ * Compact legend: solid = community report, half-tone = rain estimate.
  */
 export function ConditionSourceLegend({ className }: ConditionSourceLegendProps) {
   const { t } = useLang();
@@ -32,11 +32,8 @@ export function ConditionSourceLegend({ className }: ConditionSourceLegendProps)
       </span>
       <span className="inline-flex items-center gap-1.5">
         <span
-          className="size-2.5 rounded-full shrink-0 box-border"
-          style={{
-            backgroundColor: `${sample}40`,
-            border: `1px dashed ${sample}`,
-          }}
+          className="size-2.5 rounded-full shrink-0"
+          style={{ backgroundImage: estimatedStatusFill(sample) }}
           aria-hidden
         />
         <span>{t('condition_legend_estimated')}</span>

@@ -11,6 +11,14 @@ export const STATUS_DOT: Record<Status, string> = {
 
 const UNKNOWN_DOT = '#d1d5db';
 
+/** Soft half of the estimated two-tone marker (~25% opacity). */
+export const STATUS_ESTIMATED_SOFT = '40';
+
+/** Two-tone half-circle: solid left, transparent right. */
+export function estimatedStatusFill(color: string): string {
+  return `linear-gradient(90deg, ${color} 50%, ${color}${STATUS_ESTIMATED_SOFT} 50%)`;
+}
+
 const sizeMap = {
   sm: 'size-10', // 40×40
   md: 'size-10', // 40×40 — same marker everywhere
@@ -18,7 +26,7 @@ const sizeMap = {
 
 interface StatusCircleProps {
   status?: Status | null;
-  /** Rain estimate (vs community report) — dashed ring + softer fill. */
+  /** Rain estimate (vs community report) — two-tone half-circle. */
   estimated?: boolean;
   size?: keyof typeof sizeMap;
   className?: string;
@@ -36,15 +44,8 @@ export function StatusCircle({
   if (estimated && status) {
     return (
       <span
-        className={cn(
-          'rounded-full shrink-0 box-border',
-          sizeMap[size],
-          className
-        )}
-        style={{
-          backgroundColor: `${color}40`,
-          border: `2.5px dashed ${color}`,
-        }}
+        className={cn('rounded-full shrink-0', sizeMap[size], className)}
+        style={{ backgroundImage: estimatedStatusFill(color) }}
         aria-hidden
       />
     );
