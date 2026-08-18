@@ -34,7 +34,7 @@ export function ConditionSourceLegend({ className }: ConditionSourceLegendProps)
         <span
           className="size-2.5 rounded-full shrink-0 box-border"
           style={{
-            backgroundColor: `${sample}99`,
+            backgroundColor: `${sample}40`,
             border: `1px dashed ${sample}`,
           }}
           aria-hidden

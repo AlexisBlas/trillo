@@ -42,7 +42,7 @@ export function StatusCircle({
           className
         )}
         style={{
-          backgroundColor: `${color}99`,
+          backgroundColor: `${color}40`,
           border: `2.5px dashed ${color}`,
         }}
         aria-hidden
