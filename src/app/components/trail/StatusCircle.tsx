@@ -14,9 +14,9 @@ const UNKNOWN_DOT = '#d1d5db';
 /** Soft half of the estimated two-tone marker (~25% opacity). */
 export const STATUS_ESTIMATED_SOFT = '40';
 
-/** Two-tone half-circle: solid left, transparent right. */
+/** Two-tone half-circle: solid / transparent split on a diagonal. */
 export function estimatedStatusFill(color: string): string {
-  return `linear-gradient(90deg, ${color} 50%, ${color}${STATUS_ESTIMATED_SOFT} 50%)`;
+  return `linear-gradient(135deg, ${color} 50%, ${color}${STATUS_ESTIMATED_SOFT} 50%)`;
 }
 
 const sizeMap = {
