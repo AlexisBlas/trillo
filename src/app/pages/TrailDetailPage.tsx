@@ -96,10 +96,13 @@ export function TrailDetailPage() {
   const latestReport = visibleReports[0];
   const parkName = trail.location || null;
   const parkEstimate = parkName ? estimatesByPark.get(parkName) : undefined;
-  const { status: estimatedStatus, source: statusSource } = getEffectiveParkStatus(
-    latestReport?.status,
-    parkEstimate
-  );
+  const { status: estimatedStatus, source: statusSource, rainAdjusted } =
+    getEffectiveParkStatus(
+      latestReport
+        ? { status: latestReport.status, createdAt: latestReport.created_at }
+        : null,
+      parkEstimate
+    );
   const headerTitle = parkName ?? trail.name;
 
   const trailDisplayName = trail.name.includes(' - ')
@@ -162,7 +165,9 @@ export function TrailDetailPage() {
                   {t(STATUS_LABEL[estimatedStatus])}
                 </p>
                 <p className="text-[12px] text-[#687588] mt-1">
-                  {t('condition_estimated_from_rain')}
+                  {rainAdjusted
+                    ? t('condition_rain_adjusted_hint')
+                    : t('condition_estimated_from_rain')}
                 </p>
               </div>
             </div>

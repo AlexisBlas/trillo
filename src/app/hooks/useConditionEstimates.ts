@@ -1,20 +1,26 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { estimateConditionFromPrecip, type TrailConditionStatus } from '../lib/conditionEstimate';
+import {
+  estimateConditionFromPrecip,
+  isWetterStatus,
+  type TrailConditionStatus,
+} from '../lib/conditionEstimate';
 import { resolveParkCoords, type Coords } from '../lib/municipalityCoords';
 import { getCityRegion, type ParkRegion } from '../lib/regions';
 import { resolveParkCity } from '../lib/text';
 import { useParksMeta } from './useParksMeta';
 import { useTrails } from './useTrails';
 
+export type HourlyPrecip = { time: string[]; precipitation: number[] };
+
 export type ParkConditionEstimate = {
   status: TrailConditionStatus;
   weightedPrecipMm: number;
   totalPrecipMm: number;
   coords: Coords;
+  region: ParkRegion | null;
+  hourly: HourlyPrecip;
 };
-
-type HourlyPrecip = { time: string[]; precipitation: number[] };
 
 function coordKey(coords: Coords): string {
   return `${coords.lat.toFixed(2)},${coords.lng.toFixed(2)}`;
@@ -112,7 +118,7 @@ export function useConditionEstimates() {
   const precipQuery = useQuery({
     queryKey: [
       'park-precip-estimates',
-      'v1',
+      'v2',
       uniquePoints.map((p) => coordKey(p)).sort().join('|'),
     ],
     enabled: uniquePoints.length > 0,
@@ -135,6 +141,8 @@ export function useConditionEstimates() {
         weightedPrecipMm: estimate.weightedPrecipMm,
         totalPrecipMm: estimate.totalPrecipMm,
         coords: park.coords,
+        region: park.region,
+        hourly,
       });
     }
     return map;
@@ -147,15 +155,60 @@ export function useConditionEstimates() {
   };
 }
 
-/** Effective park status: fresh report wins; otherwise rain estimate. */
-export function getEffectiveParkStatus(
-  reportStatus: TrailConditionStatus | null | undefined,
-  estimate: ParkConditionEstimate | undefined
-): {
+export type ConditionReportInput = {
+  status: TrailConditionStatus;
+  createdAt: string;
+};
+
+export type EffectiveParkStatus = {
   status: TrailConditionStatus | null;
+  /** Solid marker for reports; half-tone for rain-only or rain-adjusted. */
   source: 'report' | 'estimate' | null;
-} {
-  if (reportStatus) return { status: reportStatus, source: 'report' };
-  if (estimate) return { status: estimate.status, source: 'estimate' };
-  return { status: null, source: null };
+  /** True when a fresher report was wetter-overridden by rain after it was filed. */
+  rainAdjusted: boolean;
+};
+
+/**
+ * Effective park status:
+ * - No report → rain estimate
+ * - Report, but rain *after* the report is wetter → rain-adjusted (half-tone)
+ * - Otherwise → trust the report
+ */
+export function getEffectiveParkStatus(
+  report: ConditionReportInput | null | undefined,
+  estimate: ParkConditionEstimate | undefined
+): EffectiveParkStatus {
+  if (report) {
+    const reportedAt = new Date(report.createdAt);
+    if (estimate?.hourly && !Number.isNaN(reportedAt.getTime())) {
+      const sinceRain = estimateConditionFromPrecip(
+        estimate.hourly,
+        estimate.region,
+        new Date(),
+        reportedAt
+      );
+      if (isWetterStatus(sinceRain.status, report.status)) {
+        return {
+          status: sinceRain.status,
+          source: 'estimate',
+          rainAdjusted: true,
+        };
+      }
+    }
+    return {
+      status: report.status,
+      source: 'report',
+      rainAdjusted: false,
+    };
+  }
+
+  if (estimate) {
+    return {
+      status: estimate.status,
+      source: 'estimate',
+      rainAdjusted: false,
+    };
+  }
+
+  return { status: null, source: null, rainAdjusted: false };
 }

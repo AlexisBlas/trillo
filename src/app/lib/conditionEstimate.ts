@@ -46,15 +46,18 @@ export function getRegionDryDown(region: ParkRegion | null | undefined): RegionD
 /**
  * Map recent hourly precipitation to an estimated Dry/Wet/Muddy status.
  * Recent rain weighs more than older rain (exponential decay by region).
+ * When `since` is set, only rain at/after that time counts (post-report wet-up).
  */
 export function estimateConditionFromPrecip(
   hourly: { time: string[]; precipitation: number[] },
   region: ParkRegion | null | undefined,
-  now: Date = new Date()
+  now: Date = new Date(),
+  since?: Date | null
 ): ConditionEstimate {
   const { halfLifeHours, wetMm, muddyMm } = getRegionDryDown(region);
   const nowMs = now.getTime();
   const lookbackMs = 72 * 60 * 60 * 1000;
+  const sinceMs = since ? since.getTime() : null;
   let weighted = 0;
   let total = 0;
 
@@ -62,6 +65,7 @@ export function estimateConditionFromPrecip(
   for (let i = 0; i < n; i++) {
     const t = Date.parse(hourly.time[i]);
     if (Number.isNaN(t)) continue;
+    if (sinceMs != null && t < sinceMs) continue;
     const ageMs = nowMs - t;
     if (ageMs < 0 || ageMs > lookbackMs) continue;
     const mm = hourly.precipitation[i] ?? 0;
@@ -81,4 +85,18 @@ export function estimateConditionFromPrecip(
     weightedPrecipMm: Math.round(weighted * 10) / 10,
     totalPrecipMm: Math.round(total * 10) / 10,
   };
+}
+
+/** Higher = wetter / worse rideability. */
+export const STATUS_SEVERITY: Record<TrailConditionStatus, number> = {
+  green: 0,
+  yellow: 1,
+  red: 2,
+};
+
+export function isWetterStatus(
+  candidate: TrailConditionStatus,
+  baseline: TrailConditionStatus
+): boolean {
+  return STATUS_SEVERITY[candidate] > STATUS_SEVERITY[baseline];
 }

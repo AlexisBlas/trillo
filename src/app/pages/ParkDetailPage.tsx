@@ -92,12 +92,14 @@ export function ParkDetailPage() {
     return () => ro.disconnect();
   }, [parkDescription, descExpanded, lang]);
 
-  const statusByTrail = useMemo(() => {
-    const map = new Map<string, TrailStatus>();
+  const reportByTrail = useMemo(() => {
+    const map = new Map<string, { status: TrailStatus; createdAt: string }>();
     for (const r of allReports || []) {
       if (!isValidTrailId(r.trail_id)) continue;
       if (!isReportFresh(r.created_at, r.conditions)) continue;
-      if (!map.has(r.trail_id)) map.set(r.trail_id, r.status);
+      if (!map.has(r.trail_id)) {
+        map.set(r.trail_id, { status: r.status, createdAt: r.created_at });
+      }
     }
     return map;
   }, [allReports]);
@@ -124,24 +126,27 @@ export function ParkDetailPage() {
     [trails, decoded]
   );
 
+  const parkEstimate = estimatesByPark.get(decoded);
+
   const sortedTrails = useMemo(() => {
-    const parkEstimate = estimatesByPark.get(decoded)?.status;
     return [...parkTrails].sort((a, b) => {
-      const aStatus = statusByTrail.get(a.id) ?? parkEstimate;
-      const bStatus = statusByTrail.get(b.id) ?? parkEstimate;
-      const aRank = aStatus ? STATUS_RANK[aStatus] : 3;
-      const bRank = bStatus ? STATUS_RANK[bStatus] : 3;
+      const aEff = getEffectiveParkStatus(reportByTrail.get(a.id) ?? null, parkEstimate);
+      const bEff = getEffectiveParkStatus(reportByTrail.get(b.id) ?? null, parkEstimate);
+      const aRank = aEff.status ? STATUS_RANK[aEff.status] : 3;
+      const bRank = bEff.status ? STATUS_RANK[bEff.status] : 3;
       if (aRank !== bRank) return aRank - bRank;
       return a.name.localeCompare(b.name);
     });
-  }, [parkTrails, statusByTrail, estimatesByPark, decoded]);
+  }, [parkTrails, reportByTrail, parkEstimate]);
 
   const reportSummary = byPark.get(decoded);
-  const parkEstimate = estimatesByPark.get(decoded);
-  const { status: effectiveStatus, source: statusSource } = getEffectiveParkStatus(
-    reportSummary?.status,
-    parkEstimate
-  );
+  const { status: effectiveStatus, source: statusSource, rainAdjusted } =
+    getEffectiveParkStatus(
+      reportSummary
+        ? { status: reportSummary.status, createdAt: reportSummary.createdAt }
+        : null,
+      parkEstimate
+    );
   const summaryNotes = cleanNotes(reportSummary?.notes);
   const summaryHazards = getCriticalHazards(reportSummary?.conditions);
   const statusText = effectiveStatus ? STATUS_TEXT[effectiveStatus] : null;
@@ -167,6 +172,12 @@ export function ParkDetailPage() {
   }, [sortedTrails, hazardsByTrail]);
 
   const updateMeta = useMemo(() => {
+    if (rainAdjusted) {
+      return {
+        label: t('condition_rain_adjusted'),
+        value: t('condition_from_rain'),
+      };
+    }
     if (statusSource === 'estimate') {
       return {
         label: t('condition_estimated'),
@@ -197,7 +208,7 @@ export function ParkDetailPage() {
           ? `${t('park_updated_ago')} ${value}`
           : `${value} ${t('park_updated_ago')}`,
     };
-  }, [reportSummary?.createdAt, statusSource, t, lang]);
+  }, [reportSummary?.createdAt, statusSource, rainAdjusted, t, lang]);
 
   const handleReport = () => {
     if (!parkTrails.length) return;
@@ -414,9 +425,13 @@ export function ParkDetailPage() {
                   const displayName = trail.name.includes(' - ')
                     ? trail.name.split(' - ').slice(1).join(' - ')
                     : trail.name;
-                  const reportStatus = statusByTrail.get(trail.id) ?? null;
-                  const status = reportStatus ?? parkEstimate?.status ?? null;
-                  const statusIsEstimate = !reportStatus && !!parkEstimate;
+                  const report = reportByTrail.get(trail.id) ?? null;
+                  const {
+                    status,
+                    source: trailSource,
+                    rainAdjusted: trailRainAdjusted,
+                  } = getEffectiveParkStatus(report, parkEstimate);
+                  const statusIsEstimate = trailSource === 'estimate';
                   const trailHazards = hazardsByTrail.get(trail.id) ?? [];
                   const hazardTags = trailHazards.map((h) => h.tag);
                   return (
@@ -437,7 +452,9 @@ export function ParkDetailPage() {
                         </h3>
                         {statusIsEstimate && (
                           <p className="text-[11px] text-[#8a8478] mt-0.5">
-                            {t('condition_estimated')}
+                            {trailRainAdjusted
+                              ? t('condition_rain_adjusted')
+                              : t('condition_estimated')}
                           </p>
                         )}
                       </div>

@@ -119,8 +119,10 @@ export function Home() {
 
   const renderParkCard = (park: Park) => {
     const report = byPark.get(park.name);
-    const { status, source } = getEffectiveParkStatus(
-      report?.status,
+    const { status, source, rainAdjusted } = getEffectiveParkStatus(
+      report
+        ? { status: report.status, createdAt: report.createdAt }
+        : null,
       estimatesByPark.get(park.name)
     );
     const updatedAgo = formatUpdatedAgo(report?.createdAt);
@@ -150,7 +152,9 @@ export function Home() {
           </p>
           <p className="text-[12px] text-[#4b5563] mt-0.5">
             {park.trails.length} {park.trails.length === 1 ? t('trail_singular') : t('trail_plural')}
-            {source === 'estimate' ? (
+            {rainAdjusted ? (
+              <span> · {t('condition_rain_adjusted')}</span>
+            ) : source === 'estimate' ? (
               <span> · {t('condition_estimated')}</span>
             ) : updatedAgo ? (
               <span> · {updatedAgo}</span>
