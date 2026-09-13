@@ -84,7 +84,7 @@ html.landing-on body {
   left: 0;
   z-index: 0;
   background: var(--poster) center / cover no-repeat;
-  filter: brightness(0.42) contrast(1.1) saturate(1.08);
+  filter: brightness(0.26) contrast(1.12) saturate(1.04);
   pointer-events: none;
   transition: opacity 1.2s var(--ease);
 }
@@ -131,15 +131,21 @@ html.film-failed .landing-stage {
   left: 0;
   z-index: 1;
   pointer-events: none;
-  background: radial-gradient(
-    125% 95% at 50% 42%,
-    rgba(18, 24, 14, 0.42) 0%,
-    rgba(18, 24, 14, 0.62) 62%,
-    rgba(18, 24, 14, 0.78) 100%
-  );
+  background:
+    linear-gradient(
+      90deg,
+      rgba(18, 24, 14, 0.28) 0%,
+      rgba(18, 24, 14, 0.08) 52%,
+      rgba(18, 24, 14, 0.22) 100%
+    ),
+    radial-gradient(
+      125% 95% at 50% 42%,
+      rgba(18, 24, 14, 0.58) 0%,
+      rgba(18, 24, 14, 0.76) 62%,
+      rgba(18, 24, 14, 0.9) 100%
+    );
 }
 
-.landing-topbar,
 .landing-main,
 .landing-close,
 .landing-footer {
@@ -184,8 +190,10 @@ html.film-failed .landing-stage {
 }
 
 .landing-topbar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 60;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -193,6 +201,18 @@ html.film-failed .landing-stage {
   gap: 1rem;
   padding: clamp(0.9rem, 2.2vh, 1.4rem) var(--gutter);
   pointer-events: none;
+  background: transparent;
+  transition:
+    background 0.4s var(--ease),
+    box-shadow 0.4s var(--ease),
+    backdrop-filter 0.4s var(--ease);
+}
+
+.landing-topbar[data-over='true'] {
+  background: rgba(18, 24, 14, 0.88);
+  box-shadow: inset 0 -1px 0 rgba(245, 240, 232, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 .landing-topbar > * {

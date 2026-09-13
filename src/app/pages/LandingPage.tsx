@@ -128,7 +128,7 @@ export function LandingPage() {
         mobileHint={copy.mobileHint}
       />
 
-      <header className="landing-topbar">
+      <header className="landing-topbar" data-over={current > 0 ? 'true' : 'false'}>
         <a className="landing-wordmark" href="#hero" data-jump onClick={jump}>
           Trillo
         </a>
