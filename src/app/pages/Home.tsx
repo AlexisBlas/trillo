@@ -184,7 +184,7 @@ export function Home() {
               'linear-gradient(90deg, rgba(14,21,16,0.42) 0%, rgba(14,21,16,0.08) 72%, transparent 100%), linear-gradient(180deg, rgba(14,21,16,0.06) 0%, rgba(14,21,16,0.18) 52%, #0E1510 100%)',
           }}
         />
-        <div className="relative z-10 flex min-h-[340px] flex-col justify-end px-5 pb-6 pt-14 text-left">
+        <div className="relative z-10 flex min-h-[250px] flex-col justify-end px-5 pb-6 pt-14 text-left">
           <p className="text-[13px] text-[#A8C4A0] mb-1.5">{getGreeting()}</p>
           <h1 className="text-[36px] leading-[38px] font-bold tracking-[-2px] text-[#F2F5F2] mb-2">
             {t('home_headline').split('\n').map((line, i) => (
