@@ -50,7 +50,7 @@ export function LandingDevice({
     const fit = () => {
       const h = shell.clientHeight;
       if (h <= 1) return;
-      const w = h * (390 / 844);
+      const w = h * (390 / 844) + 16;
       shell.style.width = `${w}px`;
       frame.style.transform = `scale(${w / 390})`;
     };

@@ -390,7 +390,7 @@ html.film-failed .landing-stage {
 
 .landing-device__shell {
   height: calc(100% - 1.7rem);
-  aspect-ratio: 390 / 844;
+  aspect-ratio: 406 / 844;
   width: auto;
   flex: 0 0 auto;
   position: relative;
