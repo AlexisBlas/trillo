@@ -396,7 +396,7 @@ html.film-failed .landing-stage {
 
 .chapter {
   position: relative;
-  min-height: 200svh;
+  min-height: 135svh;
 }
 
 .chapter__pin {
@@ -697,24 +697,69 @@ html.film-failed .landing-stage {
   border-top: 1px solid var(--line);
 }
 
-.faq-list details {
-  padding: 0.85rem 0;
-}
-
-.faq-list summary {
+.faq-list__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.1rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.9rem 0;
+  border: 0;
+  background: none;
   cursor: pointer;
+  text-align: left;
+  font-family: inherit;
   font-weight: 600;
   font-size: 1.02rem;
   color: var(--cream);
-  list-style: none;
 }
 
-.faq-list summary::-webkit-details-marker {
-  display: none;
+.faq-list__trigger:active {
+  transform: scale(0.995);
 }
 
-.faq-list details p {
-  margin: 0.65rem 0 0;
+.faq-list__arrow {
+  position: relative;
+  flex: 0 0 auto;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin-right: 0.1rem;
+}
+
+.faq-list__arrow::before {
+  content: '';
+  position: absolute;
+  inset: 18% 18% 28% 18%;
+  border-right: 1.5px solid var(--cream);
+  border-bottom: 1.5px solid var(--cream);
+  transform: rotate(45deg);
+  transform-origin: 50% 55%;
+  transition: transform 0.32s var(--ease);
+}
+
+.faq-list__trigger[aria-expanded='true'] .faq-list__arrow::before {
+  transform: rotate(225deg);
+}
+
+.faq-list__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.42s var(--ease);
+}
+
+.faq-list__panel[data-open='true'] {
+  grid-template-rows: 1fr;
+  transition-duration: 0.5s;
+}
+
+.faq-list__inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.faq-list__inner p {
+  margin: 0 0 0.95rem;
   font-size: 0.95rem;
   line-height: 1.6;
   color: var(--bone-2);
@@ -1120,5 +1165,10 @@ html.film-failed .landing-stage {
 
   html.film-ready .landing-stage {
     opacity: 0.55;
+  }
+
+  .faq-list__panel,
+  .faq-list__arrow::before {
+    transition: none;
   }
 }

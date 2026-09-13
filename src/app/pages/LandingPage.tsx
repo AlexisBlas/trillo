@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react';
+import { useEffect, useId, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react';
 import { useLang, type Lang } from '../contexts/LangContext';
 import { LANDING_PARKS, landingCopy } from '../data/landing';
 import { landingPosterUrl, useScrollFilm } from './landing/useScrollFilm';
@@ -18,6 +18,37 @@ function SplitWords({ text, className }: { text: string; className?: string }) {
         </span>
       ))}
     </h2>
+  );
+}
+
+function FaqItem({ q, a }: { q: string; a: string }) {
+  const [open, setOpen] = useState(false);
+  const panelId = useId();
+
+  return (
+    <li>
+      <button
+        type="button"
+        className="faq-list__trigger"
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={() => setOpen((value) => !value)}
+      >
+        <span>{q}</span>
+        <i className="faq-list__arrow" aria-hidden />
+      </button>
+      <div
+        id={panelId}
+        className="faq-list__panel"
+        data-open={open ? 'true' : 'false'}
+        role="region"
+        aria-hidden={!open}
+      >
+        <div className="faq-list__inner">
+          <p>{a}</p>
+        </div>
+      </div>
+    </li>
   );
 }
 
@@ -250,12 +281,7 @@ export function LandingPage() {
               <SplitWords text={copy.faqTitle} className="display" />
               <Reveal as="ul" index={0} className="faq-list">
                 {copy.faqs.map((faq) => (
-                  <li key={faq.q}>
-                    <details>
-                      <summary>{faq.q}</summary>
-                      <p>{faq.a}</p>
-                    </details>
-                  </li>
+                  <FaqItem key={faq.q} q={faq.q} a={faq.a} />
                 ))}
               </Reveal>
             </div>

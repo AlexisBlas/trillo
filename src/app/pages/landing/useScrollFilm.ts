@@ -135,7 +135,7 @@ export function useScrollFilm(keyTimes: readonly number[] = FILM_KEY_TIMES) {
           m.el.style.setProperty('--op', '1');
           m.el.style.setProperty('--blur', '0px');
           m.el.style.setProperty('--y', '0px');
-          if (i > 0 && y >= top - vh) m.el.classList.add('is-reading');
+          if (i > 0 && y >= top - vh * 1.25) m.el.classList.add('is-reading');
         }
       }
       const start = metrics[0]?.top ?? 0;
