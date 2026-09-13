@@ -30,18 +30,18 @@ export function TrailCard({ report }: TrailCardProps) {
 
   return (
     <Link to={`/trails/${trails.id}`}>
-      <div className="bg-white rounded-[16px] border-[1.5px] border-[#f0ede6] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#2c4a1e] transition-colors">
+      <div className="bg-[#151C18] rounded-[16px] border-[1.5px] border-[#24302A] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#5EE08A] transition-colors">
         <div className="p-[15.5px] flex items-center gap-3.5">
           <StatusWithHazards status={status} reported conditions={conditions} />
 
           <div className="flex-1 min-w-0">
-            <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate mb-0.5">
+            <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#F2F5F2] truncate mb-0.5">
               {trails.name}
             </h3>
-            <p className="text-[13px] text-[#374151] truncate mb-0.5">
+            <p className="text-[13px] text-[#9AA39C] truncate mb-0.5">
               {trails.location || 'Trail location'}
             </p>
-            <p className="text-[12px] text-[#4b5563]">
+            <p className="text-[12px] text-[#8B958C]">
               Updated {formatDistanceToNow(new Date(created_at), { addSuffix: true })}
             </p>
           </div>
@@ -51,7 +51,7 @@ export function TrailCard({ report }: TrailCardProps) {
               {badge.label}
             </span>
             {surfaceCondition && surfaceLabelMap[surfaceCondition] && (
-              <span className="text-[10px] font-bold tracking-[0.5px] text-[#687588]">
+              <span className="text-[10px] font-bold tracking-[0.5px] text-[#8B958C]">
                 {surfaceLabelMap[surfaceCondition]}
               </span>
             )}

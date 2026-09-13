@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
 import { Layout } from './components/layout/Layout';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
 import { AdminRoute } from './components/layout/AdminRoute';
@@ -26,6 +26,10 @@ import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
 import { ResetPasswordPage } from './pages/auth/ResetPasswordPage';
 
 export const router = createBrowserRouter([
+  {
+    path: '/welcome',
+    element: <Navigate to="/" replace />,
+  },
   {
     path: '/',
     element: <Layout />,

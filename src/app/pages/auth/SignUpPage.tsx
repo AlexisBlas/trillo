@@ -40,20 +40,20 @@ export function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F0E8]">
+    <div className="min-h-screen bg-[#0E1510]">
       <div className="px-4 pt-3.5">
         <BackButton />
       </div>
 
       <div className="px-5 pt-8 pb-6">
-        <div className="size-12 rounded-full bg-[#3a6b35] flex items-center justify-center mb-4">
+        <div className="size-12 rounded-full bg-[#1E3A28] flex items-center justify-center mb-4">
           <Mountain className="size-6 text-white" />
         </div>
-        <h1 className="text-[24px] font-bold text-[#1a3010] leading-tight">Create account</h1>
-        <p className="text-[14px] text-[#4b6b3a] mt-1">
+        <h1 className="text-[24px] font-bold text-[#F2F5F2] leading-tight">Create account</h1>
+        <p className="text-[14px] text-[#A8C4A0] mt-1">
           {t('signin_subtitle')}
         </p>
-        <p className="text-[14px] text-[#4b6b3a] mt-1">
+        <p className="text-[14px] text-[#A8C4A0] mt-1">
           {t('auth_guest_note')}
         </p>
       </div>
@@ -67,9 +67,9 @@ export function SignUpPage() {
 
         <AuthForm mode="signup" onSubmit={handleSubmit} isLoading={isLoading} />
 
-        <p className="mt-6 text-center text-[13px] text-[#374151]">
+        <p className="mt-6 text-center text-[13px] text-[#9AA39C]">
           Already have an account?{' '}
-          <Link to="/auth/signin" className="text-[#2c4a1e] font-bold">
+          <Link to="/auth/signin" className="text-[#5EE08A] font-bold">
             Sign in
           </Link>
         </p>

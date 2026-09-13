@@ -221,10 +221,10 @@ export function ParkDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F0E8]">
-      <div className="sticky top-0 z-40 bg-[#F5F0E8]/95 backdrop-blur-sm px-4 pt-3.5 h-[52px] flex items-center justify-between">
+    <div className="min-h-screen bg-[#0E1510]">
+      <div className="sticky top-0 z-40 bg-[#0E1510]/95 backdrop-blur-sm px-4 pt-3.5 h-[52px] flex items-center justify-between">
         <BackButton />
-        <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-[#1a3010] truncate max-w-[55%] text-center">
+        <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-[#F2F5F2] truncate max-w-[55%] text-center">
           {decoded}
         </h1>
         <ShareButton
@@ -258,7 +258,7 @@ export function ParkDetailPage() {
       </div>
 
       <div className="px-5 pt-6 pb-4">
-        <p className="text-[12px] font-medium text-[#687588] tracking-[0.2px]">
+        <p className="text-[12px] font-medium text-[#8B958C] tracking-[0.2px]">
           {[parkMeta?.city, parkTrails.length
             ? `${parkTrails.length} ${parkTrails.length === 1 ? t('trail_singular') : t('trail_plural')}`
             : null]
@@ -267,7 +267,7 @@ export function ParkDetailPage() {
         </p>
         <div className="mt-1 flex items-start justify-between gap-3">
           <div className="min-w-0 flex items-start gap-2">
-            <h2 className="text-[28px] font-bold text-[#1a3010] leading-[32px] tracking-[-0.6px] text-balance min-w-0">
+            <h2 className="text-[28px] font-bold text-[#F2F5F2] leading-[32px] tracking-[-0.6px] text-balance min-w-0">
               {decoded}
             </h2>
             {isParkNew(parkMeta?.created_at) && (
@@ -281,7 +281,7 @@ export function ParkDetailPage() {
           <div className="mt-3 max-w-[36rem]">
             <p
               ref={descRef}
-              className={`text-[15px] leading-[23px] text-[#4b5563] text-pretty ${
+              className={`text-[15px] leading-[23px] text-[#8B958C] text-pretty ${
                 descExpanded ? '' : 'line-clamp-2'
               }`}
             >
@@ -291,7 +291,7 @@ export function ParkDetailPage() {
               <button
                 type="button"
                 onClick={() => setDescExpanded((v) => !v)}
-                className="mt-1.5 text-[13px] font-bold text-[#2c4a1e] hover:text-[#1a3010] transition-colors"
+                className="mt-1.5 text-[13px] font-bold text-[#5EE08A] hover:text-[#4ADE80] transition-colors"
               >
                 {descExpanded ? t('park_show_less') : t('park_show_more')}
               </button>
@@ -301,7 +301,7 @@ export function ParkDetailPage() {
 
         {/* Conditions: large status | update · notes below */}
         <section
-          className="mt-4 bg-white rounded-[24px] border border-[#ebe6dc] overflow-hidden"
+          className="mt-4 bg-[#151C18] rounded-[24px] border border-[#24302A] overflow-hidden"
           aria-label={t('park_current_conditions')}
         >
           <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-0 px-5 pt-5 pb-5">
@@ -317,7 +317,7 @@ export function ParkDetailPage() {
                 />
                 <p
                   className="text-[clamp(1.75rem,8.2vw,2.75rem)] font-bold tracking-[-1.2px] leading-none whitespace-nowrap"
-                  style={{ color: statusText ?? '#1a1a1a' }}
+                  style={{ color: statusText ?? '#F2F5F2' }}
                 >
                   {effectiveStatus ? t(STATUS_LABEL[effectiveStatus]) : '—'}
                 </p>
@@ -325,13 +325,13 @@ export function ParkDetailPage() {
               <ConditionSourceLegend className="mt-3" />
             </div>
 
-            <div className="pl-4 border-l border-[#e5e7eb] flex flex-col justify-center shrink-0 max-w-[38%]">
+            <div className="pl-4 border-l border-[#24302A] flex flex-col justify-center shrink-0 max-w-[38%]">
               {updateMeta ? (
                 <div>
                   <p className="text-[13px] font-normal text-[#6b7280] leading-none">
                     {updateMeta.label}
                   </p>
-                  <p className="mt-1.5 text-[18px] sm:text-[20px] font-bold tracking-[-0.4px] text-[#1a1a1a] leading-none tabular-nums whitespace-nowrap">
+                  <p className="mt-1.5 text-[18px] sm:text-[20px] font-bold tracking-[-0.4px] text-[#F2F5F2] leading-none tabular-nums whitespace-nowrap">
                     {updateMeta.value}
                   </p>
                 </div>
@@ -353,7 +353,7 @@ export function ParkDetailPage() {
 
           {summaryNotes ? (
             <div className="mx-4 mb-4 rounded-[16px] bg-[#f5f2ec] px-4 py-3.5">
-              <p className="text-[14px] leading-[21px] text-[#374151] text-pretty">
+              <p className="text-[14px] leading-[21px] text-[#9AA39C] text-pretty">
                 {summaryNotes}
               </p>
             </div>
@@ -363,7 +363,7 @@ export function ParkDetailPage() {
         <button
           onClick={handleReport}
           disabled={parkTrails.length === 0}
-          className="mt-4 w-full h-[52px] bg-[#2c4a1e] rounded-[14px] text-white text-[13px] font-bold tracking-[1.5px] disabled:opacity-60 active:scale-[0.99] transition-transform"
+          className="mt-4 w-full h-[52px] bg-[#5EE08A] rounded-[14px] text-[#0E1510] text-[13px] font-bold tracking-[1.5px] disabled:opacity-60 active:scale-[0.99] transition-transform"
         >
           {t('park_report_btn')}
         </button>
@@ -385,25 +385,25 @@ export function ParkDetailPage() {
         )}
 
         {!isLoading && parkTrails.length === 0 && (
-          <div className="bg-white rounded-[20px] border border-[#ebe6dc] p-8 text-center">
-            <div className="size-12 rounded-full bg-[#f0ede6] flex items-center justify-center mx-auto mb-4">
-              <Mountain className="size-6 text-[#374151]" />
+          <div className="bg-[#151C18] rounded-[20px] border border-[#24302A] p-8 text-center">
+            <div className="size-12 rounded-full bg-[#24302A] flex items-center justify-center mx-auto mb-4">
+              <Mountain className="size-6 text-[#9AA39C]" />
             </div>
-            <h3 className="text-[15.5px] font-bold text-[#1a1a1a] mb-2">{t('park_no_trails')}</h3>
-            <p className="text-[13px] text-[#374151]">{t('park_no_trails_body')}</p>
+            <h3 className="text-[15.5px] font-bold text-[#F2F5F2] mb-2">{t('park_no_trails')}</h3>
+            <p className="text-[13px] text-[#9AA39C]">{t('park_no_trails_body')}</p>
           </div>
         )}
 
         {!isLoading && sortedTrails.length > 0 && (
-          <div className="bg-white rounded-[20px] border border-[#ebe6dc] overflow-hidden">
+          <div className="bg-[#151C18] rounded-[20px] border border-[#24302A] overflow-hidden">
             <button
               type="button"
               onClick={() => setTrailsOpen((v) => !v)}
               aria-expanded={trailsOpen}
-              className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left active:bg-[#fafaf8] transition-colors"
+              className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left active:bg-[#1A221C] transition-colors"
             >
               <div className="min-w-0">
-                <p className="text-[15px] font-bold tracking-[-0.2px] text-[#1a1a1a]">
+                <p className="text-[15px] font-bold tracking-[-0.2px] text-[#F2F5F2]">
                   {t('park_trails_by_condition')}
                 </p>
                 <p className="text-[12px] text-[#8a8478] mt-0.5">
@@ -420,7 +420,7 @@ export function ParkDetailPage() {
             </button>
 
             {trailsOpen && (
-              <div className="flex flex-col gap-2 px-3 pb-3 border-t border-[#f0ede6] pt-3">
+              <div className="flex flex-col gap-2 px-3 pb-3 border-t border-[#24302A] pt-3">
                 {sortedTrails.map((trail) => {
                   const displayName = trail.name.includes(' - ')
                     ? trail.name.split(' - ').slice(1).join(' - ')
@@ -438,7 +438,7 @@ export function ParkDetailPage() {
                       key={trail.id}
                       type="button"
                       onClick={() => navigate(`/trails/${trail.id}`)}
-                      className="bg-[#fafaf8] border border-[#ebe6dc] hover:border-[#2c4a1e]/40 transition-colors pl-3.5 pr-3.5 py-3 flex items-center gap-3 text-left rounded-[16px] active:scale-[0.99] overflow-visible"
+                      className="bg-[#1A221C] border border-[#24302A] hover:border-[#5EE08A]/40 transition-colors pl-3.5 pr-3.5 py-3 flex items-center gap-3 text-left rounded-[16px] active:scale-[0.99] overflow-visible"
                     >
                       <StatusWithHazards
                         status={status}
@@ -446,7 +446,7 @@ export function ParkDetailPage() {
                         conditions={hazardTags}
                       />
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-[15px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
+                        <h3 className="text-[15px] font-bold tracking-[-0.2px] text-[#F2F5F2] truncate">
                           {displayName}
                         </h3>
                         {trailSource === 'estimate' && (

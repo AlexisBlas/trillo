@@ -3,11 +3,11 @@ import type { TranslationKey } from '../contexts/LangContext';
 
 /** Shared palette for hazard callouts / badges. */
 export const HAZARD_COLORS = {
-  ink: '#5D3A1A',
+  ink: '#F5E6C8',
   iconBg: '#D97706',
   iconFg: '#ffffff',
-  cardBg: '#FFF9EC',
-  cardBorder: '#E5D9C3',
+  cardBg: '#1C1A14',
+  cardBorder: '#3D3428',
 } as const;
 
 export type CriticalHazardId = 'downed-trees' | 'broken-bridge';

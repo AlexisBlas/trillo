@@ -1,4 +1,3 @@
-import heroImage from '@/imports/eltrillo_hero.png'
 import { useMemo, useState } from 'react';
 import { Search, Plus, Database, MapPin, Mountain, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router';
@@ -133,7 +132,7 @@ export function Home() {
         key={park.name}
         type="button"
         onClick={() => navigate(`/parks/${encodeURIComponent(park.name)}`)}
-        className="bg-white border-[1.5px] border-[#f0ede6] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#2c4a1e] transition-colors p-[15.5px] flex items-center gap-3.5 text-left rounded-[32px]"
+        className="bg-[#151C18] border-[1.5px] border-[#24302A] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#5EE08A] transition-colors p-[15.5px] flex items-center gap-3.5 text-left rounded-[32px]"
       >
         <StatusWithHazards
           status={status}
@@ -142,15 +141,15 @@ export function Home() {
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 min-w-0">
-            <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
+            <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#F2F5F2] truncate">
               {park.name}
             </h3>
             {showNew && <NewParkBadge />}
           </div>
-          <p className="text-[13px] text-[#374151] truncate">
+          <p className="text-[13px] text-[#9AA39C] truncate">
             {park.city ?? ''}
           </p>
-          <p className="text-[12px] text-[#4b5563] mt-0.5">
+          <p className="text-[12px] text-[#8B958C] mt-0.5">
             {park.trails.length} {park.trails.length === 1 ? t('trail_singular') : t('trail_plural')}
             {rainAdjusted ? (
               <span> · {t('condition_rain_adjusted')}</span>
@@ -161,52 +160,72 @@ export function Home() {
             ) : null}
           </p>
         </div>
-        <ChevronRight className="size-5 text-[#4b5563] shrink-0" />
+        <ChevronRight className="size-5 text-[#8B958C] shrink-0" />
       </button>
     );
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F0E8]">
+    <div className="min-h-screen bg-[#0E1510]">
       <TopNav />
 
-      <div className="px-[0px] p-[0px]">
+      <section className="relative isolate overflow-hidden">
         <img
-          src={heroImage}
-          alt="Runner, hiker, and cyclist on a mountain trail"
-          className="w-full h-auto select-none pointer-events-none m-[0px]"
+          src="/landing/stills/01-trail.png"
+          alt=""
+          aria-hidden
+          className="absolute inset-0 size-full object-cover object-[center_42%] select-none pointer-events-none brightness-[1.12] [mask-image:linear-gradient(to_bottom,black_58%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_58%,transparent_100%)]"
         />
-      </div>
-
-      <div className="m-[0px] px-[20px] py-[0px]">
-        <div className="mb-6">
-
-            <h1 className="leading-[38px] text-[#4b6b3a] font-bold p-[0px] tracking-[-2px] mx-[0px] mt-[0px] mb-[8px] text-[36px] text-center">{t('home_headline').split('\n').map((line, i) => <span key={i}>{line}{i === 0 && <br />}</span>)}</h1>
-          <p className="text-[18px] px-[4px] py-[0px] text-center"><b>{freshReportCount} {freshReportCount === 1 ? t('home_report') : t('home_reports')}</b> {t('home_active_reports')}</p>
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(90deg, rgba(14,21,16,0.42) 0%, rgba(14,21,16,0.08) 72%, transparent 100%), linear-gradient(180deg, rgba(14,21,16,0.06) 0%, rgba(14,21,16,0.18) 52%, #0E1510 100%)',
+          }}
+        />
+        <div className="relative z-10 flex min-h-[340px] flex-col justify-end px-5 pb-6 pt-14 text-left">
+          <p className="text-[13px] text-[#A8C4A0] mb-1.5">{getGreeting()}</p>
+          <h1 className="text-[36px] leading-[38px] font-bold tracking-[-2px] text-[#F2F5F2] mb-2">
+            {t('home_headline').split('\n').map((line, i) => (
+              <span key={i}>
+                {line}
+                {i === 0 && <br />}
+              </span>
+            ))}
+          </h1>
+          <p className="text-[16px] text-[#9AA39C]">
+            <b className="text-[#5EE08A]">
+              {freshReportCount} {freshReportCount === 1 ? t('home_report') : t('home_reports')}
+            </b>{' '}
+            {t('home_active_reports')}
+          </p>
         </div>
+      </section>
 
+      <div className="m-[0px] px-[20px] pt-1">
         {/* Search Bar with autocomplete */}
         <div className="relative">
-          <Search className="absolute left-[17.5px] top-[22px] -translate-y-1/2 size-[18px] text-[#4b5563] z-10" />
+          <Search className="absolute left-[17.5px] top-[22px] -translate-y-1/2 size-[18px] text-[#8B958C] z-10" />
           <Input
             type="text"
             placeholder={t('search')}
-            className="h-[45.5px] pl-[45px] pr-4 border-[1.5px] border-[#e5e7eb] bg-white text-[16px] shadow-sm rounded-[24px]"
+            className="h-[45.5px] pl-[45px] pr-4 border-[1.5px] border-[#24302A] bg-[#151C18] text-[16px] shadow-sm rounded-[24px]"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
 
           {q && (
-            <div className="absolute left-0 right-0 top-[52px] z-20 bg-white rounded-[14px] border-[1.5px] border-[#e5e7eb] shadow-[0px_8px_24px_rgba(0,0,0,0.08)] overflow-hidden">
+            <div className="absolute left-0 right-0 top-[52px] z-20 bg-[#151C18] rounded-[14px] border-[1.5px] border-[#24302A] shadow-[0px_8px_24px_rgba(0,0,0,0.08)] overflow-hidden">
               {suggestions.parks.length === 0 && suggestions.trails.length === 0 ? (
-                <div className="p-4 text-[13px] text-[#374151] text-center">
+                <div className="p-4 text-[13px] text-[#9AA39C] text-center">
                   {t('home_no_matches')} &ldquo;{searchQuery}&rdquo;
                 </div>
               ) : (
                 <div className="max-h-[360px] overflow-y-auto">
                   {suggestions.parks.length > 0 && (
                     <div>
-                      <p className="px-4 pt-3 pb-1.5 text-[10px] font-bold tracking-[1.2px] uppercase text-[#4b5563]">
+                      <p className="px-4 pt-3 pb-1.5 text-[10px] font-bold tracking-[1.2px] uppercase text-[#8B958C]">
                         {t('park_plural')}
                       </p>
                       {suggestions.parks.map((p) => {
@@ -218,31 +237,31 @@ export function Home() {
                               setSearchQuery('');
                               navigate(`/parks/${encodeURIComponent(p.name)}`);
                             }}
-                            className="w-full px-4 py-2.5 flex items-center gap-3 hover:bg-[#f9f7f2] text-left"
+                            className="w-full px-4 py-2.5 flex items-center gap-3 hover:bg-[#1A221C] text-left"
                           >
-                            <div className="size-9 rounded-full bg-[#3a6b35] flex items-center justify-center shrink-0">
+                            <div className="size-9 rounded-full bg-[#1E3A28] flex items-center justify-center shrink-0">
                               <MapPin className="size-4 text-white" />
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1.5 min-w-0">
-                                <p className="text-[14px] font-bold text-[#1a1a1a] truncate">
+                                <p className="text-[14px] font-bold text-[#F2F5F2] truncate">
                                   {parkTitle}
                                 </p>
                                 {isParkNameNew(parksMeta, p.name) && <NewParkBadge />}
                               </div>
-                              <p className="text-[12px] text-[#374151] truncate">
+                              <p className="text-[12px] text-[#9AA39C] truncate">
                                 {p.city ? `${p.city} · ` : ''}{p.trails.length} {p.trails.length === 1 ? t('trail_singular') : t('trail_plural')}
                               </p>
                             </div>
-                            <ChevronRight className="size-4 text-[#4b5563]" />
+                            <ChevronRight className="size-4 text-[#8B958C]" />
                           </button>
                         );
                       })}
                     </div>
                   )}
                   {suggestions.trails.length > 0 && (
-                    <div className="border-t border-[#f0ede6]">
-                      <p className="px-4 pt-3 pb-1.5 text-[10px] font-bold tracking-[1.2px] uppercase text-[#4b5563]">
+                    <div className="border-t border-[#24302A]">
+                      <p className="px-4 pt-3 pb-1.5 text-[10px] font-bold tracking-[1.2px] uppercase text-[#8B958C]">
                         {t('trail_plural')}
                       </p>
                       {suggestions.trails.map((trail) => {
@@ -256,20 +275,20 @@ export function Home() {
                               setSearchQuery('');
                               navigate(`/trails/${trail.id}`);
                             }}
-                            className="w-full px-4 py-2.5 flex items-center gap-3 hover:bg-[#f9f7f2] text-left"
+                            className="w-full px-4 py-2.5 flex items-center gap-3 hover:bg-[#1A221C] text-left"
                           >
-                            <div className="size-9 rounded-full bg-[#f0ede6] flex items-center justify-center shrink-0">
-                              <Mountain className="size-4 text-[#2c4a1e]" />
+                            <div className="size-9 rounded-full bg-[#24302A] flex items-center justify-center shrink-0">
+                              <Mountain className="size-4 text-[#5EE08A]" />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-[14px] font-bold text-[#1a1a1a] truncate">
+                              <p className="text-[14px] font-bold text-[#F2F5F2] truncate">
                                 {displayName}
                               </p>
-                              <p className="text-[12px] text-[#374151] truncate">
+                              <p className="text-[12px] text-[#9AA39C] truncate">
                                 {trail.location || t('trail_singular')}
                               </p>
                             </div>
-                            <ChevronRight className="size-4 text-[#4b5563]" />
+                            <ChevronRight className="size-4 text-[#8B958C]" />
                           </button>
                         );
                       })}
@@ -287,13 +306,13 @@ export function Home() {
         <ConditionSourceLegend className="mb-5 px-1" />
         <div className="mb-8">
           <div className="flex items-center justify-between mx-[4px] mt-[0px] mb-[12px]">
-            <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#374151]">
+            <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#9AA39C]">
               {t('home_following')}
             </h2>
             {!user ? (
               <button
                 type="button"
-                className="text-[13px] font-bold text-[#2c4a1e]"
+                className="text-[13px] font-bold text-[#5EE08A]"
                 onClick={() =>
                   navigate('/auth/signin', { state: { redirectAfter: '/' } })
                 }
@@ -303,7 +322,7 @@ export function Home() {
             ) : followingParks.length > 2 ? (
               <button
                 type="button"
-                className="text-[13px] font-bold text-[#2c4a1e]"
+                className="text-[13px] font-bold text-[#5EE08A]"
                 onClick={() => navigate('/search')}
               >
                 {t('home_see_all')}
@@ -312,8 +331,8 @@ export function Home() {
           </div>
 
           {!user ? (
-            <div className="bg-white rounded-[16px] border-[1.5px] border-[#f0ede6] px-4 py-5">
-              <p className="text-[13px] text-[#374151] leading-[19px]">
+            <div className="bg-[#151C18] rounded-[16px] border-[1.5px] border-[#24302A] px-4 py-5">
+              <p className="text-[13px] text-[#9AA39C] leading-[19px]">
                 {t('home_following_signin')}
               </p>
             </div>
@@ -324,8 +343,8 @@ export function Home() {
               ))}
             </div>
           ) : followingParks.length === 0 ? (
-            <div className="bg-white rounded-[16px] border-[1.5px] border-[#f0ede6] px-4 py-5">
-              <p className="text-[13px] text-[#374151] leading-[19px]">
+            <div className="bg-[#151C18] rounded-[16px] border-[1.5px] border-[#24302A] px-4 py-5">
+              <p className="text-[13px] text-[#9AA39C] leading-[19px]">
                 {t('home_following_empty')}
               </p>
             </div>
@@ -337,11 +356,11 @@ export function Home() {
         </div>
 
         <div className="flex items-center justify-between mx-[4px] mt-[0px] mb-[12px]">
-          <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#374151]">
+          <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#9AA39C]">
             {t('home_recently_reported')}
           </h2>
           <button
-            className="text-[13px] font-bold text-[#2c4a1e]"
+            className="text-[13px] font-bold text-[#5EE08A]"
             onClick={() => navigate('/search')}
           >
             {t('home_see_all')}
@@ -367,17 +386,17 @@ export function Home() {
         )}
 
         {!isLoading && recentParks.length === 0 && !error && (
-          <div className="bg-white rounded-[16px] border-[1.5px] border-[#f0ede6] shadow-sm p-8 text-center">
-            <div className="size-12 rounded-full bg-[#f0ede6] flex items-center justify-center mx-auto mb-4">
-              <Plus className="size-6 text-[#2c4a1e]" />
+          <div className="bg-[#151C18] rounded-[16px] border-[1.5px] border-[#24302A] shadow-sm p-8 text-center">
+            <div className="size-12 rounded-full bg-[#24302A] flex items-center justify-center mx-auto mb-4">
+              <Plus className="size-6 text-[#5EE08A]" />
             </div>
-            <h3 className="text-[15.5px] font-bold text-[#1a1a1a] mb-2">{t('home_no_parks')}</h3>
-            <p className="text-[13px] text-[#374151] mb-6">
+            <h3 className="text-[15.5px] font-bold text-[#F2F5F2] mb-2">{t('home_no_parks')}</h3>
+            <p className="text-[13px] text-[#9AA39C] mb-6">
               {t('home_no_parks_body')}
             </p>
             <Button
               onClick={() => navigate('/search')}
-              className="bg-[#2c4a1e] hover:bg-[#1a3010] text-white rounded-[14px] h-11"
+              className="bg-[#5EE08A] hover:bg-[#4ADE80] text-[#0E1510] rounded-[14px] h-11"
             >
               {t('home_browse')}
             </Button>
@@ -391,17 +410,17 @@ export function Home() {
         )}
 
         {!isLoading && (
-          <div className="mt-6 pt-5 border-t border-[#e5e0d5] min-w-0">
-            <p className="text-[15px] font-bold tracking-[-0.2px] text-[#1a3010] text-balance">
+          <div className="mt-6 pt-5 border-t border-[#24302A] min-w-0">
+            <p className="text-[15px] font-bold tracking-[-0.2px] text-[#F2F5F2] text-balance">
               {t('home_suggest_title')}
             </p>
-            <p className="text-[13px] text-[#4b5563] mt-1 leading-[19px] text-pretty">
+            <p className="text-[13px] text-[#8B958C] mt-1 leading-[19px] text-pretty">
               {t('home_suggest_body')}
             </p>
             <button
               type="button"
               onClick={() => setSuggestOpen(true)}
-              className="mt-3.5 w-full min-h-[48px] h-auto py-3 px-4 rounded-[14px] border-[1.5px] border-[#2c4a1e] text-[#2c4a1e] text-[13px] font-bold tracking-[0.6px] leading-snug bg-white active:scale-[0.99] transition-transform whitespace-normal text-center"
+              className="mt-3.5 w-full min-h-[48px] h-auto py-3 px-4 rounded-[14px] border-[1.5px] border-[#5EE08A] text-[#5EE08A] text-[13px] font-bold tracking-[0.6px] leading-snug bg-[#151C18] active:scale-[0.99] transition-transform whitespace-normal text-center"
             >
               {t('home_suggest_cta')}
             </button>

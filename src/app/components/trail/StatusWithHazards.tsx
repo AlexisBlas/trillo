@@ -44,7 +44,7 @@ export function StatusWithHazards({
       />
       {primary && PrimaryIcon && (
         <span
-          className="absolute -bottom-1 -left-1 size-[20px] rounded-full flex items-center justify-center shadow-[0_0_0_2px_#ffffff]"
+          className="absolute -bottom-1 -left-1 size-[20px] rounded-full flex items-center justify-center shadow-[0_0_0_2px_#151C18]"
           style={{ backgroundColor: HAZARD_COLORS.iconBg }}
           aria-label={hazards.map((h) => t(h.labelKey)).join(', ')}
           title={hazards.map((h) => t(h.labelKey)).join(', ')}

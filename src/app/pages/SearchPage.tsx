@@ -65,10 +65,10 @@ const CONDITION_FILTERS: {
 ];
 
 const ACTIVE_TONES: Record<OptionTone, { bg: string; border: string; text: string }> = {
-  default: { bg: '#EDF3EC', border: '#2c4a1e', text: '#1a3010' },
-  green: { bg: '#d1fae5', border: '#059669', text: '#065f46' },
-  yellow: { bg: '#fef3c7', border: '#d97706', text: '#92400e' },
-  red: { bg: '#fee2e2', border: '#dc2626', text: '#991b1b' },
+  default: { bg: '#1E3A28', border: '#5EE08A', text: '#5EE08A' },
+  green: { bg: '#12352a', border: '#5ee08a', text: '#5ee08a' },
+  yellow: { bg: '#3a2e12', border: '#fbbf24', text: '#fbbf24' },
+  red: { bg: '#3a1616', border: '#f87171', text: '#f87171' },
 };
 
 /** Large tap targets — outline idle, tinted + check when selected. */
@@ -96,7 +96,7 @@ function OptionButton({
         'min-h-[52px] px-3.5 py-3 rounded-[14px] border-[2px] text-[15px] font-bold leading-tight transition-colors touch-manipulation inline-flex items-center justify-between gap-2 text-left',
         active
           ? ''
-          : 'bg-white text-[#4b5563] border-[#e5e7eb] active:bg-[#f8f5ef]'
+          : 'bg-[#151C18] text-[#8B958C] border-[#24302A] active:bg-[#f8f5ef]'
       )}
       style={
         active
@@ -240,21 +240,21 @@ export function SearchPage() {
     filtersOpen &&
     createPortal(
       <div
-        className="fixed inset-0 z-[80] bg-[#F5F0E8] flex flex-col"
+        className="fixed inset-0 z-[80] bg-[#0E1510] flex flex-col"
         role="dialog"
         aria-modal="true"
         aria-label={t('search_filters')}
       >
-        <div className="shrink-0 flex items-center gap-3 h-[60px] px-4 border-b border-[#e5e0d5] pt-[env(safe-area-inset-top)]">
+        <div className="shrink-0 flex items-center gap-3 h-[60px] px-4 border-b border-[#24302A] pt-[env(safe-area-inset-top)]">
           <button
             type="button"
             onClick={closeFilters}
             aria-label={t('search_filters_close')}
-            className="size-[48px] rounded-full bg-white border-[1.5px] border-[#e5e7eb] shadow-sm flex items-center justify-center touch-manipulation active:bg-[#f0ede6]"
+            className="size-[48px] rounded-full bg-[#151C18] border-[1.5px] border-[#24302A] shadow-sm flex items-center justify-center touch-manipulation active:bg-[#24302A]"
           >
-            <ChevronLeft className="size-6 text-[#1a3010]" strokeWidth={2} />
+            <ChevronLeft className="size-6 text-[#F2F5F2]" strokeWidth={2} />
           </button>
-          <h2 className="flex-1 text-[18px] font-bold text-[#1a3010]">
+          <h2 className="flex-1 text-[18px] font-bold text-[#F2F5F2]">
             {t('search_filters')}
           </h2>
           {filtersActive && (
@@ -267,7 +267,7 @@ export function SearchPage() {
         <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 pt-5 pb-4">
           <div className="flex flex-col gap-6">
             <div>
-              <p className="text-[12px] font-bold tracking-[1.1px] uppercase text-[#687588] mb-2.5">
+              <p className="text-[12px] font-bold tracking-[1.1px] uppercase text-[#8B958C] mb-2.5">
                 {t('search_filter_region')}
               </p>
               <div className="grid grid-cols-2 gap-2.5">
@@ -284,7 +284,7 @@ export function SearchPage() {
             </div>
 
             <div>
-              <p className="text-[12px] font-bold tracking-[1.1px] uppercase text-[#687588] mb-2.5">
+              <p className="text-[12px] font-bold tracking-[1.1px] uppercase text-[#8B958C] mb-2.5">
                 {t('search_filter_condition')}
               </p>
               <div className="grid grid-cols-2 gap-2.5">
@@ -304,7 +304,7 @@ export function SearchPage() {
 
             {availableCities.length > 0 && (
               <div>
-                <p className="text-[12px] font-bold tracking-[1.1px] uppercase text-[#687588] mb-2.5">
+                <p className="text-[12px] font-bold tracking-[1.1px] uppercase text-[#8B958C] mb-2.5">
                   {t('search_filter_city')}
                 </p>
                 <div className="grid grid-cols-1 gap-2.5">
@@ -329,12 +329,12 @@ export function SearchPage() {
           </div>
         </div>
 
-        <div className="shrink-0 px-5 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-[#e5e0d5] bg-[#F5F0E8] flex flex-col gap-2.5">
+        <div className="shrink-0 px-5 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-[#24302A] bg-[#0E1510] flex flex-col gap-2.5">
           {filtersActive && (
             <button
               type="button"
               onClick={clearFilters}
-              className="w-full min-h-[52px] rounded-[14px] border-[1.5px] border-[#e5e7eb] bg-white text-[15px] font-bold text-[#2c4a1e] touch-manipulation active:bg-[#f0ede6]"
+              className="w-full min-h-[52px] rounded-[14px] border-[1.5px] border-[#24302A] bg-[#151C18] text-[15px] font-bold text-[#5EE08A] touch-manipulation active:bg-[#24302A]"
             >
               {t('search_clear_filters')}
             </button>
@@ -342,7 +342,7 @@ export function SearchPage() {
           <button
             type="button"
             onClick={closeFilters}
-            className="w-full min-h-[52px] rounded-[14px] bg-[#1a3010] text-white text-[16px] font-bold touch-manipulation active:bg-[#2c4a1e]"
+            className="w-full min-h-[52px] rounded-[14px] bg-[#5EE08A] text-[#0E1510] text-[16px] font-bold touch-manipulation active:bg-[#5EE08A]"
           >
             {t('search_filters_done')}
           </button>
@@ -352,21 +352,21 @@ export function SearchPage() {
     );
 
   return (
-    <div className="min-h-screen bg-[#F5F0E8]">
+    <div className="min-h-screen bg-[#0E1510]">
       <div className="px-4 pt-3.5">
         <BackButton />
       </div>
 
       <div className="px-5 pt-6 pb-4">
-        <h1 className="text-[24px] font-bold text-[#1a3010] mb-5">{t('search_title')}</h1>
+        <h1 className="text-[24px] font-bold text-[#F2F5F2] mb-5">{t('search_title')}</h1>
 
         <div className="flex flex-col gap-3">
           <div className="relative">
-            <Search className="absolute left-[17.5px] top-1/2 -translate-y-1/2 size-[20px] text-[#4b5563] pointer-events-none" />
+            <Search className="absolute left-[17.5px] top-1/2 -translate-y-1/2 size-[20px] text-[#8B958C] pointer-events-none" />
             <Input
               type="text"
               placeholder={t('search_placeholder')}
-              className="h-[52px] pl-[48px] pr-4 border-[1.5px] border-[#e5e7eb] bg-white text-[16px] shadow-sm rounded-[24px]"
+              className="h-[52px] pl-[48px] pr-4 border-[1.5px] border-[#24302A] bg-[#151C18] text-[16px] shadow-sm rounded-[24px]"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -378,10 +378,10 @@ export function SearchPage() {
             aria-expanded={filtersOpen}
             onClick={() => setFiltersOpen(true)}
             className={cn(
-              'relative w-full min-h-[52px] px-4 inline-flex items-center justify-center gap-2.5 rounded-[24px] border-[2px] bg-white shadow-sm transition-colors touch-manipulation active:scale-[0.99]',
+              'relative w-full min-h-[52px] px-4 inline-flex items-center justify-center gap-2.5 rounded-[24px] border-[2px] bg-[#151C18] shadow-sm transition-colors touch-manipulation active:scale-[0.99]',
               filtersActive
-                ? 'border-[#2c4a1e] text-[#2c4a1e]'
-                : 'border-[#e5e7eb] text-[#1a3010]'
+                ? 'border-[#5EE08A] text-[#5EE08A]'
+                : 'border-[#24302A] text-[#F2F5F2]'
             )}
           >
             <SlidersHorizontal className="size-5" strokeWidth={2.25} />
@@ -411,25 +411,25 @@ export function SearchPage() {
         )}
 
         {!isLoading && parks.length === 0 && (
-          <div className="bg-white rounded-[16px] border-[1.5px] border-[#f0ede6] shadow-sm p-8 text-center">
-            <div className="size-12 rounded-full bg-[#f0ede6] flex items-center justify-center mx-auto mb-4">
+          <div className="bg-[#151C18] rounded-[16px] border-[1.5px] border-[#24302A] shadow-sm p-8 text-center">
+            <div className="size-12 rounded-full bg-[#24302A] flex items-center justify-center mx-auto mb-4">
               {q || filtersActive ? (
-                <Search className="size-6 text-[#374151]" />
+                <Search className="size-6 text-[#9AA39C]" />
               ) : (
-                <Mountain className="size-6 text-[#374151]" />
+                <Mountain className="size-6 text-[#9AA39C]" />
               )}
             </div>
-            <h3 className="text-[15.5px] font-bold text-[#1a1a1a] mb-2">
+            <h3 className="text-[15.5px] font-bold text-[#F2F5F2] mb-2">
               {q || filtersActive ? t('search_no_parks_found') : t('search_no_parks_available')}
             </h3>
-            <p className="text-[13px] text-[#374151]">
+            <p className="text-[13px] text-[#9AA39C]">
               {q || filtersActive ? t('search_no_parks_search_hint') : t('search_no_parks_empty_hint')}
             </p>
             {filtersActive && (
               <button
                 type="button"
                 onClick={clearFilters}
-                className="mt-5 w-full min-h-[52px] rounded-[14px] border-[1.5px] border-[#e5e7eb] bg-[#F5F0E8] text-[15px] font-bold text-[#2c4a1e] touch-manipulation"
+                className="mt-5 w-full min-h-[52px] rounded-[14px] border-[1.5px] border-[#24302A] bg-[#0E1510] text-[15px] font-bold text-[#5EE08A] touch-manipulation"
               >
                 {t('search_clear_filters')}
               </button>
@@ -440,7 +440,7 @@ export function SearchPage() {
         {!isLoading && parks.length > 0 && (
           <>
             <div className="flex items-end justify-between gap-3 mb-3 px-[4px]">
-              <p className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#374151]">
+              <p className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#9AA39C]">
                 {parks.length} {parks.length === 1 ? t('park_singular') : t('park_plural')}
               </p>
               <ConditionSourceLegend className="justify-end" />
@@ -462,7 +462,7 @@ export function SearchPage() {
                   <button
                     key={park.name}
                     onClick={() => navigate(`/parks/${encodeURIComponent(park.name)}`)}
-                    className="bg-white border-[1.5px] border-[#f0ede6] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#2c4a1e] transition-colors p-[15.5px] flex items-center gap-3.5 text-left rounded-[32px]"
+                    className="bg-[#151C18] border-[1.5px] border-[#24302A] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#5EE08A] transition-colors p-[15.5px] flex items-center gap-3.5 text-left rounded-[32px]"
                   >
                     <StatusWithHazards
                       status={status}
@@ -471,15 +471,15 @@ export function SearchPage() {
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 min-w-0">
-                        <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
+                        <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#F2F5F2] truncate">
                           {parkTitle}
                         </h3>
                         {isParkNameNew(parksMeta, park.name) && <NewParkBadge />}
                       </div>
-                      <p className="text-[13px] text-[#374151] truncate">
+                      <p className="text-[13px] text-[#9AA39C] truncate">
                         {city ?? ''}
                       </p>
-                      <p className="text-[12px] text-[#4b5563] mt-0.5">
+                      <p className="text-[12px] text-[#8B958C] mt-0.5">
                         {park.trails.length} {park.trails.length === 1 ? t('trail_singular') : t('trail_plural')}
                         {rainAdjusted ? (
                           <span> · {t('condition_rain_adjusted')}</span>
@@ -490,7 +490,7 @@ export function SearchPage() {
                         ) : null}
                       </p>
                     </div>
-                    <ChevronRight className="size-5 text-[#4b5563] shrink-0" />
+                    <ChevronRight className="size-5 text-[#8B958C] shrink-0" />
                   </button>
                 );
               })}

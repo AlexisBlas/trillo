@@ -15,7 +15,7 @@ export function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#ede9e0] md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#151C18] border-t border-[#24302A] md:hidden">
       <div className="flex items-center h-[79px] px-2 pb-5 pt-0.5">
         {navItems.map((item) => {
           const isActive = location.pathname === item.to;
@@ -31,7 +31,7 @@ export function BottomNav() {
                 <Icon
                   className={cn(
                     'absolute left-1/2 -translate-x-1/2 top-[10px] size-[22px]',
-                    isActive ? 'text-[#D97706]' : 'text-[#687588]'
+                    isActive ? 'text-[#5EE08A]' : 'text-[#8B958C]'
                   )}
                   strokeWidth={1.83333}
                 />
@@ -39,8 +39,8 @@ export function BottomNav() {
                   className={cn(
                     'absolute left-1/2 -translate-x-1/2 top-[35px] text-[10.5px] text-center whitespace-nowrap',
                     isActive
-                      ? 'font-bold text-[#D97706]'
-                      : 'font-medium text-[#687588]'
+                      ? 'font-bold text-[#5EE08A]'
+                      : 'font-medium text-[#8B958C]'
                   )}
                 >
                   {item.label}

@@ -25,13 +25,13 @@ export function AdminLayout() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#f0ede6] font-[Space_Grotesk,sans-serif]">
+    <div className="flex min-h-screen bg-[#0E1510] font-[Space_Grotesk,sans-serif]">
       {/* Sidebar */}
-      <aside className="w-[240px] shrink-0 flex flex-col bg-[#1a3010] min-h-screen sticky top-0">
+      <aside className="w-[240px] shrink-0 flex flex-col bg-[#151C18] min-h-screen sticky top-0 border-r border-[#24302A]">
         {/* Logo */}
-        <div className="px-6 h-[64px] flex items-center border-b border-white/10">
-          <span className="font-bold text-[13px] tracking-[3px] text-white">TRILLO</span>
-          <span className="ml-2 text-[10px] font-bold tracking-[1px] text-[#a3c98a] bg-white/10 px-1.5 py-0.5 rounded-[4px]">
+        <div className="px-6 h-[64px] flex items-center border-b border-[#24302A]">
+          <span className="font-bold text-[13px] tracking-[3px] text-[#F2F5F2]">TRILLO</span>
+          <span className="ml-2 text-[10px] font-bold tracking-[1px] text-[#5EE08A] bg-[#5EE08A]/10 px-1.5 py-0.5 rounded-[4px]">
             ADMIN
           </span>
         </div>
@@ -47,8 +47,8 @@ export function AdminLayout() {
                 cn(
                   'flex items-center gap-3 px-3 h-10 rounded-[10px] text-[13.5px] font-medium transition-colors',
                   isActive
-                    ? 'bg-white/15 text-white font-bold'
-                    : 'text-white/60 hover:text-white hover:bg-white/8'
+                    ? 'bg-[#5EE08A] text-[#0E1510] font-bold'
+                    : 'text-[#9AA39C] hover:text-[#F2F5F2] hover:bg-[#1A221C]'
                 )
               }
             >
@@ -64,13 +64,13 @@ export function AdminLayout() {
         </nav>
 
         {/* User + sign out */}
-        <div className="px-3 pb-5 border-t border-white/10 pt-4">
+        <div className="px-3 pb-5 border-t border-[#24302A] pt-4">
           <div className="px-3 py-2 mb-1">
-            <p className="text-[11px] text-white/40 truncate">{user?.email}</p>
+            <p className="text-[11px] text-[#8B958C] truncate">{user?.email}</p>
           </div>
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-3 px-3 h-10 w-full rounded-[10px] text-[13.5px] font-medium text-white/60 hover:text-white hover:bg-white/8 transition-colors"
+            className="flex items-center gap-3 px-3 h-10 w-full rounded-[10px] text-[13.5px] font-medium text-[#9AA39C] hover:text-[#F2F5F2] hover:bg-[#1A221C] transition-colors"
           >
             <LogOut className="size-4 shrink-0" />
             Sign out

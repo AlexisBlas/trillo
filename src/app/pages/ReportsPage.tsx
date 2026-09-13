@@ -22,10 +22,10 @@ function statusShareLabel(status: 'green' | 'yellow' | 'red'): TranslationKey {
 }
 
 const STATUS_FILTERS: { value: 'all' | 'green' | 'yellow' | 'red'; labelKey: TranslationKey; dot: string | null; bg: string; text: string }[] = [
-  { value: 'all', labelKey: 'reports_all', dot: null, bg: '#1a3010', text: '#ffffff' },
-  { value: 'green', labelKey: 'reports_filter_good', dot: '#10b981', bg: '#d1fae5', text: '#065f46' },
-  { value: 'yellow', labelKey: 'reports_filter_caution', dot: '#f59e0b', bg: '#fef3c7', text: '#92400e' },
-  { value: 'red', labelKey: 'reports_filter_closed', dot: '#ef4444', bg: '#fee2e2', text: '#991b1b' },
+  { value: 'all', labelKey: 'reports_all', dot: null, bg: '#5EE08A', text: '#0E1510' },
+  { value: 'green', labelKey: 'reports_filter_good', dot: '#5ee08a', bg: '#12352a', text: '#5ee08a' },
+  { value: 'yellow', labelKey: 'reports_filter_caution', dot: '#fbbf24', bg: '#3a2e12', text: '#fbbf24' },
+  { value: 'red', labelKey: 'reports_filter_closed', dot: '#f87171', bg: '#3a1616', text: '#f87171' },
 ];
 
 export function ReportsPage() {
@@ -85,21 +85,21 @@ export function ReportsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F5F0E8]">
+    <div className="min-h-screen bg-[#0E1510]">
       <div className="px-4 pt-3.5">
         <BackButton />
       </div>
 
       <div className="px-5 pt-6 pb-4">
-        <h1 className="text-[24px] font-bold text-[#1a3010] mb-1">{t('reports_title')}</h1>
-        <p className="text-[14px] text-[#4b6b3a] mb-5">{t('reports_grouped_by')}</p>
+        <h1 className="text-[24px] font-bold text-[#F2F5F2] mb-1">{t('reports_title')}</h1>
+        <p className="text-[14px] text-[#A8C4A0] mb-5">{t('reports_grouped_by')}</p>
 
         <div className="relative">
-          <Search className="absolute left-[17.5px] top-1/2 -translate-y-1/2 size-[18px] text-[#4b5563]" />
+          <Search className="absolute left-[17.5px] top-1/2 -translate-y-1/2 size-[18px] text-[#8B958C]" />
           <Input
             type="text"
             placeholder={t('reports_search_placeholder')}
-            className="h-[45.5px] pl-[45px] pr-4 border-[1.5px] border-[#e5e7eb] bg-white text-[16px] shadow-sm rounded-[24px]"
+            className="h-[45.5px] pl-[45px] pr-4 border-[1.5px] border-[#24302A] bg-[#151C18] text-[16px] shadow-sm rounded-[24px]"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -119,8 +119,8 @@ export function ReportsPage() {
                 className="shrink-0 inline-flex items-center gap-1.5 h-[34px] px-3.5 rounded-full border-[1.5px] text-[13px] font-bold transition-colors"
                 style={{
                   backgroundColor: active ? filter.bg : '#ffffff',
-                  color: active ? filter.text : '#374151',
-                  borderColor: active ? filter.text : '#e5e7eb',
+                  color: active ? filter.text : '#9AA39C',
+                  borderColor: active ? filter.text : '#24302A',
                 }}
               >
                 {filter.dot && (
@@ -153,18 +153,18 @@ export function ReportsPage() {
         )}
 
         {!isLoading && filtered.length === 0 && (
-          <div className="bg-white rounded-[16px] border-[1.5px] border-[#f0ede6] shadow-sm p-8 text-center">
-            <div className="size-12 rounded-full bg-[#f0ede6] flex items-center justify-center mx-auto mb-4">
+          <div className="bg-[#151C18] rounded-[16px] border-[1.5px] border-[#24302A] shadow-sm p-8 text-center">
+            <div className="size-12 rounded-full bg-[#24302A] flex items-center justify-center mx-auto mb-4">
               {q || statusFilter !== 'all' ? (
-                <Search className="size-6 text-[#374151]" />
+                <Search className="size-6 text-[#9AA39C]" />
               ) : (
-                <FileText className="size-6 text-[#374151]" />
+                <FileText className="size-6 text-[#9AA39C]" />
               )}
             </div>
-            <h3 className="text-[15.5px] font-bold text-[#1a1a1a] mb-2">
+            <h3 className="text-[15.5px] font-bold text-[#F2F5F2] mb-2">
               {q || statusFilter !== 'all' ? t('reports_no_match') : t('reports_none_yet')}
             </h3>
-            <p className="text-[13px] text-[#374151]">
+            <p className="text-[13px] text-[#9AA39C]">
               {q || statusFilter !== 'all' ? t('reports_no_match_hint') : t('reports_none_yet_hint')}
             </p>
           </div>
@@ -184,7 +184,7 @@ export function ReportsPage() {
                 return (
                   <div
                     key={park}
-                    className="bg-white border-[1.5px] border-[#f0ede6] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] overflow-hidden rounded-[32px]"
+                    className="bg-[#151C18] border-[1.5px] border-[#24302A] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] overflow-hidden rounded-[32px]"
                   >
                     {/* Park header — main area opens overview, chevron toggles reports */}
                     <div className="flex items-stretch">
@@ -198,13 +198,13 @@ export function ReportsPage() {
                           conditions={parkHazards.map((h) => h.tag)}
                         />
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
+                          <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#F2F5F2] truncate">
                             {parkTitle}
                           </h3>
-                          <p className="text-[13px] text-[#374151] truncate">
+                          <p className="text-[13px] text-[#9AA39C] truncate">
                             {city ?? ''}
                           </p>
-                          <p className="text-[12px] text-[#4b5563] mt-0.5">
+                          <p className="text-[12px] text-[#8B958C] mt-0.5">
                             {parkReports!.length} {parkReports!.length === 1 ? t('home_report') : t('home_reports')}
                             {latestAgo && <span> · {latestAgo}</span>}
                           </p>
@@ -218,7 +218,7 @@ export function ReportsPage() {
                         disabled={forceOpen}
                       >
                         <ChevronDown
-                          className={`size-5 text-[#4b5563] transition-transform ${
+                          className={`size-5 text-[#8B958C] transition-transform ${
                             isOpen ? 'rotate-180' : ''
                           }`}
                         />
@@ -227,7 +227,7 @@ export function ReportsPage() {
 
                     {/* Nested reports */}
                     {isOpen && (
-                      <div className="border-t-[1.5px] border-[#f0ede6]">
+                      <div className="border-t-[1.5px] border-[#24302A]">
                         {parkReports!.map((report) => {
                           const isParkReport = !report.trail_id && !!report.park_name;
                           const rawTrailName = report.trails?.name;
@@ -256,21 +256,21 @@ export function ReportsPage() {
                                   className="mt-0.5"
                                 />
                                 <div className="flex-1 min-w-0">
-                                  <h4 className="text-[14px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
+                                  <h4 className="text-[14px] font-bold tracking-[-0.2px] text-[#F2F5F2] truncate">
                                     {trailName}
                                   </h4>
-                                  <p className="text-[12px] text-[#4b5563]">
+                                  <p className="text-[12px] text-[#8B958C]">
                                     {formatDistanceToNow(new Date(report.created_at), {
                                       addSuffix: true,
                                     })}
                                   </p>
                                   {notes && (
-                                    <p className="text-[13px] text-[#374151] leading-[19px] mt-1 line-clamp-2">
+                                    <p className="text-[13px] text-[#9AA39C] leading-[19px] mt-1 line-clamp-2">
                                       {notes}
                                     </p>
                                   )}
                                 </div>
-                                <ChevronRight className="size-4 text-[#4b5563] shrink-0 mt-1" />
+                                <ChevronRight className="size-4 text-[#8B958C] shrink-0 mt-1" />
                               </button>
                               {path && (
                                 <ShareButton
@@ -280,7 +280,7 @@ export function ReportsPage() {
                                   text={t('share_report_text').replace('{name}', trailName)}
                                   status={report.status}
                                   statusLabel={t(statusShareLabel(report.status))}
-                                  className="shadow-none border-[1.5px] border-[#e5e7eb] bg-white mt-0.5"
+                                  className="shadow-none border-[1.5px] border-[#24302A] bg-[#151C18] mt-0.5"
                                 />
                               )}
                             </div>

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
 export type Lang = 'en' | 'es';
 
@@ -54,6 +54,7 @@ const translations = {
     lang_en: 'English',
     lang_es: 'Español',
     about_description: 'Real-time trail conditions reported by hikers, for hikers. Built for Puerto Rico\'s public trail network.',
+    menu_how_it_works: 'How it works',
     menu_made_by: 'Supported and made by',
     // Notifications
     notif_open: 'Open notifications',
@@ -299,6 +300,7 @@ const translations = {
     lang_en: 'English',
     lang_es: 'Español',
     about_description: 'Condiciones de senderos en tiempo real, reportadas por senderistas, para senderistas. Construido para la red de senderos públicos de Puerto Rico.',
+    menu_how_it_works: 'Cómo funciona',
     menu_made_by: 'Apoyado y creado por',
     // Notifications
     notif_open: 'Abrir notificaciones',
@@ -522,6 +524,15 @@ export function LangProvider({ children }: { children: ReactNode }) {
       localStorage.setItem(STORAGE_KEY, l);
     } catch {}
   };
+
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== STORAGE_KEY) return;
+      if (event.newValue === 'en' || event.newValue === 'es') setLangState(event.newValue);
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   const t = (key: TranslationKey) => translations[lang][key] ?? translations.en[key];
 

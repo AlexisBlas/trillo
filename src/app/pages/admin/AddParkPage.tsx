@@ -159,13 +159,13 @@ export function AddParkPage() {
       <div className="flex items-center gap-3 mb-8">
         <button
           onClick={() => navigate(fromRequest ? '/admin/requests' : '/admin/parks')}
-          className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#f0ede6] text-[#687588]"
+          className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#24302A] text-[#8B958C]"
         >
           <ChevronLeft className="size-4" />
         </button>
         <div>
-          <h1 className="text-[24px] font-bold text-[#1a1a1a]">New Park</h1>
-          <p className="text-[14px] text-[#687588] mt-0.5">
+          <h1 className="text-[24px] font-bold text-[#F2F5F2]">New Park</h1>
+          <p className="text-[14px] text-[#8B958C] mt-0.5">
             {fromRequest
               ? `Prefilling from ${fromRequest.kind} request`
               : 'Add a park and its trails'}
@@ -174,32 +174,32 @@ export function AddParkPage() {
       </div>
 
       {fromRequest && (
-        <div className="mb-5 rounded-[12px] border border-[#e5e0d5] bg-white px-4 py-3 text-[13px] text-[#374151]">
+        <div className="mb-5 rounded-[12px] border border-[#24302A] bg-[#151C18] px-4 py-3 text-[13px] text-[#9AA39C]">
           Requested {fromRequest.kind}:{' '}
-          <span className="font-bold text-[#1a1a1a]">{fromRequest.name}</span>
+          <span className="font-bold text-[#F2F5F2]">{fromRequest.name}</span>
           {fromRequest.details ? (
-            <span className="block mt-1 text-[#687588]">{fromRequest.details}</span>
+            <span className="block mt-1 text-[#8B958C]">{fromRequest.details}</span>
           ) : null}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-8">
         {/* Park details */}
-        <div className="bg-white rounded-[16px] border border-[#e5e0d5] p-6 flex flex-col gap-4">
-          <h2 className="text-[13px] font-bold tracking-[1px] uppercase text-[#687588]">Park</h2>
+        <div className="bg-[#151C18] rounded-[16px] border border-[#24302A] p-6 flex flex-col gap-4">
+          <h2 className="text-[13px] font-bold tracking-[1px] uppercase text-[#8B958C]">Park</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-[1fr_160px] gap-3">
             <div>
-              <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Name <span className="text-red-500">*</span></label>
+              <label className="block text-[12px] font-bold text-[#9AA39C] mb-1.5">Name <span className="text-red-500">*</span></label>
               <input
                 value={parkName}
                 onChange={(e) => setParkName(e.target.value)}
                 placeholder="e.g. Cerro Gordo Trail Network"
-                className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[13px] text-[#1a1a1a] focus:outline-none focus:border-[#2c4a1e]"
+                className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#F2F5F2] focus:outline-none focus:border-[#5EE08A]"
               />
             </div>
             <div>
-              <label className="block text-[12px] font-bold text-[#374151] mb-1.5">City</label>
+              <label className="block text-[12px] font-bold text-[#9AA39C] mb-1.5">City</label>
               <input
                 list="pr-municipalities"
                 value={parkCity}
@@ -210,7 +210,7 @@ export function AddParkPage() {
                   if (suggested) setParkRegion(suggested);
                 }}
                 placeholder="e.g. Vega Alta"
-                className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[13px] text-[#1a1a1a] focus:outline-none focus:border-[#2c4a1e]"
+                className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#F2F5F2] focus:outline-none focus:border-[#5EE08A]"
               />
               <datalist id="pr-municipalities">
                 {PR_MUNICIPALITIES.map((m) => <option key={m} value={m} />)}
@@ -219,11 +219,11 @@ export function AddParkPage() {
           </div>
 
           <div>
-            <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Region</label>
+            <label className="block text-[12px] font-bold text-[#9AA39C] mb-1.5">Region</label>
             <select
               value={parkRegion}
               onChange={(e) => setParkRegion((e.target.value || '') as ParkRegion | '')}
-              className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[13px] text-[#1a1a1a] focus:outline-none focus:border-[#2c4a1e] bg-white"
+              className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#F2F5F2] focus:outline-none focus:border-[#5EE08A] bg-[#151C18]"
             >
               <option value="">Select region…</option>
               {PARK_REGIONS.map((r) => (
@@ -232,14 +232,14 @@ export function AddParkPage() {
                 </option>
               ))}
             </select>
-            <p className="mt-1 text-[11px] text-[#687588]">
+            <p className="mt-1 text-[11px] text-[#8B958C]">
               Auto-fills from city; override if needed for filters.
             </p>
           </div>
 
           <div>
-            <label className="block text-[12px] font-bold text-[#374151] mb-1.5">
-              Coordinates <span className="font-normal text-[#687588]">(optional)</span>
+            <label className="block text-[12px] font-bold text-[#9AA39C] mb-1.5">
+              Coordinates <span className="font-normal text-[#8B958C]">(optional)</span>
             </label>
             <div className="grid grid-cols-2 gap-3">
               <input
@@ -249,7 +249,7 @@ export function AddParkPage() {
                 placeholder={
                   cityDefaultCoords ? String(cityDefaultCoords.lat) : 'Latitude'
                 }
-                className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[13px] text-[#1a1a1a] focus:outline-none focus:border-[#2c4a1e]"
+                className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#F2F5F2] focus:outline-none focus:border-[#5EE08A]"
               />
               <input
                 value={parkLng}
@@ -258,10 +258,10 @@ export function AddParkPage() {
                 placeholder={
                   cityDefaultCoords ? String(cityDefaultCoords.lng) : 'Longitude'
                 }
-                className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[13px] text-[#1a1a1a] focus:outline-none focus:border-[#2c4a1e]"
+                className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#F2F5F2] focus:outline-none focus:border-[#5EE08A]"
               />
             </div>
-            <p className="mt-1 text-[11px] text-[#687588]">
+            <p className="mt-1 text-[11px] text-[#8B958C]">
               Leave blank to use the city center for rain estimates.
               {cityDefaultCoords
                 ? ` Default: ${cityDefaultCoords.lat}, ${cityDefaultCoords.lng}`
@@ -270,37 +270,37 @@ export function AddParkPage() {
           </div>
 
           <div>
-            <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Description (English) <span className="text-[#687588] font-normal">(optional)</span></label>
+            <label className="block text-[12px] font-bold text-[#9AA39C] mb-1.5">Description (English) <span className="text-[#8B958C] font-normal">(optional)</span></label>
             <textarea
               value={parkDescription}
               onChange={(e) => setParkDescription(e.target.value)}
               placeholder="Describe the park, access points, highlights…"
               rows={3}
-              className="w-full border border-[#e5e0d5] rounded-[10px] px-3 py-2.5 text-[13px] text-[#1a1a1a] resize-none focus:outline-none focus:border-[#2c4a1e]"
+              className="w-full border border-[#24302A] rounded-[10px] px-3 py-2.5 text-[13px] text-[#F2F5F2] resize-none focus:outline-none focus:border-[#5EE08A]"
             />
           </div>
           <div>
-            <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Description (Español) <span className="text-[#687588] font-normal">(opcional)</span></label>
+            <label className="block text-[12px] font-bold text-[#9AA39C] mb-1.5">Description (Español) <span className="text-[#8B958C] font-normal">(opcional)</span></label>
             <textarea
               value={parkDescriptionEs}
               onChange={(e) => setParkDescriptionEs(e.target.value)}
               placeholder="Describe el parque, puntos de acceso, atractivos…"
               rows={3}
-              className="w-full border border-[#e5e0d5] rounded-[10px] px-3 py-2.5 text-[13px] text-[#1a1a1a] resize-none focus:outline-none focus:border-[#2c4a1e]"
+              className="w-full border border-[#24302A] rounded-[10px] px-3 py-2.5 text-[13px] text-[#F2F5F2] resize-none focus:outline-none focus:border-[#5EE08A]"
             />
           </div>
         </div>
 
         {/* Trails */}
-        <div className="bg-white rounded-[16px] border border-[#e5e0d5] p-6 flex flex-col gap-4">
+        <div className="bg-[#151C18] rounded-[16px] border border-[#24302A] p-6 flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-[13px] font-bold tracking-[1px] uppercase text-[#687588]">
-              Trails <span className="text-[#2c4a1e]">{trails.filter((t) => t.name.trim()).length}</span>
+            <h2 className="text-[13px] font-bold tracking-[1px] uppercase text-[#8B958C]">
+              Trails <span className="text-[#5EE08A]">{trails.filter((t) => t.name.trim()).length}</span>
             </h2>
             <button
               type="button"
               onClick={addTrail}
-              className="flex items-center gap-1.5 h-8 px-3 rounded-[8px] bg-[#f0ede6] hover:bg-[#e5e0d5] text-[#2c4a1e] text-[12px] font-bold transition-colors"
+              className="flex items-center gap-1.5 h-8 px-3 rounded-[8px] bg-[#24302A] hover:bg-[#24302A] text-[#5EE08A] text-[12px] font-bold transition-colors"
             >
               <Plus className="size-3.5" />
               Add trail
@@ -309,14 +309,14 @@ export function AddParkPage() {
 
           <div className="flex flex-col gap-3">
             {trails.map((trail, i) => (
-              <div key={trail.id} className="border border-[#f0ede6] rounded-[12px] p-4 flex flex-col gap-3">
+              <div key={trail.id} className="border border-[#24302A] rounded-[12px] p-4 flex flex-col gap-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-[#687588] tracking-[0.5px]">TRAIL {i + 1}</span>
+                  <span className="text-[11px] font-bold text-[#8B958C] tracking-[0.5px]">TRAIL {i + 1}</span>
                   {trails.length > 1 && (
                     <button
                       type="button"
                       onClick={() => removeTrail(trail.id)}
-                      className="size-6 flex items-center justify-center rounded-[6px] hover:bg-red-50 text-[#687588] hover:text-red-500 transition-colors"
+                      className="size-6 flex items-center justify-center rounded-[6px] hover:bg-red-50 text-[#8B958C] hover:text-red-500 transition-colors"
                     >
                       <Trash2 className="size-3.5" />
                     </button>
@@ -324,22 +324,22 @@ export function AddParkPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[12px] font-bold text-[#374151] mb-1">Name</label>
+                  <label className="block text-[12px] font-bold text-[#9AA39C] mb-1">Name</label>
                   <input
                     value={trail.name}
                     onChange={(e) => updateTrail(trail.id, 'name', e.target.value)}
                     placeholder="Trail name"
-                    className="w-full border border-[#e5e0d5] rounded-[8px] px-3 h-9 text-[13px] text-[#1a1a1a] focus:outline-none focus:border-[#2c4a1e]"
+                    className="w-full border border-[#24302A] rounded-[8px] px-3 h-9 text-[13px] text-[#F2F5F2] focus:outline-none focus:border-[#5EE08A]"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[12px] font-bold text-[#374151] mb-1">Difficulty</label>
+                    <label className="block text-[12px] font-bold text-[#9AA39C] mb-1">Difficulty</label>
                     <select
                       value={trail.difficulty}
                       onChange={(e) => updateTrail(trail.id, 'difficulty', e.target.value)}
-                      className="w-full border border-[#e5e0d5] rounded-[8px] px-3 h-9 text-[13px] text-[#374151] bg-white focus:outline-none"
+                      className="w-full border border-[#24302A] rounded-[8px] px-3 h-9 text-[13px] text-[#9AA39C] bg-[#151C18] focus:outline-none"
                     >
                       {DIFFICULTIES.map((d) => (
                         <option key={d.value} value={d.value}>{d.label}</option>
@@ -357,14 +357,14 @@ export function AddParkPage() {
           <button
             type="button"
             onClick={() => navigate(fromRequest ? '/admin/requests' : '/admin/parks')}
-            className="flex-1 h-10 rounded-[10px] border border-[#e5e0d5] text-[13px] font-bold text-[#374151] hover:bg-[#f0ede6]"
+            className="flex-1 h-10 rounded-[10px] border border-[#24302A] text-[13px] font-bold text-[#9AA39C] hover:bg-[#24302A]"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={create.isPending || !parkName.trim()}
-            className="flex-1 h-10 rounded-[10px] bg-[#2c4a1e] text-white text-[13px] font-bold hover:bg-[#1a3010] disabled:opacity-50"
+            className="flex-1 h-10 rounded-[10px] bg-[#5EE08A] text-[#0E1510] text-[13px] font-bold hover:bg-[#4ADE80] disabled:opacity-50"
           >
             {create.isPending ? 'Creating…' : 'Create Park'}
           </button>

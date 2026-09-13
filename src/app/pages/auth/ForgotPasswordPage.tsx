@@ -31,28 +31,28 @@ export function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F0E8]">
+    <div className="min-h-screen bg-[#0E1510]">
       <div className="relative px-4 pt-3.5 h-[52px] flex items-center">
         <BackButton />
       </div>
 
       <div className="px-5 pt-8 pb-6">
-        <div className="size-12 rounded-full bg-[#3a6b35] flex items-center justify-center mb-4">
+        <div className="size-12 rounded-full bg-[#1E3A28] flex items-center justify-center mb-4">
           <Mail className="size-6 text-white" />
         </div>
-        <h1 className="text-[24px] font-bold text-[#1a3010] leading-tight">{t('forgot_password_title')}</h1>
-        <p className="text-[14px] text-[#4b6b3a] mt-1">{t('forgot_password_subtitle')}</p>
+        <h1 className="text-[24px] font-bold text-[#F2F5F2] leading-tight">{t('forgot_password_title')}</h1>
+        <p className="text-[14px] text-[#A8C4A0] mt-1">{t('forgot_password_subtitle')}</p>
       </div>
 
       <div className="px-5 pb-8">
         {sent ? (
-          <div className="bg-white border-[1.5px] border-[#e5e0d5] rounded-[16px] p-6 text-center">
-            <CheckCircle className="size-10 text-[#2c4a1e] mx-auto mb-3" />
-            <p className="text-[15px] font-bold text-[#1a1a1a] mb-1">{t('reset_sent_title')}</p>
-            <p className="text-[13px] text-[#374151] leading-relaxed">{t('reset_sent_body')}</p>
+          <div className="bg-[#151C18] border-[1.5px] border-[#24302A] rounded-[16px] p-6 text-center">
+            <CheckCircle className="size-10 text-[#5EE08A] mx-auto mb-3" />
+            <p className="text-[15px] font-bold text-[#F2F5F2] mb-1">{t('reset_sent_title')}</p>
+            <p className="text-[13px] text-[#9AA39C] leading-relaxed">{t('reset_sent_body')}</p>
             <Link
               to="/auth/signin"
-              className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-bold text-[#2c4a1e]"
+              className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-bold text-[#5EE08A]"
             >
               <ArrowLeft className="size-3.5" />
               {t('back_to_signin')}
@@ -66,26 +66,26 @@ export function ForgotPasswordPage() {
               </div>
             )}
             <div>
-              <label className="block text-[12px] font-bold text-[#374151] mb-1.5">{t('email_label')}</label>
+              <label className="block text-[12px] font-bold text-[#9AA39C] mb-1.5">{t('email_label')}</label>
               <input
                 type="email"
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full h-[48px] border-[1.5px] border-[#e5e0d5] rounded-[12px] px-4 text-[15px] text-[#1a1a1a] bg-white focus:outline-none focus:border-[#2c4a1e]"
+                className="w-full h-[48px] border-[1.5px] border-[#24302A] rounded-[12px] px-4 text-[15px] text-[#F2F5F2] bg-[#151C18] focus:outline-none focus:border-[#5EE08A]"
               />
             </div>
             <button
               type="submit"
               disabled={loading || !email.trim()}
-              className="w-full h-[48px] bg-[#2c4a1e] rounded-[12px] text-white text-[14px] font-bold disabled:opacity-50"
+              className="w-full h-[48px] bg-[#5EE08A] rounded-[12px] text-[#0E1510] text-[14px] font-bold disabled:opacity-50"
             >
               {loading ? t('sending') : t('send_reset_link')}
             </button>
             <Link
               to="/auth/signin"
-              className="flex items-center justify-center gap-1.5 text-[13px] font-bold text-[#374151]"
+              className="flex items-center justify-center gap-1.5 text-[13px] font-bold text-[#9AA39C]"
             >
               <ArrowLeft className="size-3.5" />
               {t('back_to_signin')}

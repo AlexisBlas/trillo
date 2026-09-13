@@ -174,7 +174,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     if (!ctx) return null;
 
     // Page background (app cream)
-    ctx.fillStyle = '#F5F0E8';
+    ctx.fillStyle = '#0E1510';
     ctx.fillRect(0, 0, width, height);
 
     // Keep main content clear of Instagram / Stories chrome
@@ -192,7 +192,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     ctx.fill();
 
     // Brand
-    ctx.fillStyle = '#1a3010';
+    ctx.fillStyle = '#5EE08A';
     ctx.font = '700 40px system-ui, -apple-system, sans-serif';
     const brand = 'TRILLO';
     let brandX = 80;
@@ -202,7 +202,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     }
 
     // Park / trail title above the card
-    ctx.fillStyle = '#1a3010';
+    ctx.fillStyle = '#5EE08A';
     ctx.font = '800 64px system-ui, -apple-system, sans-serif';
     const titleLines = wrapLines(ctx, payload.title, width - 160, 2);
     let titleY = TOP_SAFE + 88;
@@ -236,7 +236,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     ctx.fillStyle = '#ffffff';
     roundRect(ctx, cardX, cardY, cardW, estimatedH, 48);
     ctx.fill();
-    ctx.strokeStyle = '#ebe6dc';
+    ctx.strokeStyle = '#24302A';
     ctx.lineWidth = 2;
     roundRect(ctx, cardX, cardY, cardW, estimatedH, 48);
     ctx.stroke();
@@ -267,7 +267,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     }
 
     // Vertical divider
-    ctx.strokeStyle = '#e5e7eb';
+    ctx.strokeStyle = '#24302A';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(dividerX, rowTop - 8);
@@ -278,7 +278,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
       ctx.fillStyle = '#6b7280';
       ctx.font = '500 28px system-ui, -apple-system, sans-serif';
       ctx.fillText(payload.updatedLabel || '', dividerX + 28, rowTop + 18);
-      ctx.fillStyle = '#1a1a1a';
+      ctx.fillStyle = '#F2F5F2';
       ctx.font = '700 40px system-ui, -apple-system, sans-serif';
       ctx.fillText(payload.updatedValue || '—', dividerX + 28, rowTop + 68);
     }
@@ -354,7 +354,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
         roundRect(ctx, boxX, boxY, boxW, boxH, 28);
         ctx.fill();
 
-        ctx.fillStyle = '#374151';
+        ctx.fillStyle = '#9AA39C';
         ctx.font = '500 30px system-ui, -apple-system, sans-serif';
         const maxLines = Math.max(1, Math.floor((boxH - 48) / 40));
         const noteLines = wrapLines(ctx, notes, boxW - 56, maxLines);
@@ -367,10 +367,10 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     }
 
     // Footer — above Stories bottom tray
-    ctx.fillStyle = '#2c4a1e';
+    ctx.fillStyle = '#5EE08A';
     ctx.font = '700 30px system-ui, -apple-system, sans-serif';
     ctx.fillText('eltrillo.app', 80, height - BOTTOM_SAFE + 40);
-    ctx.fillStyle = '#687588';
+    ctx.fillStyle = '#8B958C';
     ctx.font = '500 26px system-ui, -apple-system, sans-serif';
     ctx.fillText('Real-time trail conditions for Puerto Rico', 80, height - BOTTOM_SAFE + 84);
 

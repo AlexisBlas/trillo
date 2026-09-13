@@ -1,6 +1,8 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  color-scheme: dark;
+
   /* Typography */
   --font-family: 'Space Grotesk', sans-serif;
   --font-size: 16px;
@@ -8,124 +10,111 @@
   --font-weight-medium: 500;
   --font-weight-normal: 400;
 
-  /* Base colors from Figma */
-  --background: #f8f4ef;
-  --foreground: #1a1a1a;
-  --card: #ffffff;
-  --card-foreground: #1a1a1a;
-  --popover: #ffffff;
-  --popover-foreground: #1a1a1a;
+  /* Dark forest + mint — matched to the attached reference screens */
+  --background: #0e1510;
+  --foreground: #f2f5f2;
+  --card: #151c18;
+  --card-foreground: #f2f5f2;
+  --popover: #151c18;
+  --popover-foreground: #f2f5f2;
 
-  /* Primary - Forest green from Figma */
-  --primary: #2c4a1e;
-  --primary-foreground: #ffffff;
-  --primary-dark: #1a3010;
+  --primary: #5ee08a;
+  --primary-foreground: #0e1510;
+  --primary-dark: #4ade80;
 
-  /* Secondary colors */
-  --secondary: #f0ede6;
-  --secondary-foreground: #2c4a1e;
+  --secondary: #1a221c;
+  --secondary-foreground: #f2f5f2;
 
-  /* Muted colors */
-  --muted: #f5f0e8;
-  /* Darkened from #6b7280 to meet WCAG 2.1 AA (4.5:1) on light/cream backgrounds */
-  --muted-foreground: #4b5563;
+  --muted: #1a221c;
+  --muted-foreground: #9aa39c;
 
-  /* Accent */
-  --accent: #ffeac8;
-  --accent-foreground: #1a3010;
+  --accent: #1e3a28;
+  --accent-foreground: #5ee08a;
 
-  /* Destructive */
-  --destructive: #dc2626;
+  --destructive: #ef4444;
   --destructive-foreground: #ffffff;
 
-  /* Borders */
-  --border: #f0ede6;
-  --border-light: #e5e7eb;
-  --input: #e5e7eb;
-  --input-background: #ffffff;
-  --switch-background: #d5d0c8;
+  --border: #24302a;
+  --border-light: #24302a;
+  --input: #24302a;
+  --input-background: #151c18;
+  --switch-background: #2a3630;
 
-  /* Ring */
-  --ring: #2c4a1e;
+  --ring: #5ee08a;
 
-  /* Status colors from Figma */
-  --status-green: #d1fae5;
-  --status-green-foreground: #065f46;
-  --status-blue: #dbeafe;
-  --status-blue-foreground: #1e40af;
-  --status-yellow: #fef3c7;
-  --status-yellow-foreground: #92400e;
-  --status-red: #fee2e2;
-  --status-red-foreground: #991b1b;
+  --status-green: #12352a;
+  --status-green-foreground: #5ee08a;
+  --status-blue: #132a3a;
+  --status-blue-foreground: #7dd3fc;
+  --status-yellow: #3a2e12;
+  --status-yellow-foreground: #fbbf24;
+  --status-red: #3a1616;
+  --status-red-foreground: #f87171;
 
-  /* Trail icon backgrounds */
-  --icon-green: #3a6b35;
+  --icon-green: #1e3a28;
   --icon-blue: #2563eb;
   --icon-yellow: #8b6914;
 
-  /* Text colors from Figma — secondary/tertiary darkened for WCAG 2.1 AA (4.5:1) */
-  --text-primary: #1a1a1a;
-  --text-secondary: #374151;
-  --text-tertiary: #4b5563;
+  --text-primary: #f2f5f2;
+  --text-secondary: #9aa39c;
+  --text-tertiary: #8b958c;
 
-  /* Radius */
   --radius: 1rem;
   --radius-sm: 0.875rem;
   --radius-md: 1rem;
   --radius-lg: 1.5rem;
 
-  /* Sidebar */
-  --sidebar: #f8f4ef;
-  --sidebar-foreground: #1a1a1a;
-  --sidebar-primary: #2c4a1e;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f5f0e8;
-  --sidebar-accent-foreground: #2c4a1e;
-  --sidebar-border: #f0ede6;
-  --sidebar-ring: #2c4a1e;
+  --sidebar: #0e1510;
+  --sidebar-foreground: #f2f5f2;
+  --sidebar-primary: #5ee08a;
+  --sidebar-primary-foreground: #0e1510;
+  --sidebar-accent: #1a221c;
+  --sidebar-accent-foreground: #5ee08a;
+  --sidebar-border: #24302a;
+  --sidebar-ring: #5ee08a;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
+  --background: #0e1510;
+  --foreground: #f2f5f2;
+  --card: #151c18;
+  --card-foreground: #f2f5f2;
+  --popover: #151c18;
+  --popover-foreground: #f2f5f2;
+  --primary: #5ee08a;
+  --primary-foreground: #0e1510;
+  --secondary: #1a221c;
+  --secondary-foreground: #f2f5f2;
+  --muted: #1a221c;
+  --muted-foreground: #9aa39c;
+  --accent: #1e3a28;
+  --accent-foreground: #5ee08a;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #24302a;
+  --input: #24302a;
+  --ring: #5ee08a;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --status-green: oklch(0.45 0.15 145);
-  --status-green-foreground: oklch(0.98 0.05 145);
-  --status-yellow: oklch(0.65 0.15 85);
-  --status-yellow-foreground: oklch(0.98 0.02 85);
-  --status-red: oklch(0.45 0.22 25);
-  --status-red-foreground: oklch(0.98 0.05 25);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  --chart-1: #5ee08a;
+  --chart-2: #4ade80;
+  --chart-3: #a8c4a0;
+  --chart-4: #fbbf24;
+  --chart-5: #f87171;
+  --status-green: #12352a;
+  --status-green-foreground: #5ee08a;
+  --status-yellow: #3a2e12;
+  --status-yellow-foreground: #fbbf24;
+  --status-red: #3a1616;
+  --status-red-foreground: #f87171;
+  --sidebar: #0e1510;
+  --sidebar-foreground: #f2f5f2;
+  --sidebar-primary: #5ee08a;
+  --sidebar-primary-foreground: #0e1510;
+  --sidebar-accent: #1a221c;
+  --sidebar-accent-foreground: #5ee08a;
+  --sidebar-border: #24302a;
+  --sidebar-ring: #5ee08a;
 }
 
 @theme inline {
@@ -236,5 +225,26 @@
     font-size: var(--text-base);
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
+  }
+}
+
+@keyframes landing-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.landing-rise {
+  animation: landing-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-rise {
+    animation: none;
   }
 }

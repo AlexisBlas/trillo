@@ -78,24 +78,24 @@ export function SuggestPlaceDialog({ open, onOpenChange }: SuggestPlaceDialogPro
           'translate-x-[-50%] translate-y-0',
           'w-[calc(100%-1.5rem)] max-w-[360px] sm:max-w-[360px]',
           'max-h-[min(88dvh,640px)]',
-          'flex flex-col gap-0 overflow-hidden rounded-[20px] border-[#e5e0d5] bg-[#F5F0E8] p-0 shadow-xl',
+          'flex flex-col gap-0 overflow-hidden rounded-[20px] border-[#24302A] bg-[#0E1510] p-0 shadow-xl',
           // Keep a centered modal feel on wider phones / tablets when space allows
           'sm:bottom-auto sm:top-[50%] sm:translate-y-[-50%]'
         )}
       >
         <div className="overflow-y-auto overscroll-contain px-5 pb-5 pt-5">
           <DialogHeader className="space-y-1.5 text-left mb-4 pr-8">
-            <DialogTitle className="text-[18px] font-bold leading-snug text-[#1a3010]">
+            <DialogTitle className="text-[18px] font-bold leading-snug text-[#F2F5F2]">
               {t('suggest_title')}
             </DialogTitle>
-            <DialogDescription className="text-[13.5px] leading-[20px] text-[#374151]">
+            <DialogDescription className="text-[13.5px] leading-[20px] text-[#9AA39C]">
               {t('suggest_body')}
             </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
-              <p className="mb-2 text-[11px] font-bold uppercase tracking-[1.2px] text-[#374151]">
+              <p className="mb-2 text-[11px] font-bold uppercase tracking-[1.2px] text-[#9AA39C]">
                 {t('suggest_type_label')}
               </p>
               <div className="grid grid-cols-2 gap-2">
@@ -110,8 +110,8 @@ export function SuggestPlaceDialog({ open, onOpenChange }: SuggestPlaceDialogPro
                     className={cn(
                       'h-11 rounded-[14px] border-[1.5px] text-[14px] font-bold transition-colors',
                       kind === opt.value
-                        ? 'border-[#2c4a1e] bg-[#2c4a1e] text-white'
-                        : 'border-[#e5e0d5] bg-white text-[#374151]'
+                        ? 'border-[#5EE08A] bg-[#5EE08A] text-[#0E1510]'
+                        : 'border-[#24302A] bg-[#151C18] text-[#9AA39C]'
                     )}
                   >
                     {opt.label}
@@ -123,7 +123,7 @@ export function SuggestPlaceDialog({ open, onOpenChange }: SuggestPlaceDialogPro
             <div className="min-w-0">
               <label
                 htmlFor="suggest-name"
-                className="mb-2 block text-[11px] font-bold uppercase tracking-[1.2px] text-[#374151]"
+                className="mb-2 block text-[11px] font-bold uppercase tracking-[1.2px] text-[#9AA39C]"
               >
                 {t('suggest_name_label')}
               </label>
@@ -132,7 +132,7 @@ export function SuggestPlaceDialog({ open, onOpenChange }: SuggestPlaceDialogPro
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder={t('suggest_name_placeholder')}
-                className="h-11 w-full max-w-full rounded-[14px] border-[1.5px] border-[#e5e0d5] text-[16px]"
+                className="h-11 w-full max-w-full rounded-[14px] border-[1.5px] border-[#24302A] text-[16px]"
                 disabled={submitting}
                 autoComplete="off"
                 enterKeyHint="next"
@@ -142,7 +142,7 @@ export function SuggestPlaceDialog({ open, onOpenChange }: SuggestPlaceDialogPro
             <div className="min-w-0">
               <label
                 htmlFor="suggest-details"
-                className="mb-2 block text-[11px] font-bold uppercase tracking-[1.2px] text-[#374151]"
+                className="mb-2 block text-[11px] font-bold uppercase tracking-[1.2px] text-[#9AA39C]"
               >
                 {t('suggest_details_label')}
               </label>
@@ -153,14 +153,14 @@ export function SuggestPlaceDialog({ open, onOpenChange }: SuggestPlaceDialogPro
                 placeholder={t('suggest_details_placeholder')}
                 rows={3}
                 disabled={submitting}
-                className="w-full max-w-full resize-none rounded-[14px] border-[1.5px] border-[#e5e0d5] bg-white px-3 py-2.5 text-[16px] text-[#1a1a1a] placeholder:text-[#9ca3af] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2c4a1e]/30 disabled:opacity-60"
+                className="w-full max-w-full resize-none rounded-[14px] border-[1.5px] border-[#24302A] bg-[#151C18] px-3 py-2.5 text-[16px] text-[#F2F5F2] placeholder:text-[#9ca3af] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5EE08A]/30 disabled:opacity-60"
               />
             </div>
 
             <button
               type="submit"
               disabled={submitting}
-              className="mt-1 flex min-h-[48px] w-full items-center justify-center rounded-[12px] bg-[#2c4a1e] px-4 py-3 text-[13px] font-bold tracking-[1px] text-white transition-transform active:scale-[0.99] disabled:opacity-60"
+              className="mt-1 flex min-h-[48px] w-full items-center justify-center rounded-[12px] bg-[#5EE08A] px-4 py-3 text-[13px] font-bold tracking-[1px] text-[#0E1510] transition-transform active:scale-[0.99] disabled:opacity-60"
             >
               {submitting ? t('form_submitting') : t('suggest_submit')}
             </button>

@@ -28,19 +28,19 @@ function ConfirmModal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
-      <div className="bg-white rounded-[20px] p-6 w-full max-w-sm shadow-xl" onClick={(e) => e.stopPropagation()}>
-        <div className={`size-12 rounded-full flex items-center justify-center mx-auto mb-4 ${danger ? 'bg-red-50' : 'bg-[#f0ede6]'}`}>
-          <AlertTriangle className={`size-6 ${danger ? 'text-red-500' : 'text-[#2c4a1e]'}`} />
+      <div className="bg-[#151C18] rounded-[20px] p-6 w-full max-w-sm shadow-xl" onClick={(e) => e.stopPropagation()}>
+        <div className={`size-12 rounded-full flex items-center justify-center mx-auto mb-4 ${danger ? 'bg-red-50' : 'bg-[#24302A]'}`}>
+          <AlertTriangle className={`size-6 ${danger ? 'text-red-500' : 'text-[#5EE08A]'}`} />
         </div>
-        <h2 className="text-[16px] font-bold text-[#1a1a1a] text-center mb-2">{title}</h2>
-        <p className="text-[13px] text-[#374151] text-center leading-relaxed">{description}</p>
+        <h2 className="text-[16px] font-bold text-[#F2F5F2] text-center mb-2">{title}</h2>
+        <p className="text-[13px] text-[#9AA39C] text-center leading-relaxed">{description}</p>
         <div className="flex gap-2 mt-5">
-          <button onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#e5e0d5] text-[13px] font-bold text-[#374151] hover:bg-[#f0ede6]">
+          <button onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#24302A] text-[13px] font-bold text-[#9AA39C] hover:bg-[#24302A]">
             Cancel
           </button>
           <button
             onClick={onConfirm}
-            className={`flex-1 h-10 rounded-[10px] text-white text-[13px] font-bold ${danger ? 'bg-red-500 hover:bg-red-600' : 'bg-[#2c4a1e] hover:bg-[#1a3010]'}`}
+            className={`flex-1 h-10 rounded-[10px] text-white text-[13px] font-bold ${danger ? 'bg-red-500 hover:bg-red-600' : 'bg-[#5EE08A] hover:bg-[#4ADE80]'}`}
           >
             {confirmLabel}
           </button>
@@ -140,31 +140,31 @@ export function AdminUsersPage() {
     <div className="p-8">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-[24px] font-bold text-[#1a1a1a]">Users</h1>
-          <p className="text-[14px] text-[#687588] mt-1">{users?.length ?? 0} registered</p>
+          <h1 className="text-[24px] font-bold text-[#F2F5F2]">Users</h1>
+          <p className="text-[14px] text-[#8B958C] mt-1">{users?.length ?? 0} registered</p>
         </div>
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by email…"
-          className="border border-[#e5e0d5] rounded-[10px] px-3 h-9 text-[13px] text-[#374151] bg-white focus:outline-none w-[220px]"
+          className="border border-[#24302A] rounded-[10px] px-3 h-9 text-[13px] text-[#9AA39C] bg-[#151C18] focus:outline-none w-[220px]"
         />
       </div>
 
-      <div className="bg-white rounded-[16px] border border-[#e5e0d5] overflow-hidden">
-        <div className="grid grid-cols-[1fr_80px_80px_148px] px-5 py-3 border-b border-[#f0ede6] bg-[#fafaf8]">
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588]">Email</p>
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588] text-center">Reports</p>
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588] text-center">Role</p>
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588] text-right">Actions</p>
+      <div className="bg-[#151C18] rounded-[16px] border border-[#24302A] overflow-hidden">
+        <div className="grid grid-cols-[1fr_80px_80px_148px] px-5 py-3 border-b border-[#24302A] bg-[#1A221C]">
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C]">Email</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C] text-center">Reports</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C] text-center">Role</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C] text-right">Actions</p>
         </div>
 
         {isLoading && (
-          <div className="px-5 py-12 text-center text-[13px] text-[#687588]">Loading…</div>
+          <div className="px-5 py-12 text-center text-[13px] text-[#8B958C]">Loading…</div>
         )}
 
         {!isLoading && filtered.length === 0 && (
-          <div className="px-5 py-12 text-center text-[13px] text-[#687588]">No users found.</div>
+          <div className="px-5 py-12 text-center text-[13px] text-[#8B958C]">No users found.</div>
         )}
 
         {pageItems.map((user, i) => {
@@ -172,21 +172,21 @@ export function AdminUsersPage() {
           return (
             <div
               key={user.id}
-              className={`grid grid-cols-[1fr_80px_80px_148px] px-5 py-3.5 items-center ${i !== pageItems.length - 1 ? 'border-b border-[#f0ede6]' : ''} ${user.is_banned ? 'opacity-60' : ''}`}
+              className={`grid grid-cols-[1fr_80px_80px_148px] px-5 py-3.5 items-center ${i !== pageItems.length - 1 ? 'border-b border-[#24302A]' : ''} ${user.is_banned ? 'opacity-60' : ''}`}
             >
               <div className="min-w-0 pr-4">
-                <p className="text-[13.5px] font-semibold text-[#1a1a1a] truncate">{user.email ?? '—'}</p>
-                <p className="text-[11px] text-[#687588] mt-0.5">
+                <p className="text-[13.5px] font-semibold text-[#F2F5F2] truncate">{user.email ?? '—'}</p>
+                <p className="text-[11px] text-[#8B958C] mt-0.5">
                   Joined {user.created_at ? format(new Date(user.created_at), 'MMM d, yyyy') : '—'}
-                  {isSelf && <span className="ml-1.5 text-[#2c4a1e] font-bold">· you</span>}
+                  {isSelf && <span className="ml-1.5 text-[#5EE08A] font-bold">· you</span>}
                 </p>
               </div>
 
-              <p className="text-[13px] text-[#687588] text-center">{user.report_count}</p>
+              <p className="text-[13px] text-[#8B958C] text-center">{user.report_count}</p>
 
               <div className="flex justify-center">
                 {user.is_admin ? (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#2c4a1e] bg-[#2c4a1e]/10 px-2 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#5EE08A] bg-[#5EE08A]/10 px-2 py-0.5 rounded-full">
                     <Shield className="size-3" /> Admin
                   </span>
                 ) : user.is_banned ? (
@@ -194,7 +194,7 @@ export function AdminUsersPage() {
                     <Ban className="size-3" /> Banned
                   </span>
                 ) : (
-                  <span className="text-[11px] text-[#687588]">User</span>
+                  <span className="text-[11px] text-[#8B958C]">User</span>
                 )}
               </div>
 
@@ -205,7 +205,7 @@ export function AdminUsersPage() {
                       <button
                         onClick={() => setPending({ type: 'unban', user })}
                         title="Unban"
-                        className="size-8 flex items-center justify-center rounded-[8px] hover:bg-green-50 text-[#687588] hover:text-green-600 transition-colors"
+                        className="size-8 flex items-center justify-center rounded-[8px] hover:bg-green-50 text-[#8B958C] hover:text-green-600 transition-colors"
                       >
                         <CheckCircle className="size-3.5" />
                       </button>
@@ -213,7 +213,7 @@ export function AdminUsersPage() {
                       <button
                         onClick={() => setPending({ type: 'ban', user })}
                         title="Ban"
-                        className="size-8 flex items-center justify-center rounded-[8px] hover:bg-red-50 text-[#687588] hover:text-red-500 transition-colors"
+                        className="size-8 flex items-center justify-center rounded-[8px] hover:bg-red-50 text-[#8B958C] hover:text-red-500 transition-colors"
                       >
                         <Ban className="size-3.5" />
                       </button>
@@ -222,7 +222,7 @@ export function AdminUsersPage() {
                       <button
                         onClick={() => setPending({ type: 'demote', user })}
                         title="Revoke admin"
-                        className="size-8 flex items-center justify-center rounded-[8px] hover:bg-red-50 text-[#687588] hover:text-red-500 transition-colors"
+                        className="size-8 flex items-center justify-center rounded-[8px] hover:bg-red-50 text-[#8B958C] hover:text-red-500 transition-colors"
                       >
                         <ShieldOff className="size-3.5" />
                       </button>
@@ -230,7 +230,7 @@ export function AdminUsersPage() {
                       <button
                         onClick={() => setPending({ type: 'promote', user })}
                         title="Grant admin"
-                        className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#f0ede6] text-[#687588] hover:text-[#2c4a1e] transition-colors"
+                        className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#24302A] text-[#8B958C] hover:text-[#5EE08A] transition-colors"
                       >
                         <Shield className="size-3.5" />
                       </button>
@@ -238,7 +238,7 @@ export function AdminUsersPage() {
                     <button
                       onClick={() => setPending({ type: 'delete', user })}
                       title="Delete user"
-                      className="size-8 flex items-center justify-center rounded-[8px] hover:bg-red-50 text-[#687588] hover:text-red-500 transition-colors"
+                      className="size-8 flex items-center justify-center rounded-[8px] hover:bg-red-50 text-[#8B958C] hover:text-red-500 transition-colors"
                     >
                       <Trash2 className="size-3.5" />
                     </button>

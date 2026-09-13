@@ -93,35 +93,35 @@ function TrailModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
       <form
-        className="bg-white rounded-[20px] p-6 w-full max-w-md shadow-xl"
+        className="bg-[#151C18] rounded-[20px] p-6 w-full max-w-md shadow-xl"
         onClick={(e) => e.stopPropagation()}
         onSubmit={handleSubmit}
       >
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-[16px] font-bold text-[#1a1a1a]">{isEdit ? 'Edit Trail' : 'New Trail'}</h2>
-          <button type="button" onClick={onClose} className="size-7 flex items-center justify-center rounded-full hover:bg-[#f0ede6]">
-            <X className="size-4 text-[#4b5563]" />
+          <h2 className="text-[16px] font-bold text-[#F2F5F2]">{isEdit ? 'Edit Trail' : 'New Trail'}</h2>
+          <button type="button" onClick={onClose} className="size-7 flex items-center justify-center rounded-full hover:bg-[#24302A]">
+            <X className="size-4 text-[#8B958C]" />
           </button>
         </div>
 
         {/* Name */}
         <div className="mb-4">
-          <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Name *</label>
+          <label className="block text-[12px] font-bold text-[#9AA39C] mb-1.5">Name *</label>
           <input
             value={form.name}
             onChange={set('name')}
             placeholder="e.g. El Yunque Peak Trail"
-            className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[14px] text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#2c4a1e]/30"
+            className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[14px] text-[#F2F5F2] focus:outline-none focus:ring-2 focus:ring-[#5EE08A]/30"
           />
         </div>
 
         {/* Park / Location */}
         <div className="mb-4">
-          <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Park</label>
+          <label className="block text-[12px] font-bold text-[#9AA39C] mb-1.5">Park</label>
           <select
             value={parkSelect}
             onChange={(e) => handleParkSelect(e.target.value)}
-            className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[14px] text-[#1a1a1a] bg-white focus:outline-none focus:ring-2 focus:ring-[#2c4a1e]/30"
+            className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[14px] text-[#F2F5F2] bg-[#151C18] focus:outline-none focus:ring-2 focus:ring-[#5EE08A]/30"
           >
             <option value="">— No park —</option>
             {parkNames.map((name) => (
@@ -134,27 +134,27 @@ function TrailModal({
               value={customLocation}
               onChange={(e) => handleCustomLocation(e.target.value)}
               placeholder="Enter park name"
-              className="mt-2 w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[14px] text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#2c4a1e]/30"
+              className="mt-2 w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[14px] text-[#F2F5F2] focus:outline-none focus:ring-2 focus:ring-[#5EE08A]/30"
             />
           )}
         </div>
 
         {/* QR Code */}
         <div className="mb-5">
-          <label className="block text-[12px] font-bold text-[#374151] mb-1.5">QR Code</label>
+          <label className="block text-[12px] font-bold text-[#9AA39C] mb-1.5">QR Code</label>
           <input
             value={form.qr_code ?? ''}
             onChange={set('qr_code')}
             placeholder="e.g. TRAIL_YUNQUE_PEAK"
-            className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[14px] text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#2c4a1e]/30"
+            className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[14px] text-[#F2F5F2] focus:outline-none focus:ring-2 focus:ring-[#5EE08A]/30"
           />
         </div>
 
         <div className="flex gap-2">
-          <button type="button" onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#e5e0d5] text-[13px] font-bold text-[#374151] hover:bg-[#f0ede6]">
+          <button type="button" onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#24302A] text-[13px] font-bold text-[#9AA39C] hover:bg-[#24302A]">
             Cancel
           </button>
-          <button type="submit" disabled={isPending} className="flex-1 h-10 rounded-[10px] bg-[#2c4a1e] text-white text-[13px] font-bold hover:bg-[#1a3010] disabled:opacity-50">
+          <button type="submit" disabled={isPending} className="flex-1 h-10 rounded-[10px] bg-[#5EE08A] text-[#0E1510] text-[13px] font-bold hover:bg-[#4ADE80] disabled:opacity-50">
             {isPending ? 'Saving…' : isEdit ? 'Save Changes' : 'Create Trail'}
           </button>
         </div>
@@ -184,16 +184,16 @@ function DeleteTrailModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
-      <div className="bg-white rounded-[20px] p-6 w-full max-w-sm shadow-xl" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-[#151C18] rounded-[20px] p-6 w-full max-w-sm shadow-xl" onClick={(e) => e.stopPropagation()}>
         <div className="size-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
           <AlertTriangle className="size-6 text-red-500" />
         </div>
-        <h2 className="text-[16px] font-bold text-[#1a1a1a] text-center mb-2">Delete Trail</h2>
-        <p className="text-[13px] text-[#374151] text-center leading-relaxed">
+        <h2 className="text-[16px] font-bold text-[#F2F5F2] text-center mb-2">Delete Trail</h2>
+        <p className="text-[13px] text-[#9AA39C] text-center leading-relaxed">
           Permanently delete <strong>{trail.name}</strong> and all its reports?
         </p>
         <div className="flex gap-2 mt-5">
-          <button onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#e5e0d5] text-[13px] font-bold text-[#374151] hover:bg-[#f0ede6]">
+          <button onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#24302A] text-[13px] font-bold text-[#9AA39C] hover:bg-[#24302A]">
             Cancel
           </button>
           <button onClick={handleDelete} disabled={del.isPending} className="flex-1 h-10 rounded-[10px] bg-red-500 text-white text-[13px] font-bold hover:bg-red-600 disabled:opacity-50">
@@ -224,20 +224,20 @@ export function AdminTrailsPage() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-[24px] font-bold text-[#1a1a1a]">Trails</h1>
-          <p className="text-[14px] text-[#687588] mt-1">{trails?.length ?? 0} total</p>
+          <h1 className="text-[24px] font-bold text-[#F2F5F2]">Trails</h1>
+          <p className="text-[14px] text-[#8B958C] mt-1">{trails?.length ?? 0} total</p>
         </div>
         <div className="flex gap-2">
           <button
             onClick={() => setImportOpen(true)}
-            className="flex items-center gap-2 h-10 px-4 bg-white border border-[#e5e0d5] text-[#374151] text-[13px] font-bold rounded-[10px] hover:border-[#2c4a1e] hover:text-[#2c4a1e] transition-colors"
+            className="flex items-center gap-2 h-10 px-4 bg-[#151C18] border border-[#24302A] text-[#9AA39C] text-[13px] font-bold rounded-[10px] hover:border-[#5EE08A] hover:text-[#5EE08A] transition-colors"
           >
             <Upload className="size-4" />
             Import CSV
           </button>
           <button
             onClick={() => setEditing('new')}
-            className="flex items-center gap-2 h-10 px-4 bg-[#2c4a1e] text-white text-[13px] font-bold rounded-[10px] hover:bg-[#1a3010]"
+            className="flex items-center gap-2 h-10 px-4 bg-[#5EE08A] text-[#0E1510] text-[13px] font-bold rounded-[10px] hover:bg-[#4ADE80]"
           >
             <Plus className="size-4" />
             New Trail
@@ -250,26 +250,26 @@ export function AdminTrailsPage() {
         <select
           value={parkFilter}
           onChange={(e) => setParkFilter(e.target.value)}
-          className="border border-[#e5e0d5] rounded-[10px] px-3 h-9 text-[13px] text-[#374151] bg-white focus:outline-none"
+          className="border border-[#24302A] rounded-[10px] px-3 h-9 text-[13px] text-[#9AA39C] bg-[#151C18] focus:outline-none"
         >
           <option value="">All parks</option>
           {parks.map((p) => <option key={p} value={p}>{p}</option>)}
         </select>
       </div>
 
-      <div className="bg-white rounded-[16px] border border-[#e5e0d5] overflow-hidden">
-        <div className="grid grid-cols-[1fr_1fr_80px] px-5 py-3 border-b border-[#f0ede6] bg-[#fafaf8]">
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588]">Trail Name</p>
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588]">Park</p>
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588] text-right">Actions</p>
+      <div className="bg-[#151C18] rounded-[16px] border border-[#24302A] overflow-hidden">
+        <div className="grid grid-cols-[1fr_1fr_80px] px-5 py-3 border-b border-[#24302A] bg-[#1A221C]">
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C]">Trail Name</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C]">Park</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C] text-right">Actions</p>
         </div>
 
         {isLoading && (
-          <div className="px-5 py-12 text-center text-[13px] text-[#687588]">Loading…</div>
+          <div className="px-5 py-12 text-center text-[13px] text-[#8B958C]">Loading…</div>
         )}
 
         {!isLoading && filtered.length === 0 && (
-          <div className="px-5 py-12 text-center text-[13px] text-[#687588]">No trails found.</div>
+          <div className="px-5 py-12 text-center text-[13px] text-[#8B958C]">No trails found.</div>
         )}
 
         {pageItems.map((trail, i) => {
@@ -279,20 +279,20 @@ export function AdminTrailsPage() {
           return (
             <div
               key={trail.id}
-              className={`grid grid-cols-[1fr_1fr_80px] px-5 py-3.5 items-center ${i !== pageItems.length - 1 ? 'border-b border-[#f0ede6]' : ''}`}
+              className={`grid grid-cols-[1fr_1fr_80px] px-5 py-3.5 items-center ${i !== pageItems.length - 1 ? 'border-b border-[#24302A]' : ''}`}
             >
-              <p className="text-[13.5px] font-semibold text-[#1a1a1a] truncate pr-4">{displayName}</p>
-              <p className="text-[13px] text-[#687588] truncate pr-4">{trail.location ?? '—'}</p>
+              <p className="text-[13.5px] font-semibold text-[#F2F5F2] truncate pr-4">{displayName}</p>
+              <p className="text-[13px] text-[#8B958C] truncate pr-4">{trail.location ?? '—'}</p>
               <div className="flex justify-end gap-1.5">
                 <button
                   onClick={() => setEditing(trail)}
-                  className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#f0ede6] text-[#687588] hover:text-[#2c4a1e] transition-colors"
+                  className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#24302A] text-[#8B958C] hover:text-[#5EE08A] transition-colors"
                 >
                   <Pencil className="size-3.5" />
                 </button>
                 <button
                   onClick={() => setDeleting(trail)}
-                  className="size-8 flex items-center justify-center rounded-[8px] hover:bg-red-50 text-[#687588] hover:text-red-500 transition-colors"
+                  className="size-8 flex items-center justify-center rounded-[8px] hover:bg-red-50 text-[#8B958C] hover:text-red-500 transition-colors"
                 >
                   <Trash2 className="size-3.5" />
                 </button>

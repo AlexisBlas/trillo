@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router';
+import { isAppEmbed } from '../../lib/embed';
 
 declare global {
   interface Window {
@@ -18,6 +19,7 @@ export function AnalyticsPageViews() {
   const { pathname, search } = useLocation();
 
   useEffect(() => {
+    if (isAppEmbed()) return;
     if (typeof window.gtag !== 'function') return;
 
     window.gtag('event', 'page_view', {

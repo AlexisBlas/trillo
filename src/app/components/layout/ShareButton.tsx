@@ -95,7 +95,7 @@ export function ShareButton({
         disabled={busy}
         aria-label={t('share_aria')}
         className={cn(
-          'w-full min-h-[52px] inline-flex items-center justify-center gap-2.5 rounded-[14px] border-[1.5px] border-[#e5e7eb] bg-white text-[15px] font-bold text-[#1a3010] touch-manipulation active:bg-[#f0ede6] disabled:opacity-60',
+          'w-full min-h-[52px] inline-flex items-center justify-center gap-2.5 rounded-[14px] border-[1.5px] border-[#24302A] bg-[#151C18] text-[15px] font-bold text-[#F2F5F2] touch-manipulation active:bg-[#24302A] disabled:opacity-60',
           className
         )}
       >
@@ -112,11 +112,11 @@ export function ShareButton({
       disabled={busy}
       aria-label={t('share_aria')}
       className={cn(
-        'size-[38px] rounded-full bg-white/90 shadow-[0px_2px_8px_rgba(0,0,0,0.12)] flex items-center justify-center shrink-0 touch-manipulation disabled:opacity-60',
+        'size-[38px] rounded-full bg-[#151C18]/90 shadow-[0px_2px_8px_rgba(0,0,0,0.12)] flex items-center justify-center shrink-0 touch-manipulation disabled:opacity-60',
         className
       )}
     >
-      <Share2 className="size-[18px] text-[#1a1a1a]" strokeWidth={1.65} />
+      <Share2 className="size-[18px] text-[#F2F5F2]" strokeWidth={1.65} />
     </button>
   );
 }

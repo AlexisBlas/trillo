@@ -64,7 +64,7 @@ export function StatusCircle({
         <span
           className={cn(
             'absolute -bottom-0.5 -right-0.5 rounded-full flex items-center justify-center',
-            'shadow-[0_0_0_2px_#ffffff] bg-[#1a3010]',
+            'shadow-[0_0_0_2px_#151C18] bg-[#0E1510]',
             reportBadgeSize[size]
           )}
         >

@@ -5,7 +5,8 @@ import { LangProvider } from './contexts/LangContext';
 import { Toaster } from './components/ui/sonner';
 import { router } from './router';
 import { useIsMobile } from './hooks/useIsMobile';
-import { DesktopBlocker } from './components/layout/DesktopBlocker';
+import { isAppEmbed } from './lib/embed';
+import { LandingPage } from './pages/LandingPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,10 +23,10 @@ const isAdminPath = () =>
 export default function App() {
   const isMobile = useIsMobile();
 
-  if (!isMobile && !isAdminPath()) {
+  if (!isMobile && !isAdminPath() && !isAppEmbed()) {
     return (
       <LangProvider>
-        <DesktopBlocker />
+        <LandingPage />
       </LangProvider>
     );
   }

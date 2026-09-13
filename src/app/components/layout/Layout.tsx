@@ -6,12 +6,14 @@ import { PageTransition } from './PageTransition';
 import { AddToHomeScreenPrompt } from './AddToHomeScreenPrompt';
 import { AnalyticsPageViews } from './AnalyticsPageViews';
 import { useNavKind } from './useNavKind';
+import { PreviewBridge } from './PreviewBridge';
 
 export function Layout() {
   const { pathname, kind } = useNavKind();
 
   return (
-    <div className="min-h-dvh bg-[#F5F0E8] overflow-x-hidden">
+    <div className="min-h-dvh bg-[#0E1510] overflow-x-hidden">
+      <PreviewBridge />
       <ScrollToTop />
       <AnalyticsPageViews />
       {/* Fixed-height stage so push/pop pages can stack with absolute positioning */}

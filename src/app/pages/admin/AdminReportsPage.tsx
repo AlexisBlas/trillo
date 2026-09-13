@@ -45,19 +45,19 @@ function EditModal({ report, onClose }: { report: AdminReport; onClose: () => vo
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
       <div
-        className="bg-white rounded-[20px] p-6 w-full max-w-md shadow-xl"
+        className="bg-[#151C18] rounded-[20px] p-6 w-full max-w-md shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-[16px] font-bold text-[#1a1a1a]">Edit Report</h2>
-          <button onClick={onClose} className="size-7 flex items-center justify-center rounded-full hover:bg-[#f0ede6]">
-            <X className="size-4 text-[#4b5563]" />
+          <h2 className="text-[16px] font-bold text-[#F2F5F2]">Edit Report</h2>
+          <button onClick={onClose} className="size-7 flex items-center justify-center rounded-full hover:bg-[#24302A]">
+            <X className="size-4 text-[#8B958C]" />
           </button>
         </div>
 
         {/* Status */}
         <div className="mb-4">
-          <label className="block text-[12px] font-bold text-[#374151] mb-2">Status</label>
+          <label className="block text-[12px] font-bold text-[#9AA39C] mb-2">Status</label>
           <div className="flex gap-2">
             {(['green', 'yellow', 'red'] as const).map((s) => (
               <button
@@ -69,7 +69,7 @@ function EditModal({ report, onClose }: { report: AdminReport; onClose: () => vo
                     ? s === 'green' ? 'bg-green-600 text-white border-green-600'
                       : s === 'yellow' ? 'bg-yellow-500 text-white border-yellow-500'
                       : 'bg-red-500 text-white border-red-500'
-                    : 'bg-white text-[#374151] border-[#e5e0d5] hover:border-[#2c4a1e]'
+                    : 'bg-[#151C18] text-[#9AA39C] border-[#24302A] hover:border-[#5EE08A]'
                 )}
               >
                 {STATUS_LABELS[s]}
@@ -80,11 +80,11 @@ function EditModal({ report, onClose }: { report: AdminReport; onClose: () => vo
 
         {/* Move to trail */}
         <div className="mb-4">
-          <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Trail</label>
+          <label className="block text-[12px] font-bold text-[#9AA39C] mb-1.5">Trail</label>
           <select
             value={trailId}
             onChange={(e) => setTrailId(e.target.value)}
-            className="w-full border border-[#e5e0d5] rounded-[10px] px-3 h-10 text-[13px] text-[#374151] bg-white focus:outline-none"
+            className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#9AA39C] bg-[#151C18] focus:outline-none"
           >
             <option value="">Park overview / none</option>
             {(trails ?? []).map((t) => (
@@ -95,23 +95,23 @@ function EditModal({ report, onClose }: { report: AdminReport; onClose: () => vo
 
         {/* Notes */}
         <div className="mb-5">
-          <label className="block text-[12px] font-bold text-[#374151] mb-1.5">Notes</label>
+          <label className="block text-[12px] font-bold text-[#9AA39C] mb-1.5">Notes</label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={3}
-            className="w-full border border-[#e5e0d5] rounded-[10px] px-3 py-2.5 text-[13px] text-[#1a1a1a] resize-none focus:outline-none"
+            className="w-full border border-[#24302A] rounded-[10px] px-3 py-2.5 text-[13px] text-[#F2F5F2] resize-none focus:outline-none"
           />
         </div>
 
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#e5e0d5] text-[13px] font-bold text-[#374151] hover:bg-[#f0ede6]">
+          <button onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#24302A] text-[13px] font-bold text-[#9AA39C] hover:bg-[#24302A]">
             Cancel
           </button>
           <button
             onClick={handleSave}
             disabled={update.isPending}
-            className="flex-1 h-10 rounded-[10px] bg-[#2c4a1e] text-white text-[13px] font-bold hover:bg-[#1a3010] disabled:opacity-50"
+            className="flex-1 h-10 rounded-[10px] bg-[#5EE08A] text-[#0E1510] text-[13px] font-bold hover:bg-[#4ADE80] disabled:opacity-50"
           >
             {update.isPending ? 'Saving…' : 'Save'}
           </button>
@@ -126,16 +126,16 @@ function DeleteModal({ report, onClose }: { report: AdminReport; onClose: () => 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
-      <div className="bg-white rounded-[20px] p-6 w-full max-w-sm shadow-xl" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-[#151C18] rounded-[20px] p-6 w-full max-w-sm shadow-xl" onClick={(e) => e.stopPropagation()}>
         <div className="size-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
           <AlertTriangle className="size-6 text-red-500" />
         </div>
-        <h2 className="text-[16px] font-bold text-[#1a1a1a] text-center mb-2">Delete Report</h2>
-        <p className="text-[13px] text-[#374151] text-center">
+        <h2 className="text-[16px] font-bold text-[#F2F5F2] text-center mb-2">Delete Report</h2>
+        <p className="text-[13px] text-[#9AA39C] text-center">
           Delete this <strong>{report.status}</strong> report on <strong>{report.trail_name}</strong>?
         </p>
         <div className="flex gap-2 mt-5">
-          <button onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#e5e0d5] text-[13px] font-bold text-[#374151] hover:bg-[#f0ede6]">
+          <button onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#24302A] text-[13px] font-bold text-[#9AA39C] hover:bg-[#24302A]">
             Cancel
           </button>
           <button
@@ -187,20 +187,20 @@ export function AdminReportsPage() {
     <div className="p-8">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-[24px] font-bold text-[#1a1a1a]">Reports</h1>
-          <p className="text-[14px] text-[#687588] mt-1">{reports?.length ?? 0} total</p>
+          <h1 className="text-[24px] font-bold text-[#F2F5F2]">Reports</h1>
+          <p className="text-[14px] text-[#8B958C] mt-1">{reports?.length ?? 0} total</p>
         </div>
         <div className="flex gap-2">
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search reports…"
-            className="border border-[#e5e0d5] rounded-[10px] px-3 h-9 text-[13px] text-[#374151] bg-white focus:outline-none w-[200px]"
+            className="border border-[#24302A] rounded-[10px] px-3 h-9 text-[13px] text-[#9AA39C] bg-[#151C18] focus:outline-none w-[200px]"
           />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="border border-[#e5e0d5] rounded-[10px] px-3 h-9 text-[13px] text-[#374151] bg-white focus:outline-none"
+            className="border border-[#24302A] rounded-[10px] px-3 h-9 text-[13px] text-[#9AA39C] bg-[#151C18] focus:outline-none"
           >
             <option value="">All statuses</option>
             <option value="green">Green</option>
@@ -210,37 +210,37 @@ export function AdminReportsPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-[16px] border border-[#e5e0d5] overflow-hidden">
-        <div className="grid grid-cols-[1fr_1fr_80px_120px_80px] px-5 py-3 border-b border-[#f0ede6] bg-[#fafaf8]">
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588]">Trail</p>
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588]">User</p>
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588] text-center">Status</p>
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588] text-center">Date</p>
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#687588] text-right">Actions</p>
+      <div className="bg-[#151C18] rounded-[16px] border border-[#24302A] overflow-hidden">
+        <div className="grid grid-cols-[1fr_1fr_80px_120px_80px] px-5 py-3 border-b border-[#24302A] bg-[#1A221C]">
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C]">Trail</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C]">User</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C] text-center">Status</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C] text-center">Date</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C] text-right">Actions</p>
         </div>
 
-        {isLoading && <div className="px-5 py-12 text-center text-[13px] text-[#687588]">Loading…</div>}
+        {isLoading && <div className="px-5 py-12 text-center text-[13px] text-[#8B958C]">Loading…</div>}
         {!isLoading && error && (
           <div className="px-5 py-12 text-center text-[13px] text-red-600">
             Failed to load reports{error instanceof Error ? `: ${error.message}` : '.'}
           </div>
         )}
         {!isLoading && !error && filtered.length === 0 && (
-          <div className="px-5 py-12 text-center text-[13px] text-[#687588]">No reports found.</div>
+          <div className="px-5 py-12 text-center text-[13px] text-[#8B958C]">No reports found.</div>
         )}
 
         {pageItems.map((report, i) => (
           <div
             key={report.id}
-            className={cn('grid grid-cols-[1fr_1fr_80px_120px_80px] px-5 py-3 items-center', i < pageItems.length - 1 && 'border-b border-[#f0ede6]')}
+            className={cn('grid grid-cols-[1fr_1fr_80px_120px_80px] px-5 py-3 items-center', i < pageItems.length - 1 && 'border-b border-[#24302A]')}
           >
             <div className="min-w-0 pr-3">
-              <p className="text-[13px] font-semibold text-[#1a1a1a] truncate">{report.trail_name}</p>
-              <p className="text-[11px] text-[#687588] truncate">
+              <p className="text-[13px] font-semibold text-[#F2F5F2] truncate">{report.trail_name}</p>
+              <p className="text-[11px] text-[#8B958C] truncate">
                 {report.trail_id ? (report.trail_location ?? '—') : 'Park overview'}
               </p>
             </div>
-            <p className="text-[12px] text-[#687588] truncate pr-3">
+            <p className="text-[12px] text-[#8B958C] truncate pr-3">
               {report.user_email ?? 'Anonymous'}
             </p>
             <div className="flex justify-center">
@@ -248,19 +248,19 @@ export function AdminReportsPage() {
                 {STATUS_LABELS[report.status]}
               </span>
             </div>
-            <p className="text-[12px] text-[#687588] text-center">
+            <p className="text-[12px] text-[#8B958C] text-center">
               {format(new Date(report.created_at), 'MMM d, yyyy')}
             </p>
             <div className="flex justify-end gap-1.5">
               <button
                 onClick={() => setEditing(report)}
-                className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#f0ede6] text-[#687588] hover:text-[#2c4a1e] transition-colors"
+                className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#24302A] text-[#8B958C] hover:text-[#5EE08A] transition-colors"
               >
                 <Pencil className="size-3.5" />
               </button>
               <button
                 onClick={() => setDeleting(report)}
-                className="size-8 flex items-center justify-center rounded-[8px] hover:bg-red-50 text-[#687588] hover:text-red-500 transition-colors"
+                className="size-8 flex items-center justify-center rounded-[8px] hover:bg-red-50 text-[#8B958C] hover:text-red-500 transition-colors"
               >
                 <Trash2 className="size-3.5" />
               </button>
