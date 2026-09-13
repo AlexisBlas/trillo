@@ -312,7 +312,7 @@ export function ParkDetailPage() {
               <div className="mt-3 flex items-center gap-2.5 min-w-0">
                 <StatusCircle
                   status={effectiveStatus}
-                  estimated={statusSource === 'estimate'}
+                  reported={statusSource === 'report'}
                   className="shrink-0"
                 />
                 <p
@@ -431,7 +431,6 @@ export function ParkDetailPage() {
                     source: trailSource,
                     rainAdjusted: trailRainAdjusted,
                   } = getEffectiveParkStatus(report, parkEstimate);
-                  const statusIsEstimate = trailSource === 'estimate';
                   const trailHazards = hazardsByTrail.get(trail.id) ?? [];
                   const hazardTags = trailHazards.map((h) => h.tag);
                   return (
@@ -443,14 +442,14 @@ export function ParkDetailPage() {
                     >
                       <StatusWithHazards
                         status={status}
-                        estimated={statusIsEstimate}
+                        reported={trailSource === 'report'}
                         conditions={hazardTags}
                       />
                       <div className="flex-1 min-w-0">
                         <h3 className="text-[15px] font-bold tracking-[-0.2px] text-[#1a1a1a] truncate">
                           {displayName}
                         </h3>
-                        {statusIsEstimate && (
+                        {trailSource === 'estimate' && (
                           <p className="text-[11px] text-[#8a8478] mt-0.5">
                             {trailRainAdjusted
                               ? t('condition_rain_adjusted')

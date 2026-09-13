@@ -8,19 +8,22 @@ type Status = 'green' | 'yellow' | 'red';
 interface StatusWithHazardsProps {
   status?: Status | null;
   conditions?: string[] | null;
-  /** Rain estimate marker (dashed) vs solid community report. */
+  /** Community report — person badge on the status circle. */
+  reported?: boolean;
+  /** @deprecated Prefer `reported`. When true, hides the person badge. */
   estimated?: boolean;
   size?: 'sm' | 'md';
   className?: string;
 }
 
 /**
- * Status dot with a prominent overlapping hazard badge (profile-style),
- * bottom-left — Downed Trees / Broken Bridge only.
+ * Status dot with optional hazard badge (bottom-left) and
+ * person badge for community reports (bottom-right on StatusCircle).
  */
 export function StatusWithHazards({
   status,
   conditions,
+  reported,
   estimated = false,
   size = 'md',
   className,
@@ -29,12 +32,13 @@ export function StatusWithHazards({
   const hazards = getCriticalHazards(conditions);
   const primary = hazards[0];
   const PrimaryIcon = primary?.icon;
+  const isReported = (reported ?? !estimated) && !!status;
 
   return (
     <div className={cn('relative shrink-0 size-10', className)}>
       <StatusCircle
         status={status}
-        estimated={estimated}
+        reported={isReported}
         size={size}
         className="absolute inset-0"
       />

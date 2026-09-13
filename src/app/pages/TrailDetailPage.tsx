@@ -156,7 +156,11 @@ export function TrailDetailPage() {
 
           {statusSource === 'estimate' && estimatedStatus && (
             <div className="mt-4 flex items-center gap-3 rounded-[16px] bg-[#f5f2ec] px-3.5 py-3">
-              <StatusCircle status={estimatedStatus} estimated className="!size-8" />
+              <StatusCircle
+                status={estimatedStatus}
+                reported={false}
+                className="!size-8"
+              />
               <div className="min-w-0">
                 <p
                   className="text-[15px] font-bold leading-none"

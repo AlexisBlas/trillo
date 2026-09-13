@@ -1,13 +1,14 @@
+import { User } from 'lucide-react';
 import { cn } from '../ui/utils';
 import { useLang } from '../../contexts/LangContext';
-import { estimatedStatusFill, STATUS_DOT } from './StatusCircle';
+import { STATUS_DOT } from './StatusCircle';
 
 interface ConditionSourceLegendProps {
   className?: string;
 }
 
 /**
- * Compact legend: solid = community report, half-tone = rain estimate.
+ * Compact legend: person badge = community report, plain solid = rain estimate.
  */
 export function ConditionSourceLegend({ className }: ConditionSourceLegendProps) {
   const { t } = useLang();
@@ -23,17 +24,21 @@ export function ConditionSourceLegend({ className }: ConditionSourceLegendProps)
       aria-label={t('condition_legend_aria')}
     >
       <span className="inline-flex items-center gap-1.5">
-        <span
-          className="size-2.5 rounded-full shrink-0"
-          style={{ backgroundColor: sample }}
-          aria-hidden
-        />
+        <span className="relative size-3.5 shrink-0" aria-hidden>
+          <span
+            className="absolute inset-0 rounded-full"
+            style={{ backgroundColor: sample }}
+          />
+          <span className="absolute -bottom-0.5 -right-0.5 size-[10px] rounded-full bg-[#1a3010] flex items-center justify-center shadow-[0_0_0_1.5px_#F5F0E8]">
+            <User className="size-1.5 text-white" strokeWidth={3} />
+          </span>
+        </span>
         <span>{t('condition_legend_reported')}</span>
       </span>
       <span className="inline-flex items-center gap-1.5">
         <span
-          className="size-2.5 rounded-full shrink-0"
-          style={{ backgroundImage: estimatedStatusFill(sample) }}
+          className="size-3.5 rounded-full shrink-0"
+          style={{ backgroundColor: sample }}
           aria-hidden
         />
         <span>{t('condition_legend_estimated')}</span>

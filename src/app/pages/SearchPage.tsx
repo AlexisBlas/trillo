@@ -466,7 +466,7 @@ export function SearchPage() {
                   >
                     <StatusWithHazards
                       status={status}
-                      estimated={source === 'estimate'}
+                      reported={source === 'report'}
                       conditions={parkHazards.map((h) => h.tag)}
                     />
                     <div className="flex-1 min-w-0">

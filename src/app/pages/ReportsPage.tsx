@@ -194,6 +194,7 @@ export function ReportsPage() {
                       >
                         <StatusWithHazards
                           status={byPark.get(park)?.status ?? null}
+                          reported
                           conditions={parkHazards.map((h) => h.tag)}
                         />
                         <div className="flex-1 min-w-0">
@@ -250,6 +251,7 @@ export function ReportsPage() {
                               >
                                 <StatusWithHazards
                                   status={report.status}
+                                  reported
                                   conditions={report.conditions}
                                   className="mt-0.5"
                                 />
