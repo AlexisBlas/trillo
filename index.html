@@ -20,5 +20,24 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script nomodule>
+      document.documentElement.className += ' no-esm';
+    </script>
+    <p class="legacy-note">
+      Trillo abre en Chrome, Firefox, Safari o Edge. / Open Trillo in Chrome, Firefox, Safari, or Edge.
+    </p>
+    <style>
+      .legacy-note { display: none; }
+      .no-esm #root { display: none; }
+      .no-esm .legacy-note {
+        display: block;
+        max-width: 28rem;
+        margin: 4rem auto;
+        padding: 0 1.25rem;
+        font: 16px/1.5 Helvetica, Arial, sans-serif;
+        color: #efe8d8;
+        background: #12180e;
+      }
+    </style>
   </body>
 </html>

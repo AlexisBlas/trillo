@@ -31,7 +31,7 @@ html.landing-on #root {
 
 html.landing-on,
 html.landing-on body {
-  overflow-x: clip;
+  overflow-x: hidden;
   overflow-y: auto;
 }
 
@@ -57,7 +57,9 @@ html.landing-on body {
   --track-label: 0.1em;
 
   position: relative;
+  min-height: 100vh;
   min-height: 100dvh;
+  overflow-x: hidden;
   background: transparent;
   color: var(--bone);
   font-family: var(--sans);
@@ -71,7 +73,10 @@ html.landing-on body {
 .landing::before {
   content: '';
   position: fixed;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   z-index: 0;
   background: var(--poster) center / cover no-repeat;
   filter: brightness(0.42) contrast(1.1) saturate(1.08);
@@ -85,7 +90,10 @@ html.film-ready .landing::before {
 
 .landing-stage {
   position: fixed;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   z-index: 0;
   width: 100%;
   height: 100%;
@@ -94,7 +102,6 @@ html.film-ready .landing::before {
   background: var(--ink);
   pointer-events: none;
   opacity: 0;
-  filter: brightness(0.42) contrast(1.1) saturate(1.08);
   transition: opacity 1.2s var(--ease);
 }
 
@@ -108,14 +115,17 @@ html.film-failed .landing-stage {
 
 .landing-veil {
   position: fixed;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   z-index: 1;
   pointer-events: none;
   background: radial-gradient(
     125% 95% at 50% 42%,
-    color-mix(in srgb, var(--ink) 18%, transparent) 0%,
-    color-mix(in srgb, var(--ink) 44%, transparent) 62%,
-    color-mix(in srgb, var(--ink) 62%, transparent) 100%
+    rgba(18, 24, 14, 0.42) 0%,
+    rgba(18, 24, 14, 0.62) 62%,
+    rgba(18, 24, 14, 0.78) 100%
   );
 }
 
@@ -354,11 +364,10 @@ html.film-failed .landing-stage {
   width: auto;
   flex: 0 0 auto;
   position: relative;
-  container-type: size;
   border-radius: 32px;
   background: #0e1510;
   box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--cream) 22%, transparent),
+    inset 0 0 0 1px rgba(245, 240, 232, 0.22),
     0 24px 60px rgba(8, 12, 8, 0.45);
   overflow: hidden;
 }
@@ -376,14 +385,14 @@ html.film-failed .landing-stage {
 
 .landing-device__frame {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
   display: block;
   width: var(--device-w);
   height: var(--device-h);
   border: 0;
   border-radius: 32px;
   background: #0e1510;
-  transform: scale(calc(100cqw / 390px));
   transform-origin: top left;
   pointer-events: none;
 }
@@ -396,13 +405,16 @@ html.film-failed .landing-stage {
 
 .chapter {
   position: relative;
+  min-height: 135vh;
   min-height: 135svh;
 }
 
 .chapter__pin {
   position: sticky;
   top: 0;
+  height: 100vh;
   height: 100svh;
+  min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   align-items: center;
@@ -412,6 +424,7 @@ html.film-failed .landing-stage {
 
 #faq .chapter__pin {
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .layer {
@@ -450,7 +463,7 @@ html.film-failed .landing-stage {
   line-height: 0.86;
   letter-spacing: -0.055em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--cream) 90%, transparent);
+  color: rgba(245, 240, 232, 0.9);
   white-space: nowrap;
   text-align: center;
 }
@@ -743,19 +756,14 @@ html.film-failed .landing-stage {
 }
 
 .faq-list__panel {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.42s var(--ease);
+  display: block;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s var(--ease);
 }
 
 .faq-list__panel[data-open='true'] {
-  grid-template-rows: 1fr;
-  transition-duration: 0.5s;
-}
-
-.faq-list__inner {
-  overflow: hidden;
-  min-height: 0;
+  max-height: 16rem;
 }
 
 .faq-list__inner p {

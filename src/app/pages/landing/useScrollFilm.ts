@@ -70,6 +70,9 @@ export function useScrollFilm(keyTimes: readonly number[] = FILM_KEY_TIMES) {
     film.dataset.src = filmSrc;
     film.muted = true;
     film.defaultMuted = true;
+    film.playsInline = true;
+    film.setAttribute('playsinline', '');
+    film.setAttribute('webkit-playsinline', '');
 
     const filmDuration = () => {
       const d = film.duration;
@@ -366,7 +369,11 @@ export function useScrollFilm(keyTimes: readonly number[] = FILM_KEY_TIMES) {
     if (!reduced) raf = requestAnimationFrame(loop);
 
     const onReduce = () => location.reload();
-    reduceQ.addEventListener('change', onReduce);
+    if (typeof reduceQ.addEventListener === 'function') {
+      reduceQ.addEventListener('change', onReduce);
+    } else if ('addListener' in reduceQ) {
+      reduceQ.addListener(onReduce);
+    }
 
     return () => {
       dead = true;
@@ -378,7 +385,11 @@ export function useScrollFilm(keyTimes: readonly number[] = FILM_KEY_TIMES) {
       window.removeEventListener('resize', onResize);
       window.removeEventListener('load', onResize);
       window.removeEventListener('scroll', onScroll);
-      reduceQ.removeEventListener('change', onReduce);
+      if (typeof reduceQ.removeEventListener === 'function') {
+        reduceQ.removeEventListener('change', onReduce);
+      } else if ('removeListener' in reduceQ) {
+        reduceQ.removeListener(onReduce);
+      }
       if (filmURL.startsWith('blob:')) URL.revokeObjectURL(filmURL);
       html.classList.remove('landing-on', 'js', 'film-ready', 'film-failed', 'trillo-ready');
     };

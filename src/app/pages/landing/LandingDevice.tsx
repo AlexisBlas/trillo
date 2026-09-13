@@ -22,6 +22,8 @@ export function LandingDevice({
   mobileHint: string;
 }) {
   const frameRef = useRef<HTMLIFrameElement>(null);
+  const shellRef = useRef<HTMLDivElement>(null);
+  const deviceRef = useRef<HTMLElement>(null);
   const readyRef = useRef(false);
   const pathRef = useRef(pathForChapter(chapter));
   const [overFooter, setOverFooter] = useState(false);
@@ -37,6 +39,30 @@ export function LandingDevice({
     read();
     window.addEventListener('scroll', read, { passive: true });
     return () => window.removeEventListener('scroll', read);
+  }, []);
+
+  useEffect(() => {
+    const shell = shellRef.current;
+    const frame = frameRef.current;
+    const host = deviceRef.current;
+    if (!shell || !frame || !host) return;
+
+    const fit = () => {
+      const h = shell.clientHeight;
+      if (h <= 1) return;
+      const w = h * (390 / 844);
+      shell.style.width = `${w}px`;
+      frame.style.transform = `scale(${w / 390})`;
+    };
+
+    fit();
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(fit) : null;
+    ro?.observe(host);
+    window.addEventListener('resize', fit);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener('resize', fit);
+    };
   }, []);
 
   const sendPath = (path: string) => {
@@ -57,11 +83,12 @@ export function LandingDevice({
         <span>{mobileHint}</span>
       </p>
       <aside
+        ref={deviceRef}
         className="landing-device"
         data-active={visible ? 'true' : 'false'}
         aria-hidden={!visible}
       >
-        <div className="landing-device__shell">
+        <div ref={shellRef} className="landing-device__shell">
           <iframe
             ref={frameRef}
             className="landing-device__frame"
