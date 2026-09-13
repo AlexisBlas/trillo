@@ -116,7 +116,7 @@ export function LandingPage() {
         className="landing-stage"
         muted
         playsInline
-        preload="auto"
+        preload="metadata"
         poster={landingPosterUrl()}
         aria-label={copy.filmAria}
       />

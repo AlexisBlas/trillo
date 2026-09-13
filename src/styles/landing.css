@@ -22,21 +22,26 @@
     U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-html.landing-on,
+html.landing-on {
+  background: #12180e;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  height: auto;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
 html.landing-on body,
 html.landing-on #root {
   background: #12180e;
   min-height: 100%;
-}
-
-html.landing-on,
-html.landing-on body {
-  overflow-x: hidden;
-  overflow-y: auto;
+  height: auto;
+  overflow: visible;
 }
 
 html.landing-on body {
   margin: 0;
+  touch-action: pan-y;
 }
 
 .landing {
@@ -91,26 +96,31 @@ html.film-ready .landing::before {
 .landing-stage {
   position: fixed;
   top: 0;
-  right: 0;
-  bottom: 0;
   left: 0;
   z-index: 0;
-  width: 100%;
-  height: 100%;
+  width: 1px;
+  height: 1px;
   display: block;
   object-fit: cover;
   background: var(--ink);
   pointer-events: none;
   opacity: 0;
+  visibility: hidden;
   transition: opacity 1.2s var(--ease);
 }
 
 html.film-ready .landing-stage {
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
   opacity: 1;
+  visibility: visible;
 }
 
 html.film-failed .landing-stage {
   display: none;
+  visibility: hidden;
 }
 
 .landing-veil {

@@ -182,6 +182,7 @@ export function useScrollFilm(keyTimes: readonly number[] = FILM_KEY_TIMES) {
     const kickDecode = () => {
       film.muted = true;
       film.defaultMuted = true;
+      if (film.readyState < 2) return Promise.resolve();
       const play = film.play();
       if (!play || !play.then) {
         film.pause();
@@ -266,34 +267,51 @@ export function useScrollFilm(keyTimes: readonly number[] = FILM_KEY_TIMES) {
     };
 
     const failFilm = () => {
+      filmReady = false;
       setFailed(true);
       html.classList.add('film-failed');
+      html.classList.remove('film-ready');
+      film.removeAttribute('src');
+      film.removeAttribute('srcObject');
+      try {
+        film.load();
+      } catch {
+        /* Safari throws if the element is already tearing down */
+      }
     };
 
     const loadFilm = async () => {
+      const deadline = window.setTimeout(() => {
+        if (!filmReady && !dead) failFilm();
+      }, 8000);
       try {
-        await loadAsBlob(filmSrc);
-      } catch (err) {
-        console.warn('trillo: could not preload the film, streaming instead.', err);
         try {
-          await assignSrc(filmSrc);
-        } catch {
-          failFilm();
-          throw new Error('film unavailable');
-        }
-        if (!filmIsFullySeekable(film) && !(await waitUntilSeekable(2500))) {
+          await loadAsBlob(filmSrc);
+        } catch (err) {
+          console.warn('trillo: could not preload the film, streaming instead.', err);
           try {
-            await loadAsBlob(filmSrc);
+            await assignSrc(filmSrc);
           } catch {
-            /* keep the stream */
+            failFilm();
+            throw new Error('film unavailable');
+          }
+          if (!filmIsFullySeekable(film) && !(await waitUntilSeekable(2500))) {
+            try {
+              await loadAsBlob(filmSrc);
+            } catch {
+              /* keep the stream */
+            }
           }
         }
+        if (dead || html.classList.contains('film-failed')) return;
+        await armFilm();
+        const { story } = readStory();
+        seekCurrent = storyToTime(story);
+        seekTarget = seekCurrent;
+        seekTo(seekCurrent);
+      } finally {
+        window.clearTimeout(deadline);
       }
-      await armFilm();
-      const { story } = readStory();
-      seekCurrent = storyToTime(story);
-      seekTarget = seekCurrent;
-      seekTo(seekCurrent);
     };
 
     const runStatic = () => {
