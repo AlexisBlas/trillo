@@ -100,6 +100,7 @@ export function LandingDevice({
               sendPath(pathRef.current);
             }}
           />
+          <span className="landing-device__shield" aria-hidden />
         </div>
         <p className="landing-device__cap">{caption}</p>
       </aside>

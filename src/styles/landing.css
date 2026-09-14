@@ -24,7 +24,7 @@
 
 html.landing-on {
   background: #12180e;
-  overflow-x: hidden;
+  overflow-x: clip;
   overflow-y: scroll;
   height: auto;
   touch-action: pan-y;
@@ -64,7 +64,7 @@ html.landing-on body {
   position: relative;
   min-height: 100vh;
   min-height: 100dvh;
-  overflow-x: hidden;
+  overflow: visible;
   background: transparent;
   color: var(--bone);
   font-family: var(--sans);
@@ -425,6 +425,14 @@ html.film-failed .landing-stage {
   background: #0e1510;
   transform-origin: top left;
   pointer-events: none;
+}
+
+.landing-device__shield {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  pointer-events: auto;
 }
 
 @media (max-width: 1080px) {
