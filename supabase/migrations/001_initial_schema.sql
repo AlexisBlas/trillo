@@ -132,12 +132,12 @@ CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION handle_new_user();
 
--- Insert sample trails for Puerto Rico
+-- Insert sample trails
 INSERT INTO trails (name, location, description, qr_code) VALUES
   ('El Yunque Peak Trail', 'El Yunque National Forest', 'Challenging trail to the highest peak in El Yunque with stunning rainforest views', 'TRAIL_YUNQUE_PEAK'),
   ('La Mina Trail', 'El Yunque National Forest', 'Popular trail leading to beautiful La Mina waterfall', 'TRAIL_LA_MINA'),
   ('Mount Britton Trail', 'El Yunque National Forest', 'Moderate trail to historic observation tower', 'TRAIL_MT_BRITTON'),
   ('Camino del Guajataka', 'Guajataka Forest Reserve', 'Mountain biking trail through karst forest', 'TRAIL_GUAJATAKA'),
   ('Bosque Estatal de Guánica', 'Guánica', 'Dry forest trails with coastal views', 'TRAIL_GUANICA'),
-  ('Pico del Este Trail', 'Toro Negro Forest', 'Trail to one of Puerto Rico''s highest peaks', 'TRAIL_PICO_ESTE')
+  ('Pico del Este Trail', 'Toro Negro Forest', 'Trail to one of the highest peaks', 'TRAIL_PICO_ESTE')
 ON CONFLICT (name) DO NOTHING;

@@ -42,7 +42,7 @@ export function isParkRegion(value: string | null | undefined): value is ParkReg
 }
 
 /**
- * Puerto Rico municipality → geographic region.
+ * Municipality → geographic region.
  * Keys are accent-stripped lowercase so "Bayamón" and "Bayamon" both match.
  *
  * Municipalities not in the provided reference (Caguas, Gurabo, Aibonito, Cayey)

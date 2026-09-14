@@ -1,4 +1,4 @@
--- Puerto Rico mountain bike trails (sourced from Trailforks + local riding maps).
+-- Mountain bike trails (sourced from Trailforks + local riding maps).
 -- Run this in the Supabase SQL editor. Safe to re-run thanks to ON CONFLICT.
 
 INSERT INTO trails (name, location, description, qr_code) VALUES

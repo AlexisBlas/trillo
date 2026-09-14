@@ -3,7 +3,7 @@ import { normalizeSearchText } from './text';
 export type Coords = { lat: number; lng: number };
 
 /**
- * Approximate municipality centroids for Puerto Rico.
+ * Approximate municipality centroids.
  * Used when parks.lat/lng are unset — good enough for regional precip.
  */
 const MUNICIPALITY_COORDS: Record<string, Coords> = {

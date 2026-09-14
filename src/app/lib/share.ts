@@ -372,7 +372,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     ctx.fillText('eltrillo.app', 80, height - BOTTOM_SAFE + 40);
     ctx.fillStyle = '#8B958C';
     ctx.font = '500 26px system-ui, -apple-system, sans-serif';
-    ctx.fillText('Real-time trail conditions for Puerto Rico', 80, height - BOTTOM_SAFE + 84);
+    ctx.fillText('Real-time trail conditions', 80, height - BOTTOM_SAFE + 84);
 
     const blob = await new Promise<Blob | null>((resolve) =>
       canvas.toBlob((b) => resolve(b), 'image/png')

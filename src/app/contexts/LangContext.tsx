@@ -53,7 +53,7 @@ const translations = {
     menu_version: 'Version',
     lang_en: 'English',
     lang_es: 'Español',
-    about_description: 'Real-time trail conditions reported by hikers, for hikers. Built for Puerto Rico\'s public trail network.',
+    about_description: 'Real-time trail conditions reported by hikers, for hikers. Built for the public trail network.',
     menu_how_it_works: 'How it works',
     menu_made_by: 'Supported and made by',
     // Notifications
@@ -260,8 +260,8 @@ const translations = {
     desktop_body: 'Esta app está diseñada para usar en el campo. Por favor abre Trillo en un dispositivo móvil, o reduce tu ventana del navegador a 768px o menos para continuar.',
     // Add to home screen
     a2hs_title: 'Ten Trillo a mano',
-    a2hs_ios: 'Toca el ícono de compartir, luego "Agregar a pantalla de inicio."',
-    a2hs_android: 'Abre el menú del navegador, luego "Agregar a pantalla de inicio" — o guarda esta página como favorito.',
+    a2hs_ios: 'Toca el ícono de compartir y luego "Añadir a pantalla de inicio".',
+    a2hs_android: 'Abre el menú del navegador y luego "Añadir a pantalla de inicio", o guarda esta página en favoritos.',
     a2hs_got_it: 'Entendido',
     a2hs_aria: 'Agregar Trillo a tu pantalla de inicio',
     // Auth
@@ -299,7 +299,7 @@ const translations = {
     menu_version: 'Versión',
     lang_en: 'English',
     lang_es: 'Español',
-    about_description: 'Condiciones de senderos en tiempo real, reportadas por senderistas, para senderistas. Construido para la red de senderos públicos de Puerto Rico.',
+    about_description: 'Condiciones de senderos en tiempo real, reportadas por senderistas, para senderistas. Construido para la red de senderos públicos.',
     menu_how_it_works: 'Cómo funciona',
     menu_made_by: 'Apoyado y creado por',
     // Notifications
@@ -524,6 +524,10 @@ export function LangProvider({ children }: { children: ReactNode }) {
       localStorage.setItem(STORAGE_KEY, l);
     } catch {}
   };
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   useEffect(() => {
     const onStorage = (event: StorageEvent) => {

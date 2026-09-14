@@ -18,7 +18,7 @@ type RegionDryDown = {
 };
 
 /**
- * Region priors for Puerto Rico MTB:
+ * Region priors for MTB:
  * southwest / dry forest clears faster; mountain & east rainforest hold longer.
  */
 const REGION_DRY_DOWN: Record<ParkRegion, RegionDryDown> = {

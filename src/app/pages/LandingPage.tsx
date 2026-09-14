@@ -1,9 +1,25 @@
 import { useEffect, useId, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react';
 import { useLang, type Lang } from '../contexts/LangContext';
-import { LANDING_PARKS, landingCopy } from '../data/landing';
+import { landingCopy } from '../data/landing';
 import { landingPosterUrl, useScrollFilm } from './landing/useScrollFilm';
 import { LandingDevice } from './landing/LandingDevice';
 import '../../styles/landing.css';
+
+const APP_HOST = 'eltrillo.app';
+const APP_URL = 'https://eltrillo.app';
+
+function withAppLink(text: string): ReactNode {
+  const parts = text.split(/(eltrillo\.app)/g);
+  return parts.map((part, i) =>
+    part === APP_HOST ? (
+      <a key={i} href={APP_URL} className="landing-app-link">
+        {part}
+      </a>
+    ) : (
+      part
+    ),
+  );
+}
 
 function SplitWords({ text, className }: { text: string; className?: string }) {
   const words = text.trim().split(/\s+/);
@@ -45,7 +61,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
         aria-hidden={!open}
       >
         <div className="faq-list__inner">
-          <p>{a}</p>
+          <p>{withAppLink(a)}</p>
         </div>
       </div>
     </li>
@@ -169,7 +185,7 @@ export function LandingPage() {
                 ))}
               </h1>
               <p className="hero__line">{copy.heroLine}</p>
-              <p className="hero__mobile">{copy.heroHelp}</p>
+              <p className="hero__mobile">{withAppLink(copy.heroHelp)}</p>
               <a className="scroll-cue" href="#how" data-jump onClick={jump}>
                 {copy.scrollCue}
                 <i aria-hidden />
@@ -222,20 +238,6 @@ export function LandingPage() {
                   <span>{copy.statusMuddyHint}</span>
                 </li>
               </Reveal>
-              <Reveal as="ol" index={2} className="steps">
-                <li>
-                  <b>{copy.step1K}</b>
-                  <p>{copy.step1}</p>
-                </li>
-                <li>
-                  <b>{copy.step2K}</b>
-                  <p>{copy.step2}</p>
-                </li>
-                <li>
-                  <b>{copy.step3K}</b>
-                  <p>{copy.step3}</p>
-                </li>
-              </Reveal>
             </div>
           </div>
         </section>
@@ -264,13 +266,6 @@ export function LandingPage() {
                   <dd>{copy.guestV}</dd>
                 </div>
               </Reveal>
-              <Reveal as="ul" index={3} className="parks">
-                {LANDING_PARKS.map((park) => (
-                  <li key={park.name}>
-                    <b>{park.name}</b> · {park.city}
-                  </li>
-                ))}
-              </Reveal>
             </div>
           </div>
         </section>
@@ -293,7 +288,9 @@ export function LandingPage() {
       <section className="landing-close" id="runs">
         <div className="landing-close__inner">
           <div className="landing-close__intro">
-            <p className="landing-close__kicker">{copy.footerKicker}</p>
+            {copy.footerKicker ? (
+              <p className="landing-close__kicker">{copy.footerKicker}</p>
+            ) : null}
             <SplitWords text={copy.footerTitle} className="display is-in" />
             <p className="landing-close__lead">{copy.footerLead}</p>
           </div>
