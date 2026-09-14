@@ -27,6 +27,8 @@ export const landingCopy = {
     ctaPhone: 'eltrillo.app',
     heroLine: 'Inteligencia de senderos · Puerto Rico',
     mobileOnly: 'Solo en el teléfono',
+    heroHelp:
+      'No hay que bajar ni instalar nada.\nAbre esta página en eltrillo.app desde el celular.',
     mobileHint: 'Ábrelo en eltrillo.app desde el celular. Aquí solo ves cómo corre.',
     deviceCaption: 'Vista previa. Se usa en el teléfono.',
     howTitle: 'Tu trillo, ahora mismo.',
@@ -119,6 +121,8 @@ export const landingCopy = {
     ctaPhone: 'eltrillo.app',
     heroLine: 'Trail intelligence · Puerto Rico',
     mobileOnly: 'Phone only',
+    heroHelp:
+      'There is no need to download or install anything.\nOpen this page to visit eltrillo.app on your phone.',
     mobileHint: 'Open eltrillo.app on your phone. This page is the story.',
     deviceCaption: 'Preview. You use it on your phone.',
     howTitle: 'Your trail, right now.',

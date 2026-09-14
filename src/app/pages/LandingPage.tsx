@@ -169,7 +169,7 @@ export function LandingPage() {
                 ))}
               </h1>
               <p className="hero__line">{copy.heroLine}</p>
-              <p className="hero__mobile">{copy.mobileOnly}</p>
+              <p className="hero__mobile">{copy.heroHelp}</p>
               <a className="scroll-cue" href="#how" data-jump onClick={jump}>
                 {copy.scrollCue}
                 <i aria-hidden />
