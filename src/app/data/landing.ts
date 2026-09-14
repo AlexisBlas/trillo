@@ -28,8 +28,8 @@ export const landingCopy = {
     heroLine: 'Inteligencia de senderos · Puerto Rico',
     mobileOnly: 'Solo en el teléfono',
     heroHelp:
-      'No hay que bajar ni instalar nada.\nAbre esta página en eltrillo.app desde el celular.',
-    mobileHint: 'Ábrelo en eltrillo.app desde el celular. Aquí solo ves cómo corre.',
+      'No hay que bajar ni instalar nada.\nAbre esta página en eltrillo.app desde tu celular.',
+    mobileHint: 'Ábrelo en eltrillo.app desde tu celular. Aquí solo ves cómo corre.',
     deviceCaption: 'Vista previa. Se usa en el teléfono.',
     howTitle: 'Tu trillo, ahora mismo.',
     howBody:
@@ -64,7 +64,7 @@ export const landingCopy = {
     faqs: [
       {
         q: '¿Puedo usarlo en la computadora?',
-        a: 'No. Trillo es para el teléfono, en el campo. Esta página enseña cómo funciona. Ábrelo en eltrillo.app desde el celular.',
+        a: 'No. Trillo es para el teléfono, en el campo. Esta página enseña cómo funciona. Ábrelo en eltrillo.app desde tu celular.',
       },
       {
         q: '¿De dónde salen los datos?',
