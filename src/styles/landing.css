@@ -623,17 +623,20 @@ html.film-failed .landing-stage {
   font-weight: 300;
   line-height: 1.64;
   color: var(--bone-2);
-  max-width: 42ch;
   margin: clamp(1.3rem, 2.6vw, 2.1rem) 0 0;
   text-wrap: pretty;
 }
 
 .lead {
   font-size: clamp(1rem, 1.28vw, 1.18rem);
+  max-width: none;
+  width: 100%;
 }
 
 .body {
   font-size: clamp(0.94rem, 1.06vw, 1.02rem);
+  max-width: none;
+  width: 100%;
   white-space: pre-line;
 }
 
