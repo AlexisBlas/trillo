@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { PREVIEW_MESSAGE } from '../../lib/embed';
 
 const PARK_STATUS = `/parks/${encodeURIComponent('Parque Julio E. Monagas')}`;
@@ -26,19 +26,50 @@ export function LandingDevice({
   const deviceRef = useRef<HTMLElement>(null);
   const readyRef = useRef(false);
   const pathRef = useRef(pathForChapter(chapter));
-  const [overRuns, setOverRuns] = useState(false);
-  const visible = chapter > 0 && !overRuns;
-  const noteVisible = chapter > 0 && !overRuns;
+  const visible = chapter > 0;
+  const noteVisible = chapter > 0;
 
   useEffect(() => {
+    const cssPx = (el: HTMLElement, value: string) => {
+      const raw = value.trim();
+      if (!raw) return 0;
+      if (raw.endsWith('px')) return parseFloat(raw);
+      if (raw.endsWith('rem')) {
+        return parseFloat(raw) * parseFloat(getComputedStyle(document.documentElement).fontSize);
+      }
+      const probe = document.createElement('div');
+      probe.style.width = raw;
+      el.appendChild(probe);
+      const px = probe.offsetWidth;
+      probe.remove();
+      return px;
+    };
+
     const read = () => {
       const host = deviceRef.current;
-      const close = document.getElementById('runs') ?? document.getElementById('footer');
-      if (!host || !close) return;
-      const device = host.getBoundingClientRect();
-      const runs = close.getBoundingClientRect();
-      setOverRuns(runs.top < device.bottom && runs.bottom > device.top);
+      const footer = document.getElementById('footer');
+      const landing = host?.closest<HTMLElement>('.landing');
+      if (!host || !footer || !landing) return;
+
+      const cs = getComputedStyle(host);
+      const navGap = cssPx(host, cs.getPropertyValue('--nav-gap'));
+      const floorGap = cssPx(host, cs.getPropertyValue('--floor-gap'));
+      const dockGap = cssPx(host, cs.getPropertyValue('--dock-gap'));
+      const deviceH = window.innerHeight - navGap - floorGap;
+      const landingBox = landing.getBoundingClientRect();
+      const footerBox = footer.getBoundingClientRect();
+      const docked = footerBox.top < window.innerHeight - floorGap + dockGap;
+
+      host.dataset.dock = docked ? 'true' : 'false';
+      if (docked) {
+        host.style.top = `${footerBox.top - landingBox.top - deviceH - dockGap}px`;
+        host.style.height = `${deviceH}px`;
+      } else {
+        host.style.top = '';
+        host.style.height = '';
+      }
     };
+
     read();
     window.addEventListener('scroll', read, { passive: true });
     window.addEventListener('resize', read);

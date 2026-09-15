@@ -368,6 +368,7 @@ html.film-failed .landing-stage {
   --device-h: 844px;
   --nav-gap: 7rem;
   --floor-gap: 3rem;
+  --dock-gap: 2.5rem;
   position: fixed;
   z-index: 4;
   top: var(--nav-gap);
@@ -386,6 +387,11 @@ html.film-failed .landing-stage {
 
 .landing-device[data-active='true'] {
   opacity: 1;
+}
+
+.landing-device[data-dock='true'] {
+  position: absolute;
+  bottom: auto;
 }
 
 .landing-device__shell {
@@ -804,15 +810,13 @@ html.film-failed .landing-stage {
 
 .landing-close {
   background: transparent;
+  min-height: 100svh;
   padding: var(--pin-pad) var(--gutter) clamp(3rem, 8vh, 5rem);
 }
 
 .landing-close__inner {
-  width: 100%;
-  display: grid;
-  grid-template-columns: minmax(20rem, 0.92fr) minmax(26rem, 1.2fr);
-  gap: clamp(2.5rem, 6vw, 8rem);
-  align-items: start;
+  width: var(--copy);
+  max-width: 100%;
 }
 
 .landing-close__intro {
@@ -842,48 +846,6 @@ html.film-failed .landing-stage {
   color: var(--bone-2);
 }
 
-.landing-close__sources {
-  margin: 0;
-}
-
-.landing-close__label {
-  margin: 0 0 1rem;
-  font-weight: 400;
-  font-size: 10.5px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--bone-4);
-}
-
-.landing-close__sources ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.2rem 1.8rem;
-}
-
-.landing-close__sources li {
-  border-top: 1px solid var(--line);
-  padding-top: 0.95rem;
-}
-
-.landing-close__sources b {
-  display: block;
-  font-weight: 600;
-  font-size: 1.02rem;
-  color: var(--cream);
-  margin-bottom: 0.35rem;
-}
-
-.landing-close__sources span {
-  display: block;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: var(--bone-3);
-}
-
 .landing-footer {
   display: grid;
   grid-template-columns: 1fr auto auto;
@@ -907,36 +869,6 @@ html.film-failed .landing-stage {
 
 .landing-footer p {
   margin: 0;
-}
-
-.rules {
-  list-style: none;
-  margin: clamp(2rem, 4vw, 3.2rem) 0 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(1.4rem, 3vw, 2.4rem);
-}
-
-.rules li {
-  border-top: 1px solid var(--line);
-  padding-top: 1.1rem;
-}
-
-.rules b {
-  display: block;
-  font-weight: 400;
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--moss);
-  margin-bottom: 0.7rem;
-}
-
-.rules p {
-  margin: 0;
-  font-size: 0.97rem;
-  line-height: 1.6;
-  color: var(--bone-2);
 }
 
 .film-note {
@@ -1013,11 +945,6 @@ html.film-failed .landing-stage {
 }
 
 @media (max-width: 1100px) {
-  .landing-close__inner {
-    grid-template-columns: 1fr;
-    gap: clamp(2rem, 5vw, 3rem);
-  }
-
   .landing-close__intro {
     position: static;
     max-width: 38rem;
@@ -1029,12 +956,9 @@ html.film-failed .landing-stage {
 }
 
 @media (min-width: 1081px) {
-  .chapter:not(.chapter--hero) .layer {
+  .chapter:not(.chapter--hero) .layer,
+  .landing-close__inner {
     max-width: min(var(--copy), calc(100vw - var(--gutter) * 2 - 26rem));
-  }
-
-  .rules li:nth-child(even) {
-    margin-top: clamp(1.5rem, 4vw, 3.2rem);
   }
 }
 
@@ -1086,9 +1010,7 @@ html.film-failed .landing-stage {
   }
 
   .readout,
-  .rules,
-  .landing-footer,
-  .landing-close__sources ul {
+  .landing-footer {
     grid-template-columns: 1fr;
   }
 

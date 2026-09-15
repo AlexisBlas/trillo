@@ -294,39 +294,6 @@ export function LandingPage() {
             <SplitWords text={copy.footerTitle} className="display is-in" />
             <p className="landing-close__lead">{copy.footerLead}</p>
           </div>
-
-          <div className="landing-close__body">
-            <div className="landing-close__sources">
-              <p className="landing-close__label">{copy.footerSourcesTitle}</p>
-              <ul>
-                <li>
-                  <b>{copy.sourcePeople}</b>
-                  <span>{copy.sourcePeopleHint}</span>
-                </li>
-                <li>
-                  <b>{copy.sourceRain}</b>
-                  <span>{copy.sourceRainHint}</span>
-                </li>
-                <li>
-                  <b>{copy.sourceRegion}</b>
-                  <span>{copy.sourceRegionHint}</span>
-                </li>
-                <li>
-                  <b>{copy.sourceHazards}</b>
-                  <span>{copy.sourceHazardsHint}</span>
-                </li>
-              </ul>
-            </div>
-
-            <ol className="rules">
-              {copy.manifesto.map((line, i) => (
-                <li key={line}>
-                  <b>{String(i + 1).padStart(2, '0')}</b>
-                  <p>{line}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
         </div>
       </section>
 
