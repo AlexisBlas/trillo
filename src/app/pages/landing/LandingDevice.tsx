@@ -26,19 +26,26 @@ export function LandingDevice({
   const deviceRef = useRef<HTMLElement>(null);
   const readyRef = useRef(false);
   const pathRef = useRef(pathForChapter(chapter));
-  const [overFooter, setOverFooter] = useState(false);
-  const visible = chapter > 0 && chapter < 5 && !overFooter;
-  const noteVisible = chapter > 0 && !overFooter;
+  const [overRuns, setOverRuns] = useState(false);
+  const visible = chapter > 0 && !overRuns;
+  const noteVisible = chapter > 0 && !overRuns;
 
   useEffect(() => {
     const read = () => {
+      const host = deviceRef.current;
       const close = document.getElementById('runs') ?? document.getElementById('footer');
-      if (!close) return;
-      setOverFooter(close.getBoundingClientRect().top < window.innerHeight * 0.42);
+      if (!host || !close) return;
+      const device = host.getBoundingClientRect();
+      const runs = close.getBoundingClientRect();
+      setOverRuns(runs.top < device.bottom && runs.bottom > device.top);
     };
     read();
     window.addEventListener('scroll', read, { passive: true });
-    return () => window.removeEventListener('scroll', read);
+    window.addEventListener('resize', read);
+    return () => {
+      window.removeEventListener('scroll', read);
+      window.removeEventListener('resize', read);
+    };
   }, []);
 
   useEffect(() => {
