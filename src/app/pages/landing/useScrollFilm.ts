@@ -115,7 +115,7 @@ export function useScrollFilm(keyTimes: readonly number[] = FILM_KEY_TIMES) {
           span: Math.max(1, sec.offsetHeight - vh),
         });
       }
-      const foot = root.querySelector<HTMLElement>('#runs') ?? root.querySelector<HTMLElement>('#footer');
+      const foot = root.querySelector<HTMLElement>('#footer');
       if (foot) {
         metrics.push({
           el: foot,

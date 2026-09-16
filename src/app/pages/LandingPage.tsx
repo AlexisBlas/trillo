@@ -37,8 +37,17 @@ function SplitWords({ text, className }: { text: string; className?: string }) {
   );
 }
 
-function FaqItem({ q, a }: { q: string; a: string }) {
-  const [open, setOpen] = useState(false);
+function FaqItem({
+  q,
+  a,
+  open,
+  onToggle,
+}: {
+  q: string;
+  a: string;
+  open: boolean;
+  onToggle: () => void;
+}) {
   const panelId = useId();
 
   return (
@@ -48,7 +57,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
         className="faq-list__trigger"
         aria-expanded={open}
         aria-controls={panelId}
-        onClick={() => setOpen((value) => !value)}
+        onClick={onToggle}
       >
         <span>{q}</span>
         <i className="faq-list__arrow" aria-hidden />
@@ -90,6 +99,7 @@ export function LandingPage() {
   const { lang, setLang } = useLang();
   const copy = landingCopy[lang];
   const [titleOn, setTitleOn] = useState(false);
+  const [openFaq, setOpenFaq] = useState<string | null>(null);
   const { rootRef, filmRef, failed, current } = useScrollFilm();
 
   const jump = (event: MouseEvent<HTMLAnchorElement>) => {
@@ -114,6 +124,10 @@ export function LandingPage() {
     const id = requestAnimationFrame(() => requestAnimationFrame(() => setTitleOn(true)));
     return () => cancelAnimationFrame(id);
   }, []);
+
+  useEffect(() => {
+    setOpenFaq(null);
+  }, [lang]);
 
   return (
     <div
@@ -141,7 +155,7 @@ export function LandingPage() {
         chapter={current}
         caption={copy.deviceCaption}
         mobileOnly={copy.mobileOnly}
-        mobileHint={copy.mobileHint}
+        mobileHint={withAppLink(copy.mobileHint)}
       />
 
       <header className="landing-topbar" data-over={current > 0 ? 'true' : 'false'}>
@@ -154,6 +168,9 @@ export function LandingPage() {
           </a>
           <a href="#about" onClick={jump}>
             {copy.navAbout}
+          </a>
+          <a href="#runs" onClick={jump}>
+            {copy.navWorks}
           </a>
           <a href="#faq" onClick={jump}>
             {copy.navFaq}
@@ -203,9 +220,6 @@ export function LandingPage() {
               <Reveal index={0} className="lead">
                 {copy.howBody}
               </Reveal>
-              <Reveal index={1} className="note">
-                {copy.howNote}
-              </Reveal>
             </div>
           </div>
         </section>
@@ -254,19 +268,19 @@ export function LandingPage() {
               <Reveal index={1} className="note">
                 {copy.aboutHonor}
               </Reveal>
-              <Reveal as="div" index={2} className="specs">
-                <div>
-                  <dt>{copy.parksK}</dt>
-                  <dd>{copy.parksV}</dd>
-                </div>
-                <div>
-                  <dt>{copy.reportK}</dt>
-                  <dd>{copy.reportV}</dd>
-                </div>
-                <div>
-                  <dt>{copy.guestK}</dt>
-                  <dd>{copy.guestV}</dd>
-                </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="chapter" id="runs">
+          <div className="chapter__pin">
+            <div className="layer">
+              {copy.footerKicker ? (
+                <p className="landing-close__kicker">{copy.footerKicker}</p>
+              ) : null}
+              <SplitWords text={copy.footerTitle} className="display" />
+              <Reveal index={0} className="lead">
+                {copy.footerLead}
               </Reveal>
             </div>
           </div>
@@ -278,7 +292,13 @@ export function LandingPage() {
               <SplitWords text={copy.faqTitle} className="display" />
               <Reveal as="ul" index={0} className="faq-list">
                 {copy.faqs.map((faq) => (
-                  <FaqItem key={faq.q} q={faq.q} a={faq.a} />
+                  <FaqItem
+                    key={faq.q}
+                    q={faq.q}
+                    a={faq.a}
+                    open={openFaq === faq.q}
+                    onToggle={() => setOpenFaq((current) => (current === faq.q ? null : faq.q))}
+                  />
                 ))}
               </Reveal>
             </div>
@@ -286,18 +306,6 @@ export function LandingPage() {
         </section>
 
       </main>
-
-      <section className="landing-close" id="runs">
-        <div className="landing-close__inner">
-          <div className="landing-close__intro">
-            {copy.footerKicker ? (
-              <p className="landing-close__kicker">{copy.footerKicker}</p>
-            ) : null}
-            <SplitWords text={copy.footerTitle} className="display is-in" />
-            <p className="landing-close__lead">{copy.footerLead}</p>
-          </div>
-        </div>
-      </section>
 
       <footer className="landing-footer" id="footer">
         <p>{copy.footerBody}</p>

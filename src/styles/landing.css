@@ -346,6 +346,7 @@ html.film-failed .landing-stage {
 .landing-mobile[data-active='true'] {
   opacity: 1;
   transform: none;
+  pointer-events: auto;
 }
 
 .landing-mobile b {
@@ -361,6 +362,11 @@ html.film-failed .landing-stage {
   font-size: 12.5px;
   line-height: 1.45;
   color: var(--bone-3);
+}
+
+.landing-mobile .landing-app-link {
+  font-weight: 600;
+  color: var(--cream);
 }
 
 .landing-device {
@@ -643,6 +649,7 @@ html.film-failed .landing-stage {
   font-size: clamp(1rem, 1.28vw, 1.18rem);
   max-width: none;
   width: 100%;
+  white-space: pre-line;
 }
 
 .body {
@@ -656,37 +663,6 @@ html.film-failed .landing-stage {
   margin: 0.85rem 0 0;
   font-size: 13px;
   color: var(--bone-3);
-}
-
-.specs {
-  margin: clamp(1.6rem, 3vw, 2.4rem) 0 0;
-  display: grid;
-  gap: 0.8rem;
-  width: 100%;
-}
-
-.specs div {
-  display: grid;
-  grid-template-columns: 8.5rem 1fr;
-  gap: 1rem;
-  padding-top: 0.7rem;
-  border-top: 1px solid var(--line);
-}
-
-.specs dt {
-  font-weight: 400;
-  font-size: 10px;
-  letter-spacing: var(--track-label);
-  text-transform: uppercase;
-  color: var(--bone-4);
-  margin: 0;
-  padding-top: 0.2rem;
-}
-
-.specs dd {
-  margin: 0;
-  font-size: 0.96rem;
-  color: var(--bone-2);
 }
 
 .readout {
@@ -850,6 +826,7 @@ html.film-failed .landing-stage {
   font-size: clamp(1.05rem, 1.6vw, 1.22rem);
   line-height: 1.55;
   color: var(--bone-2);
+  white-space: pre-line;
 }
 
 .landing-footer {
@@ -1025,11 +1002,6 @@ html.film-failed .landing-stage {
     border-left: 0;
     padding-top: 0.7rem;
     border-top: 1px solid var(--line);
-  }
-
-  .specs div {
-    grid-template-columns: 1fr;
-    gap: 0.25rem;
   }
 
   .hero__name {

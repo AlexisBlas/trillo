@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { PREVIEW_MESSAGE } from '../../lib/embed';
 
 const PARK_STATUS = `/parks/${encodeURIComponent('Parque Julio E. Monagas')}`;
 
-const CHAPTER_PATHS = ['/', '/', PARK_STATUS, '/search', '/reports'] as const;
+const CHAPTER_PATHS = ['/', '/', PARK_STATUS, '/search', '/reports', '/reports'] as const;
 
 function pathForChapter(chapter: number) {
   const i = Math.min(Math.max(chapter, 0), CHAPTER_PATHS.length - 1);
@@ -19,7 +19,7 @@ export function LandingDevice({
   chapter: number;
   caption: string;
   mobileOnly: string;
-  mobileHint: string;
+  mobileHint: ReactNode;
 }) {
   const frameRef = useRef<HTMLIFrameElement>(null);
   const shellRef = useRef<HTMLDivElement>(null);
