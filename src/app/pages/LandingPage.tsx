@@ -177,15 +177,17 @@ export function LandingPage() {
         <section className="chapter chapter--hero" id="hero">
           <div className="chapter__pin">
             <div className="layer layer--title">
-              <h1 className={titleOn ? 'hero__name is-in' : 'hero__name'} aria-label="Trillo">
-                {['T', 'R', 'I', 'L', 'L', 'O'].map((ch, i) => (
-                  <span className="w" style={{ '--i': i } as CSSProperties} key={`${ch}-${i}`}>
-                    <i>{ch}</i>
-                  </span>
-                ))}
-              </h1>
-              <p className="hero__line">{copy.heroLine}</p>
-              <p className="hero__mobile">{withAppLink(copy.heroHelp)}</p>
+              <div className="hero__copy">
+                <h1 className={titleOn ? 'hero__name is-in' : 'hero__name'} aria-label="Trillo">
+                  {['T', 'R', 'I', 'L', 'L', 'O'].map((ch, i) => (
+                    <span className="w" style={{ '--i': i } as CSSProperties} key={`${ch}-${i}`}>
+                      <i>{ch}</i>
+                    </span>
+                  ))}
+                </h1>
+                <p className="hero__line">{copy.heroLine}</p>
+                <p className="hero__mobile">{withAppLink(copy.heroHelp)}</p>
+              </div>
               <a className="scroll-cue" href="#how" data-jump onClick={jump}>
                 {copy.scrollCue}
                 <i aria-hidden />
