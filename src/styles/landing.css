@@ -507,7 +507,7 @@ html.film-failed .landing-stage {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.2375rem;
+  gap: min(1.375vw, 19.8px);
 }
 
 .hero__name {
@@ -527,10 +527,11 @@ html.film-failed .landing-stage {
 .hero__line {
   margin: 0;
   font-weight: 400;
-  font-size: 24px;
+  font-size: clamp(14px, 1.6667vw, 24px);
   line-height: 0.81;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  white-space: nowrap;
   color: var(--bone-3);
 }
 
@@ -551,11 +552,11 @@ html.film-failed .landing-stage {
   max-width: none;
   padding-inline: 1.25rem;
   font-weight: 400;
-  font-size: 13px;
+  font-size: clamp(12px, 0.9028vw, 13px);
   letter-spacing: 0.0277em;
   line-height: 2.01;
   text-transform: none;
-  white-space: pre;
+  white-space: nowrap;
   color: var(--cream);
 }
 
@@ -1010,6 +1011,11 @@ html.film-failed .landing-stage {
     letter-spacing: -0.05em;
     padding-inline: 3vw;
     box-sizing: border-box;
+  }
+
+  .hero__line,
+  .hero__mobile {
+    white-space: normal;
   }
 }
 

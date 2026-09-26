@@ -15,10 +15,9 @@ export const landingCopy = {
     navFaq: 'Preguntas',
     ctaOpen: 'Abrir Trillo',
     ctaPhone: 'eltrillo.app',
-    heroLine: 'Condiciones de senderos · Puerto Rico',
+    heroLine: 'Condiciones de senderos',
     mobileOnly: 'Solo para móviles',
-    heroHelp:
-      'No hay que descargar ni instalar nada.\nAbre eltrillo.app desde tu celular.',
+    heroHelp: 'No hay que descargar ni instalar nada. Abre eltrillo.app desde tu celular.',
     mobileHint: 'Abre eltrillo.app desde tu móvil.',
     deviceCaption: 'Así se ve en el teléfono.',
     howTitle: 'Tu ruta, ahora mismo.',
@@ -113,7 +112,7 @@ export const landingCopy = {
     heroLine: 'Trail intelligence',
     mobileOnly: 'Mobile only',
     heroHelp:
-      'There is no need to download or install anything.\nOpen this page to visit eltrillo.app on your phone.',
+      'There is no need to download or install anything. Open this page to visit eltrillo.app on your phone.',
     mobileHint: 'Open eltrillo.app on your mobile device.',
     deviceCaption: 'Preview. You use it on your phone.',
     howTitle: 'Your trail, right now.',
