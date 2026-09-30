@@ -10,7 +10,7 @@ import { NewParkBadge } from '../components/trail/NewParkBadge';
 import { shareUrlFor } from '../lib/share';
 import { useTrails } from '../hooks/useTrails';
 import { useParkReports } from '../hooks/useParkReports';
-import { useParkMeta } from '../hooks/useHiddenParks';
+import { useParkDirections, useParkMeta } from '../hooks/useHiddenParks';
 import { StatusCircle } from '../components/trail/StatusCircle';
 import { StatusWithHazards } from '../components/trail/StatusWithHazards';
 import { ConditionSourceLegend } from '../components/trail/ConditionSourceLegend';
@@ -24,8 +24,8 @@ import {
   isValidTrailId,
 } from '../lib/text';
 import { useLang, TranslationKey } from '../contexts/LangContext';
-import { isParkNew, useParksMeta } from '../hooks/useParksMeta';
-import { directionsUrl } from '../lib/directions';
+import { isParkNew } from '../hooks/useParksMeta';
+import { directionsHref as buildDirectionsHref } from '../lib/directions';
 import {
   getEffectiveParkStatus,
   useConditionEstimates,
@@ -57,7 +57,7 @@ export function ParkDetailPage() {
   const { byPark, data: allReports } = useParkReports();
   const { byPark: estimatesByPark } = useConditionEstimates();
   const { data: parkMeta } = useParkMeta(decoded);
-  const { data: parksMeta } = useParksMeta();
+  const { data: parkDirections } = useParkDirections(decoded);
   const [descExpanded, setDescExpanded] = useState(false);
   const [descOverflows, setDescOverflows] = useState(false);
   const [trailsOpen, setTrailsOpen] = useState(false);
@@ -212,13 +212,7 @@ export function ParkDetailPage() {
     };
   }, [reportSummary?.createdAt, statusSource, rainAdjusted, t, lang]);
 
-  const publicMeta = parksMeta?.get(decoded);
-  const directionsHref = directionsUrl(
-    decoded,
-    parkMeta?.city ?? publicMeta?.city,
-    publicMeta?.lat,
-    publicMeta?.lng
-  );
+  const directionsHref = buildDirectionsHref(parkDirections, decoded);
 
   const handleReport = () => {
     if (!parkTrails.length) return;
@@ -378,16 +372,18 @@ export function ParkDetailPage() {
           >
             {t('park_report_btn')}
           </button>
-          <a
-            href={directionsHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={t('park_directions_aria').replace('{name}', decoded)}
-            className="w-full h-[52px] inline-flex items-center justify-center gap-2 rounded-[14px] border border-[#24302A] bg-[#151C18] text-[#F2F5F2] text-[13px] font-bold tracking-[1.5px] hover:border-[#5EE08A]/50 active:scale-[0.99] transition-[transform,border-color]"
-          >
-            <Navigation className="size-4 text-[#5EE08A]" strokeWidth={2.5} aria-hidden />
-            {t('park_directions_btn')}
-          </a>
+          {directionsHref && (
+            <a
+              href={directionsHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t('park_directions_aria').replace('{name}', decoded)}
+              className="w-full h-[52px] inline-flex items-center justify-center gap-2 rounded-[14px] border border-[#24302A] bg-[#151C18] text-[#F2F5F2] text-[13px] font-bold tracking-[1.5px] hover:border-[#5EE08A]/50 active:scale-[0.99] transition-[transform,border-color]"
+            >
+              <Navigation className="size-4 text-[#5EE08A]" strokeWidth={2.5} aria-hidden />
+              {t('park_directions_btn')}
+            </a>
+          )}
         </div>
       </div>
 

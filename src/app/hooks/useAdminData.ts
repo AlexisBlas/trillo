@@ -627,6 +627,30 @@ export function useUpdatePark() {
   });
 }
 
+/** Saves directions separately so other park edits work before 017 is applied. */
+export function useUpdateParkDirections() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ name, directions }: { name: string; directions: string | null }) => {
+      const { error } = await supabase
+        .from('parks')
+        .update({ directions_url: directions })
+        .eq('name', name);
+      if (error) {
+        if (isMissingColumnError(error)) {
+          throw new Error(
+            'Directions need migration 017_park_directions.sql. Run it in Supabase, then save again.'
+          );
+        }
+        throw error;
+      }
+    },
+    onSuccess: (_data, { name }) => {
+      qc.invalidateQueries({ queryKey: ['park-directions', name] });
+    },
+  });
+}
+
 export function useAddTrailToPark() {
   const qc = useQueryClient();
   return useMutation({
@@ -693,6 +717,9 @@ export function useRenamepark() {
             description_es: existingPark.description_es ?? null,
             lat: asNullableNumber(existingPark.lat),
             lng: asNullableNumber(existingPark.lng),
+            ...('directions_url' in existingPark
+              ? { directions_url: existingPark.directions_url ?? null }
+              : {}),
             created_at: existingPark.created_at,
           },
           { onConflict: 'name' }
@@ -731,6 +758,7 @@ export function useRenamepark() {
       qc.invalidateQueries({ queryKey: ['trail-reports'] });
       qc.invalidateQueries({ queryKey: ['parks-meta-public'] });
       qc.invalidateQueries({ queryKey: ['park-meta'] });
+      qc.invalidateQueries({ queryKey: ['park-directions'] });
     },
   });
 }

@@ -8,7 +8,10 @@ import {
   useDeleteTrail,
   useAddTrailToPark,
   useRenamepark,
+  useUpdateParkDirections,
 } from '../../hooks/useAdminData';
+import { useParkDirections } from '../../hooks/useHiddenParks';
+import { directionsHref, isValidDirectionsInput } from '../../lib/directions';
 import { Trail } from '../../lib/supabase';
 import {
   getCityRegion,
@@ -65,6 +68,8 @@ export function EditParkPage() {
   const updateTrail = useUpdateTrail();
   const deleteTrail = useDeleteTrail();
   const addTrail = useAddTrailToPark();
+  const updateDirections = useUpdateParkDirections();
+  const { data: savedDirections } = useParkDirections(decoded);
 
   const park = parks?.find((p) => p.name === decoded);
 
@@ -75,6 +80,7 @@ export function EditParkPage() {
   const [region, setRegion] = useState<ParkRegion | ''>('');
   const [lat, setLat] = useState('');
   const [lng, setLng] = useState('');
+  const [directions, setDirections] = useState('');
   const [editingTrails, setEditingTrails] = useState<Record<string, Trail>>({});
   const [newTrails, setNewTrails] = useState<NewTrailRow[]>([]);
   const [saving, setSaving] = useState(false);
@@ -105,6 +111,10 @@ export function EditParkPage() {
     park?.lat,
     park?.lng,
   ]);
+
+  useEffect(() => {
+    setDirections(savedDirections ?? '');
+  }, [savedDirections]);
 
   const addNewTrailRow = () => {
     setNewTrails((prev) => [...prev, { id: nextId++, name: '', difficulty: '' }]);
@@ -156,6 +166,12 @@ export function EditParkPage() {
       return;
     }
 
+    const trimmedDirections = directions.trim();
+    if (trimmedDirections && !isValidDirectionsInput(trimmedDirections)) {
+      toast.error('Directions must be a maps link (https://…) or "lat, lng"');
+      return;
+    }
+
     setSaving(true);
     try {
       // Rename if name changed (updates all trail locations + parks table key)
@@ -174,6 +190,13 @@ export function EditParkPage() {
         lat: parsedLat,
         lng: parsedLng,
       });
+
+      if (trimmedDirections !== (savedDirections ?? '')) {
+        await updateDirections.mutateAsync({
+          name: effectiveName,
+          directions: trimmedDirections || null,
+        });
+      }
 
       // Update existing trails
       await Promise.all(
@@ -322,6 +345,34 @@ export function EditParkPage() {
               {cityDefaultCoords
                 ? ` Default: ${cityDefaultCoords.lat}, ${cityDefaultCoords.lng}`
                 : ''}
+            </p>
+          </div>
+          <div>
+            <label className="block text-[12px] font-bold text-[#9AA39C] mb-1.5">
+              Directions <span className="font-normal text-[#8B958C]">(optional)</span>
+            </label>
+            <input
+              value={directions}
+              onChange={(e) => setDirections(e.target.value)}
+              placeholder="https://maps.app.goo.gl/… or 18.40914, -66.14125"
+              className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#F2F5F2] focus:outline-none focus:border-[#5EE08A]"
+            />
+            <p className="mt-1 text-[11px] text-[#8B958C]">
+              Paste a Google or Apple Maps link, or the trailhead / parking coordinates.
+              The Directions button only shows on the park page when this is set.
+              {directions.trim() && directionsHref(directions, decoded) ? (
+                <>
+                  {' '}
+                  <a
+                    href={directionsHref(directions, decoded)!}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#5EE08A] underline underline-offset-2"
+                  >
+                    Test link
+                  </a>
+                </>
+              ) : null}
             </p>
           </div>
           <div>

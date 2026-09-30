@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { Plus, Trash2, ChevronLeft } from 'lucide-react';
-import { useCreatePark, useUpdatePlaceRequest } from '../../hooks/useAdminData';
+import {
+  useCreatePark,
+  useUpdateParkDirections,
+  useUpdatePlaceRequest,
+} from '../../hooks/useAdminData';
+import { isValidDirectionsInput } from '../../lib/directions';
 import {
   getCityRegion,
   PARK_REGION_LABELS,
@@ -65,6 +70,7 @@ export function AddParkPage() {
   const location = useLocation();
   const create = useCreatePark();
   const updateRequest = useUpdatePlaceRequest();
+  const updateDirections = useUpdateParkDirections();
   const fromRequest = draftFromLocation(location.state);
 
   const [parkName, setParkName] = useState(() =>
@@ -74,6 +80,7 @@ export function AddParkPage() {
   const [parkRegion, setParkRegion] = useState<ParkRegion | ''>('');
   const [parkLat, setParkLat] = useState('');
   const [parkLng, setParkLng] = useState('');
+  const [parkDirections, setParkDirections] = useState('');
   const [parkDescription, setParkDescription] = useState(() =>
     fromRequest?.details?.trim() || ''
   );
@@ -121,6 +128,12 @@ export function AddParkPage() {
       return;
     }
 
+    const trimmedDirections = parkDirections.trim();
+    if (trimmedDirections && !isValidDirectionsInput(trimmedDirections)) {
+      toast.error('Directions must be a maps link (https://…) or "lat, lng"');
+      return;
+    }
+
     const validTrails = trails.filter((t) => t.name.trim());
     try {
       await create.mutateAsync({
@@ -137,6 +150,16 @@ export function AddParkPage() {
           difficulty: t.difficulty || null,
         })),
       });
+      if (trimmedDirections) {
+        try {
+          await updateDirections.mutateAsync({
+            name: parkName.trim(),
+            directions: trimmedDirections,
+          });
+        } catch (err: any) {
+          toast.error(err.message ?? 'Park created, but directions failed to save');
+        }
+      }
       if (fromRequest?.id) {
         try {
           await updateRequest.mutateAsync({ id: fromRequest.id, status: 'done' });
@@ -266,6 +289,22 @@ export function AddParkPage() {
               {cityDefaultCoords
                 ? ` Default: ${cityDefaultCoords.lat}, ${cityDefaultCoords.lng}`
                 : ''}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-[12px] font-bold text-[#9AA39C] mb-1.5">
+              Directions <span className="font-normal text-[#8B958C]">(optional)</span>
+            </label>
+            <input
+              value={parkDirections}
+              onChange={(e) => setParkDirections(e.target.value)}
+              placeholder="https://maps.app.goo.gl/… or 18.40914, -66.14125"
+              className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#F2F5F2] focus:outline-none focus:border-[#5EE08A]"
+            />
+            <p className="mt-1 text-[11px] text-[#8B958C]">
+              Paste a Google or Apple Maps link, or the trailhead / parking coordinates.
+              The Directions button only shows on the park page when this is set.
             </p>
           </div>
 

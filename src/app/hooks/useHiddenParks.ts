@@ -15,6 +15,29 @@ export function useHiddenParks() {
   });
 }
 
+/**
+ * Admin-set directions for a park. Fetched on its own so a database without
+ * the directions_url column (017 not applied) only hides the button.
+ */
+export function useParkDirections(parkName: string | undefined) {
+  return useQuery({
+    queryKey: ['park-directions', parkName],
+    queryFn: async () => {
+      if (!parkName) return null;
+      const { data, error } = await supabase
+        .from('parks')
+        .select('directions_url')
+        .eq('name', parkName)
+        .maybeSingle();
+      if (error) return null;
+      const value = (data as { directions_url: string | null } | null)?.directions_url;
+      return value?.trim() || null;
+    },
+    enabled: !!parkName,
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
 export function useParkMeta(parkName: string | undefined) {
   return useQuery({
     queryKey: ['park-meta', parkName],
