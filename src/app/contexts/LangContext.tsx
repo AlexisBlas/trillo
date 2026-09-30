@@ -207,6 +207,8 @@ const translations = {
     anonymous: 'Anonymous',
     // Park detail page
     park_report_btn: 'REPORT PARK CONDITIONS',
+    park_directions_btn: 'DIRECTIONS',
+    park_directions_aria: 'Get directions to {name}',
     park_current_conditions: 'Trail Conditions',
     park_updated: 'Updated',
     park_updated_ago: 'ago',
@@ -453,6 +455,8 @@ const translations = {
     anonymous: 'Anónimo',
     // Park detail page
     park_report_btn: 'REPORTAR CONDICIONES',
+    park_directions_btn: 'CÓMO LLEGAR',
+    park_directions_aria: 'Cómo llegar a {name}',
     park_current_conditions: 'Condiciones de Senderos',
     park_updated: 'Actualizado',
     park_updated_ago: 'hace',

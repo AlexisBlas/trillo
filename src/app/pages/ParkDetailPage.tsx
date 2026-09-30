@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { Mountain, ChevronRight, ChevronDown } from 'lucide-react';
+import { Mountain, ChevronRight, ChevronDown, Navigation } from 'lucide-react';
 import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { BackButton } from '../components/layout/BackButton';
@@ -24,7 +24,8 @@ import {
   isValidTrailId,
 } from '../lib/text';
 import { useLang, TranslationKey } from '../contexts/LangContext';
-import { isParkNew } from '../hooks/useParksMeta';
+import { isParkNew, useParksMeta } from '../hooks/useParksMeta';
+import { directionsUrl } from '../lib/directions';
 import {
   getEffectiveParkStatus,
   useConditionEstimates,
@@ -56,6 +57,7 @@ export function ParkDetailPage() {
   const { byPark, data: allReports } = useParkReports();
   const { byPark: estimatesByPark } = useConditionEstimates();
   const { data: parkMeta } = useParkMeta(decoded);
+  const { data: parksMeta } = useParksMeta();
   const [descExpanded, setDescExpanded] = useState(false);
   const [descOverflows, setDescOverflows] = useState(false);
   const [trailsOpen, setTrailsOpen] = useState(false);
@@ -210,6 +212,14 @@ export function ParkDetailPage() {
     };
   }, [reportSummary?.createdAt, statusSource, rainAdjusted, t, lang]);
 
+  const publicMeta = parksMeta?.get(decoded);
+  const directionsHref = directionsUrl(
+    decoded,
+    parkMeta?.city ?? publicMeta?.city,
+    publicMeta?.lat,
+    publicMeta?.lng
+  );
+
   const handleReport = () => {
     if (!parkTrails.length) return;
     navigate(`/parks/${encodeURIComponent(decoded)}/report`);
@@ -360,13 +370,25 @@ export function ParkDetailPage() {
           ) : null}
         </section>
 
-        <button
-          onClick={handleReport}
-          disabled={parkTrails.length === 0}
-          className="mt-4 w-full h-[52px] bg-[#5EE08A] rounded-[14px] text-[#0E1510] text-[13px] font-bold tracking-[1.5px] disabled:opacity-60 active:scale-[0.99] transition-transform"
-        >
-          {t('park_report_btn')}
-        </button>
+        <div className="mt-4 flex flex-col gap-2.5">
+          <button
+            onClick={handleReport}
+            disabled={parkTrails.length === 0}
+            className="w-full h-[52px] bg-[#5EE08A] rounded-[14px] text-[#0E1510] text-[13px] font-bold tracking-[1.5px] disabled:opacity-60 active:scale-[0.99] transition-transform"
+          >
+            {t('park_report_btn')}
+          </button>
+          <a
+            href={directionsHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t('park_directions_aria').replace('{name}', decoded)}
+            className="w-full h-[52px] inline-flex items-center justify-center gap-2 rounded-[14px] border border-[#24302A] bg-[#151C18] text-[#F2F5F2] text-[13px] font-bold tracking-[1.5px] hover:border-[#5EE08A]/50 active:scale-[0.99] transition-[transform,border-color]"
+          >
+            <Navigation className="size-4 text-[#5EE08A]" strokeWidth={2.5} aria-hidden />
+            {t('park_directions_btn')}
+          </a>
+        </div>
       </div>
 
       <div className="px-5 pt-3 pb-8">
