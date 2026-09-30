@@ -417,8 +417,13 @@ export function useAdminParks() {
   });
 }
 
+/** Reads fail with 42703; writes fail with PGRST204 ("…column… in the schema cache"). */
 function isMissingColumnError(error: { message?: string; code?: string } | null): boolean {
-  return error?.code === '42703' || /column .* does not exist/i.test(error?.message ?? '');
+  return (
+    error?.code === '42703' ||
+    error?.code === 'PGRST204' ||
+    /column .* does not exist|could not find the .* column/i.test(error?.message ?? '')
+  );
 }
 
 type ParkWriteFields = {
@@ -707,23 +712,24 @@ export function useRenamepark() {
       if (parkFetchError) throw parkFetchError;
 
       if (existingPark) {
-        const { error: upsertError } = await supabase.from('parks').upsert(
-          {
-            name: newName,
-            is_hidden: existingPark.is_hidden,
-            city: existingPark.city ?? null,
-            region: existingPark.region ?? null,
-            description: existingPark.description ?? null,
-            description_es: existingPark.description_es ?? null,
-            lat: asNullableNumber(existingPark.lat),
-            lng: asNullableNumber(existingPark.lng),
-            ...('directions_url' in existingPark
-              ? { directions_url: existingPark.directions_url ?? null }
-              : {}),
-            created_at: existingPark.created_at,
-          },
-          { onConflict: 'name' }
-        );
+        // Copy only columns this database has; optional migrations may be unapplied.
+        const copied: Record<string, unknown> = {};
+        for (const key of [
+          'is_hidden',
+          'city',
+          'region',
+          'description',
+          'description_es',
+          'lat',
+          'lng',
+          'directions_url',
+          'created_at',
+        ]) {
+          if (key in existingPark) copied[key] = existingPark[key] ?? null;
+        }
+        const { error: upsertError } = await supabase
+          .from('parks')
+          .upsert({ ...copied, name: newName }, { onConflict: 'name' });
         if (upsertError) throw upsertError;
 
         const { error: deleteParkError } = await supabase
