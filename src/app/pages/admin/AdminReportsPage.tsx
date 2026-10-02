@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pencil, Trash2, X, AlertTriangle } from 'lucide-react';
 import { format } from 'date-fns';
-import { useAdminReports, useUpdateReport, useDeleteReport, useAdminTrails, AdminReport } from '../../hooks/useAdminData';
+import { useAdminReports, useUpdateReport, useDeleteReport, useDeleteAllReports, useAdminStats, useAdminTrails, AdminReport } from '../../hooks/useAdminData';
 import { toast } from 'sonner';
 import { cn } from '../../components/ui/utils';
 import { AdminTablePagination, useAdminPagination } from './AdminTablePagination';
@@ -121,6 +121,44 @@ function EditModal({ report, onClose }: { report: AdminReport; onClose: () => vo
   );
 }
 
+function DeleteAllModal({ count, onClose }: { count: number; onClose: () => void }) {
+  const del = useDeleteAllReports();
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
+      <div className="bg-[#151C18] rounded-[20px] p-6 w-full max-w-sm shadow-xl" onClick={(e) => e.stopPropagation()}>
+        <div className="size-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+          <AlertTriangle className="size-6 text-red-500" />
+        </div>
+        <h2 className="text-[16px] font-bold text-[#F2F5F2] text-center mb-2">Delete all reports</h2>
+        <p className="text-[13px] text-[#9AA39C] text-center">
+          Permanently delete <strong>{count}</strong> {count === 1 ? 'report' : 'reports'}? They will disappear from the map and this cannot be undone.
+        </p>
+        <div className="flex gap-2 mt-5">
+          <button onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#24302A] text-[13px] font-bold text-[#9AA39C] hover:bg-[#24302A]">
+            Cancel
+          </button>
+          <button
+            onClick={async () => {
+              try {
+                const deleted = await del.mutateAsync();
+                toast.success(deleted === 1 ? '1 report deleted' : `${deleted} reports deleted`);
+                onClose();
+              } catch {
+                toast.error('Failed to delete reports');
+              }
+            }}
+            disabled={del.isPending || count === 0}
+            className="flex-1 h-10 rounded-[10px] bg-red-500 text-white text-[13px] font-bold hover:bg-red-600 disabled:opacity-50"
+          >
+            {del.isPending ? 'Deleting…' : 'Delete all'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function DeleteModal({ report, onClose }: { report: AdminReport; onClose: () => void }) {
   const del = useDeleteReport();
 
@@ -161,8 +199,11 @@ function DeleteModal({ report, onClose }: { report: AdminReport; onClose: () => 
 
 export function AdminReportsPage() {
   const { data: reports, isLoading, error } = useAdminReports();
+  const { data: stats } = useAdminStats();
+  const totalReports = stats?.reports ?? reports?.length ?? 0;
   const [editing, setEditing] = useState<AdminReport | null>(null);
   const [deleting, setDeleting] = useState<AdminReport | null>(null);
+  const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
@@ -188,9 +229,17 @@ export function AdminReportsPage() {
       <div className="flex items-start justify-between mb-6">
         <div>
           <h1 className="text-[24px] font-bold text-[#F2F5F2]">Reports</h1>
-          <p className="text-[14px] text-[#8B958C] mt-1">{reports?.length ?? 0} total</p>
+          <p className="text-[14px] text-[#8B958C] mt-1">{totalReports} total</p>
         </div>
         <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setConfirmDeleteAll(true)}
+            disabled={totalReports === 0}
+            className="h-9 px-3 rounded-[10px] border border-red-500/40 text-[13px] font-bold text-red-400 hover:bg-red-500/10 disabled:opacity-40"
+          >
+            Delete all
+          </button>
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -281,6 +330,9 @@ export function AdminReportsPage() {
 
       {editing && <EditModal report={editing} onClose={() => setEditing(null)} />}
       {deleting && <DeleteModal report={deleting} onClose={() => setDeleting(null)} />}
+      {confirmDeleteAll && (
+        <DeleteAllModal count={totalReports} onClose={() => setConfirmDeleteAll(false)} />
+      )}
     </div>
   );
 }

@@ -97,6 +97,34 @@ export function useDeleteReport() {
   });
 }
 
+export function useDeleteAllReports() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      let deleted = 0;
+      // PostgREST caps each delete, so repeat until the table is empty.
+      for (let i = 0; i < 50; i++) {
+        const { data, error } = await supabase
+          .from('trail_reports')
+          .delete()
+          .not('id', 'is', null)
+          .select('id');
+        if (error) throw error;
+        const batch = data?.length ?? 0;
+        deleted += batch;
+        if (batch === 0) return deleted;
+      }
+      throw new Error('Reports remain after delete');
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin-reports'] });
+      qc.invalidateQueries({ queryKey: ['trail-reports'] });
+      qc.invalidateQueries({ queryKey: ['admin-stats'] });
+      qc.invalidateQueries({ queryKey: ['admin-users'] });
+    },
+  });
+}
+
 // ─── Stats ────────────────────────────────────────────────────────────────────
 
 export function useAdminStats() {
