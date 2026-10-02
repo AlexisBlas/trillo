@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Pencil, Trash2, X, AlertTriangle, Eye, EyeOff, Plus } from 'lucide-react';
+import { Pencil, Trash2, X, AlertTriangle, Eye, EyeOff, Plus, Navigation, NavigationOff } from 'lucide-react';
 import { useAdminParks, useRenamepark, useDeletePark, useToggleParkVisibility, AdminPark } from '../../hooks/useAdminData';
 import {
   getCityRegion,
@@ -11,11 +11,43 @@ import { toast } from 'sonner';
 import { cn } from '../../components/ui/utils';
 import { AdminTablePagination, useAdminPagination } from './AdminTablePagination';
 
+function hasLocation(park: AdminPark) {
+  return park.lat != null && park.lng != null;
+}
+
+function hasDirections(park: AdminPark) {
+  return !!park.directions?.trim();
+}
+
 function parkRegionLabel(park: AdminPark): string {
   const region = isParkRegion(park.region)
     ? park.region
     : getCityRegion(park.city);
   return region ? PARK_REGION_LABELS[region] : '—';
+}
+
+function parkSetupLabel(park: AdminPark) {
+  const location = hasLocation(park);
+  const directions = hasDirections(park);
+  if (location && directions) return 'Location and directions set';
+  if (!location && !directions) return 'No location or directions';
+  if (!location) return 'No location';
+  return 'No directions';
+}
+
+function ParkSetupIcon({ park }: { park: AdminPark }) {
+  const ready = hasLocation(park) && hasDirections(park);
+  const label = parkSetupLabel(park);
+  const Icon = ready ? Navigation : NavigationOff;
+  return (
+    <span
+      title={label}
+      aria-label={label}
+      className={cn('inline-flex shrink-0 mr-2', ready ? 'text-[#5EE08A]' : 'text-amber-400')}
+    >
+      <Icon className="size-3.5" aria-hidden />
+    </span>
+  );
 }
 
 function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange: () => void; disabled?: boolean }) {
@@ -138,7 +170,12 @@ export function AdminParksPage() {
   const toggleVisibility = useToggleParkVisibility();
 
   const [search, setSearch] = useState('');
+  const [missingOnly, setMissingOnly] = useState(false);
+  const missingLocation = (parks ?? []).filter((p) => !hasLocation(p)).length;
+  const missingDirections = (parks ?? []).filter((p) => !hasDirections(p)).length;
+  const missingInfo = (parks ?? []).filter((p) => !hasLocation(p) || !hasDirections(p)).length;
   const filtered = (parks ?? []).filter((p) => {
+    if (missingOnly && hasLocation(p) && hasDirections(p)) return false;
     if (!search) return true;
     const q = search.toLowerCase();
     const regionLabel = parkRegionLabel(p).toLowerCase();
@@ -151,7 +188,7 @@ export function AdminParksPage() {
     );
   });
   const { page, setPage, pageCount, pageItems, total, pageSize, from, to } =
-    useAdminPagination(filtered, search);
+    useAdminPagination(filtered, `${search}|${missingOnly}`);
   const allHidden = (parks ?? []).length > 0 && (parks ?? []).every((p) => p.isHidden);
 
   const handleToggle = async (park: AdminPark) => {
@@ -182,7 +219,18 @@ export function AdminParksPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-[24px] font-bold text-[#F2F5F2]">Parks</h1>
-          <p className="text-[14px] text-[#8B958C] mt-1">Toggle visibility to show or hide parks from the app</p>
+          <p className="text-[14px] text-[#8B958C] mt-1">
+            {isLoading || !(parks ?? []).length
+              ? 'Toggle visibility to show or hide parks from the app'
+              : missingLocation === 0 && missingDirections === 0
+                ? 'Every park has a location and directions.'
+                : [
+                    missingLocation ? `${missingLocation} without a location` : null,
+                    missingDirections ? `${missingDirections} without directions` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')}
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -202,6 +250,18 @@ export function AdminParksPage() {
             placeholder="Search parks…"
             className="border border-[#24302A] rounded-[10px] px-3 h-9 text-[13px] text-[#9AA39C] bg-[#151C18] focus:outline-none w-[200px]"
           />
+          <button
+            type="button"
+            onClick={() => setMissingOnly((on) => !on)}
+            className={cn(
+              'flex items-center gap-2 h-9 px-4 rounded-[10px] text-[13px] font-bold border transition-colors',
+              missingOnly
+                ? 'bg-amber-400 text-[#0E1510] border-amber-400'
+                : 'bg-[#151C18] text-[#9AA39C] border-[#24302A] hover:border-amber-400 hover:text-amber-300'
+            )}
+          >
+            Missing info{missingInfo > 0 ? ` ${missingInfo}` : ''}
+          </button>
           <button
             onClick={handleToggleAll}
             disabled={toggleVisibility.isPending}
@@ -234,7 +294,11 @@ export function AdminParksPage() {
 
         {!isLoading && filtered.length === 0 && (
           <div className="px-5 py-12 text-center text-[13px] text-[#8B958C]">
-            {search ? `No parks matching "${search}"` : 'No parks found.'}
+            {search
+              ? `No parks matching "${search}"`
+              : missingOnly
+                ? 'Every park has a location and directions.'
+                : 'No parks found.'}
           </div>
         )}
 
@@ -249,6 +313,7 @@ export function AdminParksPage() {
           >
             <div className="flex items-center gap-2 min-w-0 pr-4">
               {park.isHidden && <EyeOff className="size-3.5 text-[#8B958C] shrink-0" />}
+              <ParkSetupIcon park={park} />
               <div className="min-w-0">
                 <p className="text-[14px] font-semibold text-[#F2F5F2] truncate">{park.name}</p>
                 {park.city && <p className="text-[12px] text-[#8B958C] truncate">{park.city}</p>}

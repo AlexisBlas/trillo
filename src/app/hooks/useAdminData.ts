@@ -304,6 +304,7 @@ export interface AdminPark {
   region: string | null;
   lat: number | null;
   lng: number | null;
+  directions: string | null;
   trailCount: number;
   trails: Trail[];
   isHidden: boolean;
@@ -318,6 +319,7 @@ type AdminParkRow = {
   region: string | null;
   lat: number | null;
   lng: number | null;
+  directions_url: string | null;
 };
 
 function asNullableNumber(value: unknown): number | null {
@@ -329,21 +331,49 @@ function asNullableNumber(value: unknown): number | null {
   return null;
 }
 
+function directionsValue(value: unknown): string | null {
+  return typeof value === 'string' && value.trim() ? value.trim() : null;
+}
+
+async function attachDirections(rows: AdminParkRow[]): Promise<AdminParkRow[]> {
+  const { data, error } = await supabase.from('parks').select('name, directions_url');
+  if (error) {
+    if (
+      error.code === '42703' ||
+      error.code === 'PGRST204' ||
+      /column .* does not exist|could not find the .* column/i.test(error.message ?? '')
+    ) {
+      return rows;
+    }
+    throw error;
+  }
+  const byName = new Map(
+    (data ?? []).map((p) => [
+      p.name,
+      directionsValue((p as { directions_url?: unknown }).directions_url),
+    ])
+  );
+  return rows.map((row) => ({ ...row, directions_url: byName.get(row.name) ?? null }));
+}
+
 async function fetchParksAdminRows(): Promise<AdminParkRow[]> {
   const full = await supabase
     .from('parks')
     .select('name, is_hidden, description, description_es, city, region, lat, lng');
   if (!full.error) {
-    return (full.data ?? []).map((p) => ({
-      name: p.name,
-      is_hidden: p.is_hidden,
-      description: p.description ?? null,
-      description_es: p.description_es ?? null,
-      city: p.city ?? null,
-      region: p.region ?? null,
-      lat: asNullableNumber(p.lat),
-      lng: asNullableNumber(p.lng),
-    }));
+    return attachDirections(
+      (full.data ?? []).map((p) => ({
+        name: p.name,
+        is_hidden: p.is_hidden,
+        description: p.description ?? null,
+        description_es: p.description_es ?? null,
+        city: p.city ?? null,
+        region: p.region ?? null,
+        lat: asNullableNumber(p.lat),
+        lng: asNullableNumber(p.lng),
+        directions_url: null,
+      }))
+    );
   }
 
   // Coords without region (014 applied, 012/013 not yet).
@@ -351,7 +381,7 @@ async function fetchParksAdminRows(): Promise<AdminParkRow[]> {
     .from('parks')
     .select('name, is_hidden, description, description_es, city, lat, lng');
   if (!withCoords.error) {
-    return (withCoords.data ?? []).map((p) => ({
+    return attachDirections((withCoords.data ?? []).map((p) => ({
       name: p.name,
       is_hidden: p.is_hidden,
       description: p.description ?? null,
@@ -360,7 +390,8 @@ async function fetchParksAdminRows(): Promise<AdminParkRow[]> {
       region: null,
       lat: asNullableNumber(p.lat),
       lng: asNullableNumber(p.lng),
-    }));
+      directions_url: null,
+    })));
   }
 
   // Region without coords (012 applied, 014 not yet).
@@ -368,7 +399,7 @@ async function fetchParksAdminRows(): Promise<AdminParkRow[]> {
     .from('parks')
     .select('name, is_hidden, description, description_es, city, region');
   if (!withRegion.error) {
-    return (withRegion.data ?? []).map((p) => ({
+    return attachDirections((withRegion.data ?? []).map((p) => ({
       name: p.name,
       is_hidden: p.is_hidden,
       description: p.description ?? null,
@@ -377,7 +408,8 @@ async function fetchParksAdminRows(): Promise<AdminParkRow[]> {
       region: p.region ?? null,
       lat: null,
       lng: null,
-    }));
+      directions_url: null,
+    })));
   }
 
   // Minimal columns.
@@ -385,7 +417,7 @@ async function fetchParksAdminRows(): Promise<AdminParkRow[]> {
     .from('parks')
     .select('name, is_hidden, description, description_es, city');
   if (basic.error) throw basic.error;
-  return (basic.data ?? []).map((p) => ({
+  return attachDirections((basic.data ?? []).map((p) => ({
     name: p.name,
     is_hidden: p.is_hidden,
     description: p.description ?? null,
@@ -394,12 +426,13 @@ async function fetchParksAdminRows(): Promise<AdminParkRow[]> {
     region: null,
     lat: null,
     lng: null,
-  }));
+    directions_url: null,
+  })));
 }
 
 export function useAdminParks() {
   return useQuery({
-    queryKey: ['admin-parks', 'v4'],
+    queryKey: ['admin-parks', 'v5'],
     queryFn: async () => {
       const [trailsRes, parksRows] = await Promise.all([
         supabase.from('trails').select('*').order('location', { ascending: true }),
@@ -418,6 +451,7 @@ export function useAdminParks() {
             region: p.region ?? null,
             lat: p.lat,
             lng: p.lng,
+            directions: p.directions_url,
           },
         ])
       );
@@ -437,6 +471,7 @@ export function useAdminParks() {
         region: parkMeta.get(name)?.region ?? null,
         lat: parkMeta.get(name)?.lat ?? null,
         lng: parkMeta.get(name)?.lng ?? null,
+        directions: parkMeta.get(name)?.directions ?? null,
         trailCount: trails.length,
         trails,
         isHidden: parkMeta.get(name)?.isHidden ?? false,
@@ -680,6 +715,7 @@ export function useUpdateParkDirections() {
     },
     onSuccess: (_data, { name }) => {
       qc.invalidateQueries({ queryKey: ['park-directions', name] });
+      qc.invalidateQueries({ queryKey: ['admin-parks'] });
     },
   });
 }
