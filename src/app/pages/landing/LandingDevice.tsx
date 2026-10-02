@@ -2,8 +2,9 @@ import { useEffect, useRef, type ReactNode } from 'react';
 import { PREVIEW_MESSAGE } from '../../lib/embed';
 
 const PARK_STATUS = `/parks/${encodeURIComponent('Parque Julio E. Monagas')}`;
+const PARK_REPORT = `${PARK_STATUS}/report`;
 
-const CHAPTER_PATHS = ['/', '/', PARK_STATUS, '/search', '/reports', '/reports'] as const;
+const CHAPTER_PATHS = ['/', '/', PARK_STATUS, PARK_REPORT, PARK_STATUS, '/reports'] as const;
 
 function pathForChapter(chapter: number) {
   const i = Math.min(Math.max(chapter, 0), CHAPTER_PATHS.length - 1);
