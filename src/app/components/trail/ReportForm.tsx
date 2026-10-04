@@ -3,6 +3,7 @@ import { Smile, Meh, Frown, Sun, Droplet, Check } from 'lucide-react';
 import { ReportFormData, OVERALL_OPTIONS, SURFACE_OPTIONS, HAZARD_OPTIONS } from '../../lib/schemas';
 import { cn } from '../ui/utils';
 import { useLang, TranslationKey } from '../../contexts/LangContext';
+import { STATUS_DOT } from './StatusCircle';
 
 const overallKeyMap: Record<string, TranslationKey> = {
   great: 'condition_great',
@@ -40,6 +41,13 @@ const surfaceIcons: Record<string, React.ComponentType<{ className?: string }>> 
   dry: Sun,
   damp: Droplet,
   muddy: Droplet,
+};
+
+/** Selected surface color follows the surface itself, not the overall rating. */
+const surfaceActiveColor: Record<string, string> = {
+  dry: STATUS_DOT.green,
+  damp: STATUS_DOT.yellow,
+  muddy: STATUS_DOT.red,
 };
 
 export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
@@ -116,12 +124,21 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
                 key={opt.value}
                 type="button"
                 onClick={() => setSurface(opt.value)}
+                aria-pressed={active}
                 className={cn(
                   'h-[78px] border-[1.5px] flex flex-col items-center justify-center gap-1 transition-colors rounded-[20px]',
                   active
-                    ? 'bg-[#5EE08A] border-[#5EE08A] text-[#0E1510]'
+                    ? 'text-[#0E1510]'
                     : 'bg-[#151C18] border-[#24302A] text-[#F2F5F2]'
                 )}
+                style={
+                  active
+                    ? {
+                        backgroundColor: surfaceActiveColor[opt.value],
+                        borderColor: surfaceActiveColor[opt.value],
+                      }
+                    : undefined
+                }
               >
                 <Icon className="size-5" />
                 <span className="text-[11px] font-bold">{t(surfaceKeyMap[opt.value])}</span>
