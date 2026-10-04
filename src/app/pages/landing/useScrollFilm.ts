@@ -6,8 +6,9 @@ function damp(current: number, target: number, retain: number, dt: number) {
   return current + (target - current) * (1 - Math.pow(retain, dt));
 }
 
+/** Root-relative so nested routes (e.g. /parks/x on desktop) still hit /landing/. */
 function landingAsset(file: string) {
-  return new URL(`landing/${file}`, document.baseURI).href;
+  return new URL(`/landing/${file}`, window.location.origin).href;
 }
 
 function filmIsFullySeekable(film: HTMLVideoElement) {
@@ -281,9 +282,10 @@ export function useScrollFilm(keyTimes: readonly number[] = FILM_KEY_TIMES) {
     };
 
     const loadFilm = async () => {
+      // The poster covers the wait; give the ~8 MB film time on slower connections.
       const deadline = window.setTimeout(() => {
         if (!filmReady && !dead) failFilm();
-      }, 8000);
+      }, 25000);
       try {
         try {
           await loadAsBlob(filmSrc);
@@ -417,5 +419,5 @@ export function useScrollFilm(keyTimes: readonly number[] = FILM_KEY_TIMES) {
 }
 
 export function landingPosterUrl() {
-  return new URL('landing/poster.jpg', document.baseURI).href;
+  return landingAsset('poster.jpg');
 }
