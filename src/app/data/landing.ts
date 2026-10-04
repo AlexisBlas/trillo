@@ -57,7 +57,7 @@ export const landingCopy = {
       },
       {
         q: '¿De dónde salen los datos?',
-        a: 'De dos lados. Por un lado, la gente que está en el sendero y reporta cómo lo encontró y si hay algún peligro. Por otro, la lluvia por hora de Open-Meteo, ajustada según la región. Cuando hay un reporte reciente, ese manda siempre.',
+        a: 'De dos lados. Por un lado, la gente que está en el sendero y reporta cómo lo encontró y si hay algún peligro. Por otro, cuánta lluvia cayó en las últimas 24 horas y en los últimos tres días, según Open-Meteo. Cuando hay un reporte reciente, ese manda siempre.',
       },
       {
         q: '¿Quién reporta?',
@@ -87,7 +87,7 @@ export const landingCopy = {
     footerSourcesTitle: 'De dónde sale el color.',
     manifesto: [
       'Si alguien pasó por el trillo y reportó, ese reporte manda por encima de la lluvia.',
-      'Si no pasó nadie, calculamos con la lluvia de los últimos tres días, ajustada por región.',
+      'Si no pasó nadie, calculamos con la lluvia de las últimas 24 horas y de los últimos tres días.',
       'Los árboles caídos, los puentes rotos y los tramos resbalosos van aparte del color.',
       'Mirar es gratis y no pide nada. Para reportar, basta con entrar como invitado.',
     ],
@@ -152,7 +152,7 @@ export const landingCopy = {
       },
       {
         q: 'Where does the data come from?',
-        a: 'Two places. Whoever is on the trail reports dry, wet, or muddy, plus hazards. With no fresh report, Trillo estimates from Open-Meteo rain — weighted by region. A community report always wins.',
+        a: 'Two places. Whoever is on the trail reports dry, wet, or muddy, plus hazards. With no fresh report, Trillo estimates from how much rain fell in the last 24 hours and 3 days, from Open-Meteo. A community report always wins.',
       },
       {
         q: 'Who reports?',
@@ -182,7 +182,7 @@ export const landingCopy = {
     footerSourcesTitle: 'Where the color comes from.',
     manifesto: [
       'A report from whoever was on the trail always beats the rain estimate.',
-      'If nobody has been through, we use the last 72 hours of rain, weighted by region.',
+      'If nobody has been through, we use the rain from the last 24 hours and the last 3 days.',
       'Downed trees, broken bridges, and slick stretches show apart from the color.',
       'Looking is free and needs no account. Reporting can stay a guest.',
     ],

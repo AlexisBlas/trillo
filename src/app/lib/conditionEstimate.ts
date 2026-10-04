@@ -1,65 +1,35 @@
-import type { ParkRegion } from './regions';
-
 export type TrailConditionStatus = 'green' | 'yellow' | 'red';
 
 export type ConditionEstimate = {
   status: TrailConditionStatus;
-  /** Time-weighted recent precip (mm). */
-  weightedPrecipMm: number;
-  /** Raw total precip over the lookback window (mm). */
-  totalPrecipMm: number;
+  /** Rain over the last 24 hours (mm). */
+  last24hMm: number;
+  /** Rain over the last 72 hours (mm). */
+  last72hMm: number;
 };
 
-type RegionDryDown = {
-  /** Exponential half-life for rain influence (hours). Longer = muddier longer. */
-  halfLifeHours: number;
-  wetMm: number;
-  muddyMm: number;
-};
+/** Same thresholds for every park. Muddy is checked first. */
+export const RAIN_THRESHOLDS = {
+  muddy: { last24hMm: 15, last72hMm: 25 },
+  wet: { last24hMm: 5, last72hMm: 10 },
+} as const;
+
+const HOUR_MS = 60 * 60 * 1000;
 
 /**
- * Region priors for MTB:
- * southwest / dry forest clears faster; mountain & east rainforest hold longer.
- */
-const REGION_DRY_DOWN: Record<ParkRegion, RegionDryDown> = {
-  southwest: { halfLifeHours: 18, wetMm: 4, muddyMm: 12 },
-  south: { halfLifeHours: 24, wetMm: 5, muddyMm: 15 },
-  west: { halfLifeHours: 24, wetMm: 5, muddyMm: 15 },
-  metro: { halfLifeHours: 30, wetMm: 6, muddyMm: 18 },
-  north: { halfLifeHours: 30, wetMm: 6, muddyMm: 18 },
-  central: { halfLifeHours: 36, wetMm: 5, muddyMm: 14 },
-  east: { halfLifeHours: 40, wetMm: 5, muddyMm: 13 },
-  mountain: { halfLifeHours: 48, wetMm: 4, muddyMm: 11 },
-};
-
-const DEFAULT_DRY_DOWN: RegionDryDown = {
-  halfLifeHours: 30,
-  wetMm: 6,
-  muddyMm: 16,
-};
-
-export function getRegionDryDown(region: ParkRegion | null | undefined): RegionDryDown {
-  if (region && region in REGION_DRY_DOWN) return REGION_DRY_DOWN[region];
-  return DEFAULT_DRY_DOWN;
-}
-
-/**
- * Map recent hourly precipitation to an estimated Dry/Wet/Muddy status.
- * Recent rain weighs more than older rain (exponential decay by region).
+ * Map recent hourly precipitation to an estimated Dry/Wet/Muddy status
+ * from plain 24 h and 72 h rain totals.
  * When `since` is set, only rain at/after that time counts (post-report wet-up).
  */
 export function estimateConditionFromPrecip(
   hourly: { time: string[]; precipitation: number[] },
-  region: ParkRegion | null | undefined,
   now: Date = new Date(),
   since?: Date | null
 ): ConditionEstimate {
-  const { halfLifeHours, wetMm, muddyMm } = getRegionDryDown(region);
   const nowMs = now.getTime();
-  const lookbackMs = 72 * 60 * 60 * 1000;
   const sinceMs = since ? since.getTime() : null;
-  let weighted = 0;
-  let total = 0;
+  let last24h = 0;
+  let last72h = 0;
 
   const n = Math.min(hourly.time.length, hourly.precipitation.length);
   for (let i = 0; i < n; i++) {
@@ -67,23 +37,22 @@ export function estimateConditionFromPrecip(
     if (Number.isNaN(t)) continue;
     if (sinceMs != null && t < sinceMs) continue;
     const ageMs = nowMs - t;
-    if (ageMs < 0 || ageMs > lookbackMs) continue;
+    if (ageMs < 0 || ageMs > 72 * HOUR_MS) continue;
     const mm = hourly.precipitation[i] ?? 0;
     if (mm <= 0) continue;
-    total += mm;
-    const ageHours = ageMs / (60 * 60 * 1000);
-    const weight = Math.exp((-Math.LN2 * ageHours) / halfLifeHours);
-    weighted += mm * weight;
+    last72h += mm;
+    if (ageMs <= 24 * HOUR_MS) last24h += mm;
   }
 
+  const { muddy, wet } = RAIN_THRESHOLDS;
   let status: TrailConditionStatus = 'green';
-  if (weighted >= muddyMm) status = 'red';
-  else if (weighted >= wetMm) status = 'yellow';
+  if (last24h >= muddy.last24hMm || last72h >= muddy.last72hMm) status = 'red';
+  else if (last24h >= wet.last24hMm || last72h >= wet.last72hMm) status = 'yellow';
 
   return {
     status,
-    weightedPrecipMm: Math.round(weighted * 10) / 10,
-    totalPrecipMm: Math.round(total * 10) / 10,
+    last24hMm: Math.round(last24h * 10) / 10,
+    last72hMm: Math.round(last72h * 10) / 10,
   };
 }
 

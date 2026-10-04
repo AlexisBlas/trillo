@@ -6,7 +6,6 @@ import {
   type TrailConditionStatus,
 } from '../lib/conditionEstimate';
 import { resolveParkCoords, type Coords } from '../lib/municipalityCoords';
-import { getCityRegion, type ParkRegion } from '../lib/regions';
 import { resolveParkCity } from '../lib/text';
 import { useParksMeta } from './useParksMeta';
 import { useTrails } from './useTrails';
@@ -15,10 +14,9 @@ export type HourlyPrecip = { time: string[]; precipitation: number[] };
 
 export type ParkConditionEstimate = {
   status: TrailConditionStatus;
-  weightedPrecipMm: number;
-  totalPrecipMm: number;
+  last24hMm: number;
+  last72hMm: number;
   coords: Coords;
-  region: ParkRegion | null;
   hourly: HourlyPrecip;
 };
 
@@ -73,19 +71,12 @@ export function useConditionEstimates() {
   const { data: trails } = useTrails();
 
   const parkCoords = useMemo(() => {
-    const byName = new Map<
-      string,
-      { name: string; coords: Coords; region: ParkRegion | null }
-    >();
+    const byName = new Map<string, { name: string; coords: Coords }>();
 
     if (parksMeta) {
       for (const [name, meta] of parksMeta) {
         if (!meta.coords) continue;
-        byName.set(name, {
-          name,
-          coords: meta.coords,
-          region: meta.region,
-        });
+        byName.set(name, { name, coords: meta.coords });
       }
     }
 
@@ -96,11 +87,7 @@ export function useConditionEstimates() {
       const city = trail.city ?? resolveParkCity(name, null);
       const coords = resolveParkCoords(null, null, city);
       if (!coords) continue;
-      byName.set(name, {
-        name,
-        coords,
-        region: getCityRegion(city),
-      });
+      byName.set(name, { name, coords });
     }
 
     return Array.from(byName.values());
@@ -135,13 +122,12 @@ export function useConditionEstimates() {
     for (const park of parkCoords) {
       const hourly = precipByCoord.get(coordKey(park.coords));
       if (!hourly) continue;
-      const estimate = estimateConditionFromPrecip(hourly, park.region);
+      const estimate = estimateConditionFromPrecip(hourly);
       map.set(park.name, {
         status: estimate.status,
-        weightedPrecipMm: estimate.weightedPrecipMm,
-        totalPrecipMm: estimate.totalPrecipMm,
+        last24hMm: estimate.last24hMm,
+        last72hMm: estimate.last72hMm,
         coords: park.coords,
-        region: park.region,
         hourly,
       });
     }
@@ -183,7 +169,6 @@ export function getEffectiveParkStatus(
     if (estimate?.hourly && !Number.isNaN(reportedAt.getTime())) {
       const sinceRain = estimateConditionFromPrecip(
         estimate.hourly,
-        estimate.region,
         new Date(),
         reportedAt
       );
