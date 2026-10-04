@@ -91,7 +91,10 @@ export function LandingDevice({
       if (h <= 1) return;
       const w = h * (390 / 844) + 16;
       shell.style.width = `${w}px`;
-      frame.style.transform = `scale(${w / 390})`;
+      // Scale to height so the whole 390×844 screen (incl. bottom nav) fits;
+      // the extra 16px of width becomes an even bezel.
+      const scale = h / 844;
+      frame.style.transform = `translateX(${(w - 390 * scale) / 2}px) scale(${scale})`;
     };
 
     fit();
