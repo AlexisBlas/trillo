@@ -14,6 +14,7 @@ import { useParkDirections, useParkMeta } from '../hooks/useHiddenParks';
 import { StatusCircle } from '../components/trail/StatusCircle';
 import { StatusWithHazards } from '../components/trail/StatusWithHazards';
 import { ConditionSourceLegend } from '../components/trail/ConditionSourceLegend';
+import { OverallRatingLabel } from '../components/trail/OverallRatingLabel';
 import { HazardNotice } from '../components/trail/HazardNotice';
 import { HazardTrailCarousel } from '../components/trail/HazardTrailCarousel';
 import { getCriticalHazards, mergeCriticalHazards } from '../lib/hazards';
@@ -326,6 +327,10 @@ export function ParkDetailPage() {
                   {effectiveStatus ? t(STATUS_LABEL[effectiveStatus]) : '—'}
                 </p>
               </div>
+              <OverallRatingLabel
+                conditions={reportSummary?.conditions}
+                className="block mt-2.5 text-[13px] text-[#9AA39C]"
+              />
               <ConditionSourceLegend className="mt-3" />
             </div>
 

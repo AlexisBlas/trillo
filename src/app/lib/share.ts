@@ -8,7 +8,7 @@ export type ShareHazard = {
   label: string;
   detail?: string | null;
   note?: string | null;
-  kind?: 'downed-trees' | 'broken-bridge';
+  kind?: 'downed-trees' | 'broken-bridge' | 'maintenance';
 };
 
 export type SharePayload = {
@@ -154,6 +154,28 @@ function drawBridgeIcon(ctx: CanvasRenderingContext2D, cx: number, cy: number, s
   ctx.beginPath();
   ctx.moveTo(-size * 0.28, -size * 0.08);
   ctx.quadraticCurveTo(0, -size * 0.38, size * 0.28, -size * 0.08);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function drawWrenchIcon(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: number) {
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(Math.PI / 4);
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = size * 0.12;
+  ctx.lineCap = 'round';
+
+  // Handle
+  ctx.beginPath();
+  ctx.moveTo(0, -size * 0.08);
+  ctx.lineTo(0, size * 0.4);
+  ctx.stroke();
+
+  // Open jaw
+  ctx.beginPath();
+  ctx.arc(0, -size * 0.22, size * 0.16, -Math.PI / 2 + 0.6, Math.PI * 1.5 - 0.6, false);
   ctx.stroke();
 
   ctx.restore();
@@ -310,6 +332,8 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
       ctx.fill();
       if (hazard.kind === 'broken-bridge') {
         drawBridgeIcon(ctx, icx, icy, iconSize * 0.72);
+      } else if (hazard.kind === 'maintenance') {
+        drawWrenchIcon(ctx, icx, icy, iconSize * 0.72);
       } else {
         drawTreeIcon(ctx, icx, icy, iconSize * 0.72);
       }

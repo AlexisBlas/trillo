@@ -42,21 +42,33 @@ export const CONDITION_OPTIONS = [
 
 // Report screen taxonomy
 export const OVERALL_OPTIONS = [
-  { value: 'great', label: 'Great', status: 'green' as const },
-  { value: 'good', label: 'Good', status: 'green' as const },
-  { value: 'fair', label: 'Fair', status: 'yellow' as const },
-  { value: 'poor', label: 'Poor', status: 'red' as const },
+  { value: 'great', label: 'Great' },
+  { value: 'good', label: 'Good' },
+  { value: 'fair', label: 'Fair' },
+  { value: 'poor', label: 'Poor' },
 ] as const;
 
+export type OverallRating = (typeof OVERALL_OPTIONS)[number]['value'];
+
+/** The surface sets the report's status color; the overall rating is shown as text. */
 export const SURFACE_OPTIONS = [
-  { value: 'dry', label: 'Dry' },
-  { value: 'damp', label: 'Wet' },
-  { value: 'muddy', label: 'Muddy' },
+  { value: 'dry', label: 'Dry', status: 'green' as const },
+  { value: 'damp', label: 'Wet', status: 'yellow' as const },
+  { value: 'muddy', label: 'Muddy', status: 'red' as const },
 ] as const;
+
+/** Overall rating stored on a report's condition tags, if any. */
+export function getOverallRating(
+  conditions: string[] | null | undefined
+): OverallRating | null {
+  const match = conditions?.find((c) => OVERALL_OPTIONS.some((o) => o.value === c));
+  return (match as OverallRating | undefined) ?? null;
+}
 
 export const HAZARD_OPTIONS = [
   { value: 'downed-trees', label: 'Downed Trees' },
   { value: 'broken-bridge', label: 'Broken bridge' },
+  { value: 'maintenance', label: 'Needs maintenance' },
   { value: 'slippery', label: 'Slippery' },
   { value: 'other', label: 'Other' },
 ] as const;

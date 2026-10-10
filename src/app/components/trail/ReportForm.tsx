@@ -21,6 +21,7 @@ const surfaceKeyMap: Record<string, TranslationKey> = {
 const hazardKeyMap: Record<string, TranslationKey> = {
   'downed-trees': 'hazard_downed_trees',
   'broken-bridge': 'hazard_broken_bridge',
+  maintenance: 'hazard_maintenance',
   slippery: 'hazard_slippery',
   other: 'hazard_other',
 };
@@ -43,13 +44,6 @@ const surfaceIcons: Record<string, React.ComponentType<{ className?: string }>> 
   muddy: Droplet,
 };
 
-/** Selected surface color follows the surface itself, not the overall rating. */
-const surfaceActiveColor: Record<string, string> = {
-  dry: STATUS_DOT.green,
-  damp: STATUS_DOT.yellow,
-  muddy: STATUS_DOT.red,
-};
-
 export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
   const { t } = useLang();
   const [overall, setOverall] = useState<string>('great');
@@ -65,15 +59,15 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const overallOpt = OVERALL_OPTIONS.find((o) => o.value === overall);
-    if (!overallOpt) return;
+    const surfaceOpt = SURFACE_OPTIONS.find((o) => o.value === surface);
+    if (!surfaceOpt) return;
     const conditions = [
       overall,
       `surface:${surface}`,
       ...hazards.map((h) => `hazard:${h}`),
     ];
     onSubmit({
-      status: overallOpt.status,
+      status: surfaceOpt.status,
       conditions,
       notes: notes.trim() || undefined,
     });
@@ -134,8 +128,8 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
                 style={
                   active
                     ? {
-                        backgroundColor: surfaceActiveColor[opt.value],
-                        borderColor: surfaceActiveColor[opt.value],
+                        backgroundColor: STATUS_DOT[opt.status],
+                        borderColor: STATUS_DOT[opt.status],
                       }
                     : undefined
                 }

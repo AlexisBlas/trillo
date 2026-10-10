@@ -7,7 +7,9 @@ import { ShareButton } from '../components/layout/ShareButton';
 import { StatusBadge } from '../components/trail/StatusBadge';
 import { StatusCircle } from '../components/trail/StatusCircle';
 import { HazardNotice } from '../components/trail/HazardNotice';
+import { OverallRatingLabel } from '../components/trail/OverallRatingLabel';
 import { getCriticalHazards } from '../lib/hazards';
+import { getOverallRating } from '../lib/schemas';
 import { useTrail } from '../hooks/useTrails';
 import { useTrailReportsByTrail } from '../hooks/useTrailReports';
 import {
@@ -238,6 +240,8 @@ export function TrailDetailPage() {
                     </p>
                     <p className="text-[12px] text-[#8B958C]">
                       {formatDistanceToNow(new Date(report.created_at), { addSuffix: true })}
+                      {getOverallRating(report.conditions) && ' · '}
+                      <OverallRatingLabel conditions={report.conditions} />
                     </p>
                   </div>
                   <StatusBadge status={report.status} />

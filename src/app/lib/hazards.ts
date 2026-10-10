@@ -1,4 +1,4 @@
-import { Trees, BrickWall, type LucideIcon } from 'lucide-react';
+import { Trees, BrickWall, Wrench, type LucideIcon } from 'lucide-react';
 import type { TranslationKey } from '../contexts/LangContext';
 
 /** Shared palette for hazard callouts / badges. */
@@ -10,7 +10,7 @@ export const HAZARD_COLORS = {
   cardBorder: '#3D3428',
 } as const;
 
-export type CriticalHazardId = 'downed-trees' | 'broken-bridge';
+export type CriticalHazardId = 'downed-trees' | 'broken-bridge' | 'maintenance';
 
 export type CriticalHazard = {
   id: CriticalHazardId;
@@ -35,9 +35,16 @@ const CRITICAL_HAZARDS: CriticalHazard[] = [
     labelKey: 'hazard_broken_bridge',
     noteKey: 'hazard_note_broken_bridge',
   },
+  {
+    id: 'maintenance',
+    tag: 'hazard:maintenance',
+    icon: Wrench,
+    labelKey: 'hazard_maintenance',
+    noteKey: 'hazard_note_maintenance',
+  },
 ];
 
-/** Critical hazards (downed trees / broken bridge) present on a report. */
+/** Critical hazards (downed trees / broken bridge / maintenance) present on a report. */
 export function getCriticalHazards(
   conditions: string[] | null | undefined
 ): CriticalHazard[] {

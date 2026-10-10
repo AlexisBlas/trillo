@@ -7,6 +7,8 @@ import { Input } from '../components/ui/input';
 import { BackButton } from '../components/layout/BackButton';
 import { ShareButton } from '../components/layout/ShareButton';
 import { StatusWithHazards } from '../components/trail/StatusWithHazards';
+import { OverallRatingLabel } from '../components/trail/OverallRatingLabel';
+import { getOverallRating } from '../lib/schemas';
 import { useParkReports } from '../hooks/useParkReports';
 import { cleanNotes, formatUpdatedAgo, isReportFresh, getReportPath, normalizeSearchText, searchIncludes } from '../lib/text';
 import { shareUrlFor } from '../lib/share';
@@ -263,6 +265,8 @@ export function ReportsPage() {
                                     {formatDistanceToNow(new Date(report.created_at), {
                                       addSuffix: true,
                                     })}
+                                    {getOverallRating(report.conditions) && ' · '}
+                                    <OverallRatingLabel conditions={report.conditions} />
                                   </p>
                                   {notes && (
                                     <p className="text-[13px] text-[#9AA39C] leading-[19px] mt-1 line-clamp-2">
