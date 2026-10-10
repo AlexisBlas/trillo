@@ -44,12 +44,25 @@ const surfaceIcons: Record<string, React.ComponentType<{ className?: string }>> 
   muddy: Droplet,
 };
 
+/** A wet or muddy surface caps the overall rating at Fair. */
+const WET_SURFACE_OVERALL = ['fair', 'poor'];
+
 export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
   const { t } = useLang();
   const [overall, setOverall] = useState<string>('great');
   const [surface, setSurface] = useState<string>('dry');
   const [hazards, setHazards] = useState<string[]>([]);
   const [notes, setNotes] = useState('');
+
+  const isOverallAllowed = (value: string) =>
+    surface === 'dry' || WET_SURFACE_OVERALL.includes(value);
+
+  const selectSurface = (value: string) => {
+    setSurface(value);
+    if (value !== 'dry' && !WET_SURFACE_OVERALL.includes(overall)) {
+      setOverall('fair');
+    }
+  };
 
   const toggleHazard = (value: string) => {
     setHazards((prev) =>
@@ -84,16 +97,20 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
           {OVERALL_OPTIONS.map((opt) => {
             const Icon = overallIcons[opt.value];
             const active = overall === opt.value;
+            const allowed = isOverallAllowed(opt.value);
             return (
               <button
                 key={opt.value}
                 type="button"
                 onClick={() => setOverall(opt.value)}
+                disabled={!allowed}
+                aria-pressed={active}
                 className={cn(
                   'h-[78px] border-[1.5px] flex flex-col items-center justify-center gap-1 transition-colors rounded-[20px]',
                   active
                     ? 'bg-[#5EE08A] border-[#5EE08A] text-[#0E1510]'
-                    : 'bg-[#151C18] border-[#24302A] text-[#F2F5F2]'
+                    : 'bg-[#151C18] border-[#24302A] text-[#F2F5F2]',
+                  !allowed && 'opacity-35 cursor-not-allowed'
                 )}
               >
                 <Icon className="size-6" />
@@ -102,6 +119,9 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
             );
           })}
         </div>
+        {surface !== 'dry' && (
+          <p className="mt-2 text-[12px] text-[#8B958C]">{t('form_overall_wet_hint')}</p>
+        )}
       </section>
 
       {/* Trail Surface */}
@@ -117,7 +137,7 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
               <button
                 key={opt.value}
                 type="button"
-                onClick={() => setSurface(opt.value)}
+                onClick={() => selectSurface(opt.value)}
                 aria-pressed={active}
                 className={cn(
                   'h-[78px] border-[1.5px] flex flex-col items-center justify-center gap-1 transition-colors rounded-[20px]',

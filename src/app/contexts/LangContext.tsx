@@ -84,6 +84,7 @@ const translations = {
     // Report form
     form_condition_label: 'Overall condition',
     form_surface_label: 'Trail surface',
+    form_overall_wet_hint: 'Wet or muddy trails can only be Fair or Poor.',
     form_hazards_label: 'Hazards',
     form_notes_label: 'Notes (optional)',
     form_notes_placeholder: 'Anything else hikers should know?',
@@ -335,6 +336,7 @@ const translations = {
     // Report form
     form_condition_label: 'Condición general',
     form_surface_label: 'Superficie del sendero',
+    form_overall_wet_hint: 'Con superficie húmeda o enlodada, solo puede ser Regular o Malo.',
     form_hazards_label: 'Peligros',
     form_notes_label: 'Notas (opcional)',
     form_notes_placeholder: '¿Algo más que los senderistas deberían saber?',
