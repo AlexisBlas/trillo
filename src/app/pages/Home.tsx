@@ -171,22 +171,25 @@ export function Home() {
 
       <section className="relative isolate overflow-hidden">
         <img
-          src="/landing/stills/01-trail.png"
+          src="/home-hero.jpg"
           alt=""
           aria-hidden
-          className="absolute inset-0 size-full object-cover object-[center_42%] select-none pointer-events-none brightness-[1.12] [mask-image:linear-gradient(to_bottom,black_58%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_58%,transparent_100%)]"
+          className="absolute inset-0 size-full object-cover object-[center_38%] select-none pointer-events-none [mask-image:linear-gradient(to_bottom,black_55%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_55%,transparent_100%)]"
         />
+        {/* Dark scrim so greeting/headline stay readable on the mottled cliff. */}
         <div
           aria-hidden
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(90deg, rgba(14,21,16,0.42) 0%, rgba(14,21,16,0.08) 72%, transparent 100%), linear-gradient(180deg, rgba(14,21,16,0.06) 0%, rgba(14,21,16,0.18) 52%, #0E1510 100%)',
+              'linear-gradient(90deg, rgba(14,21,16,0.62) 0%, rgba(14,21,16,0.28) 55%, rgba(14,21,16,0.12) 100%), linear-gradient(180deg, rgba(14,21,16,0.28) 0%, rgba(14,21,16,0.45) 48%, rgba(14,21,16,0.88) 78%, #0E1510 100%)',
           }}
         />
-        <div className="relative z-10 flex min-h-[200px] flex-col justify-end px-5 pb-6 pt-14 text-left">
-          <p className="text-[13px] text-[#A8C4A0] mb-1.5">{getGreeting()}</p>
-          <h1 className="text-[36px] leading-[38px] font-bold tracking-[-2px] text-[#E6EBE6] mb-2">
+        <div className="relative z-10 flex min-h-[220px] flex-col justify-end px-5 pb-6 pt-14 text-left">
+          <p className="text-[13px] text-[#C5D6C0] mb-1.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
+            {getGreeting()}
+          </p>
+          <h1 className="text-[36px] leading-[38px] font-bold tracking-[-2px] text-[#F4F7F4] mb-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.55)]">
             {t('home_headline').split('\n').map((line, i) => (
               <span key={i}>
                 {line}
@@ -194,8 +197,8 @@ export function Home() {
               </span>
             ))}
           </h1>
-          <p className="text-[16px] text-[#9AA39C]">
-            <b className="text-[#63B882]">
+          <p className="text-[16px] text-[#C8D0C8] drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]">
+            <b className="text-[#7FCB9A]">
               {freshReportCount} {freshReportCount === 1 ? t('home_report') : t('home_reports')}
             </b>{' '}
             {t('home_active_reports')}
