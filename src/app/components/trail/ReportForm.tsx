@@ -108,8 +108,8 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
                 className={cn(
                   'h-[78px] border-[1.5px] flex flex-col items-center justify-center gap-1 transition-colors rounded-[20px]',
                   active
-                    ? 'bg-[#5EE08A] border-[#5EE08A] text-[#0E1510]'
-                    : 'bg-[#151C18] border-[#24302A] text-[#F2F5F2]',
+                    ? 'bg-[#63B882] border-[#63B882] text-[#0E1510]'
+                    : 'bg-[#151C18] border-[#24302A] text-[#E6EBE6]',
                   !allowed && 'opacity-35 cursor-not-allowed'
                 )}
               >
@@ -143,7 +143,7 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
                   'h-[78px] border-[1.5px] flex flex-col items-center justify-center gap-1 transition-colors rounded-[20px]',
                   active
                     ? 'text-[#0E1510]'
-                    : 'bg-[#151C18] border-[#24302A] text-[#F2F5F2]'
+                    : 'bg-[#151C18] border-[#24302A] text-[#E6EBE6]'
                 )}
                 style={
                   active
@@ -182,8 +182,8 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
             className={cn(
               'h-9 px-4 rounded-full border-[1.5px] text-[13px] font-bold transition-colors inline-flex items-center gap-1.5',
               hazards.length === 0
-                ? 'bg-[#5EE08A] border-[#5EE08A] text-[#0E1510]'
-                : 'bg-[#151C18] border-[#24302A] text-[#F2F5F2]'
+                ? 'bg-[#63B882] border-[#63B882] text-[#0E1510]'
+                : 'bg-[#151C18] border-[#24302A] text-[#E6EBE6]'
             )}
           >
             {t('hazard_none')}
@@ -199,8 +199,8 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
                 className={cn(
                   'h-9 px-4 rounded-full border-[1.5px] text-[13px] font-bold transition-colors inline-flex items-center gap-1.5',
                   active
-                    ? 'bg-[#5EE08A] border-[#5EE08A] text-[#0E1510]'
-                    : 'bg-[#151C18] border-[#24302A] text-[#F2F5F2]'
+                    ? 'bg-[#63B882] border-[#63B882] text-[#0E1510]'
+                    : 'bg-[#151C18] border-[#24302A] text-[#E6EBE6]'
                 )}
               >
                 {active && <Check className="size-3.5 shrink-0" strokeWidth={2.5} />}
@@ -221,7 +221,7 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
             value={notes}
             onChange={(e) => setNotes(e.target.value.slice(0, 250))}
             placeholder={t('form_notes_submit_placeholder')}
-            className="w-full min-h-[100px] text-[16px] text-[#F2F5F2] placeholder:text-[#8B958C] resize-none outline-none"
+            className="w-full min-h-[100px] text-[16px] text-[#E6EBE6] placeholder:text-[#8B958C] resize-none outline-none"
             maxLength={250}
           />
           <p className="text-right text-[12px] text-[#8B958C] mt-2">{notes.length}/250</p>
@@ -232,7 +232,7 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full h-[53px] bg-[#5EE08A] rounded-[14px] text-[#0E1510] text-[13px] font-bold tracking-[1.5px] disabled:opacity-60"
+        className="w-full h-[53px] bg-[#63B882] rounded-[14px] text-[#0E1510] text-[13px] font-bold tracking-[1.5px] disabled:opacity-60"
       >
         {isSubmitting ? t('form_submitting').toUpperCase() : t('form_submit').toUpperCase()}
       </button>

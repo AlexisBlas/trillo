@@ -43,7 +43,7 @@ function ParkSetupIcon({ park }: { park: AdminPark }) {
     <span
       title={label}
       aria-label={label}
-      className={cn('inline-flex shrink-0 mr-2', ready ? 'text-[#5EE08A]' : 'text-amber-400')}
+      className={cn('inline-flex shrink-0 mr-2', ready ? 'text-[#63B882]' : 'text-amber-400')}
     >
       <Icon className="size-3.5" aria-hidden />
     </span>
@@ -60,12 +60,12 @@ function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange: (
       disabled={disabled}
       className={cn(
         'relative inline-flex h-5 w-9 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none disabled:opacity-40',
-        checked ? 'bg-[#5EE08A]' : 'bg-[#d1d5db]'
+        checked ? 'bg-[#63B882]' : 'bg-[#d1d5db]'
       )}
     >
       <span
         className={cn(
-          'pointer-events-none inline-block size-4 rounded-full bg-[#F2F5F2] shadow-sm transition-transform duration-200',
+          'pointer-events-none inline-block size-4 rounded-full bg-[#E6EBE6] shadow-sm transition-transform duration-200',
           checked ? 'translate-x-4' : 'translate-x-0'
         )}
       />
@@ -98,7 +98,7 @@ function RenameModal({ park, onClose }: { park: AdminPark; onClose: () => void }
         onSubmit={handleSubmit}
       >
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-[16px] font-bold text-[#F2F5F2]">Rename Park</h2>
+          <h2 className="text-[16px] font-bold text-[#E6EBE6]">Rename Park</h2>
           <button type="button" onClick={onClose} className="size-7 flex items-center justify-center rounded-full hover:bg-[#24302A]">
             <X className="size-4 text-[#8B958C]" />
           </button>
@@ -108,7 +108,7 @@ function RenameModal({ park, onClose }: { park: AdminPark; onClose: () => void }
           autoFocus
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[14px] text-[#F2F5F2] focus:outline-none focus:ring-2 focus:ring-[#5EE08A]/30"
+          className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[14px] text-[#E6EBE6] focus:outline-none focus:ring-2 focus:ring-[#63B882]/30"
         />
         <p className="text-[11px] text-[#8B958C] mt-1.5">
           Renames across all {park.trailCount} trail{park.trailCount !== 1 ? 's' : ''}.
@@ -117,7 +117,7 @@ function RenameModal({ park, onClose }: { park: AdminPark; onClose: () => void }
           <button type="button" onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#24302A] text-[13px] font-bold text-[#9AA39C] hover:bg-[#24302A]">
             Cancel
           </button>
-          <button type="submit" disabled={rename.isPending} className="flex-1 h-10 rounded-[10px] bg-[#5EE08A] text-[#0E1510] text-[13px] font-bold hover:bg-[#4ADE80] disabled:opacity-50">
+          <button type="submit" disabled={rename.isPending} className="flex-1 h-10 rounded-[10px] bg-[#63B882] text-[#0E1510] text-[13px] font-bold hover:bg-[#52A06E] disabled:opacity-50">
             {rename.isPending ? 'Saving…' : 'Rename'}
           </button>
         </div>
@@ -145,7 +145,7 @@ function DeleteModal({ park, onClose }: { park: AdminPark; onClose: () => void }
         <div className="size-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
           <AlertTriangle className="size-6 text-red-500" />
         </div>
-        <h2 className="text-[16px] font-bold text-[#F2F5F2] text-center mb-2">Delete Park</h2>
+        <h2 className="text-[16px] font-bold text-[#E6EBE6] text-center mb-2">Delete Park</h2>
         <p className="text-[13px] text-[#9AA39C] text-center leading-relaxed">
           Permanently delete <strong>{park.name}</strong> and all{' '}
           <strong>{park.trailCount} trail{park.trailCount !== 1 ? 's' : ''}</strong>, including all reports?
@@ -218,7 +218,7 @@ export function AdminParksPage() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-[24px] font-bold text-[#F2F5F2]">Parks</h1>
+          <h1 className="text-[24px] font-bold text-[#E6EBE6]">Parks</h1>
           <p className="text-[14px] text-[#8B958C] mt-1">
             {isLoading || !(parks ?? []).length
               ? 'Toggle visibility to show or hide parks from the app'
@@ -235,7 +235,7 @@ export function AdminParksPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => navigate('/admin/parks/new')}
-            className="flex items-center gap-1.5 h-9 px-4 rounded-[10px] bg-[#5EE08A] text-[#0E1510] text-[13px] font-bold hover:bg-[#4ADE80] transition-colors"
+            className="flex items-center gap-1.5 h-9 px-4 rounded-[10px] bg-[#63B882] text-[#0E1510] text-[13px] font-bold hover:bg-[#52A06E] transition-colors"
           >
             <Plus className="size-3.5" />
             New Park
@@ -268,8 +268,8 @@ export function AdminParksPage() {
             className={cn(
               'flex items-center gap-2 h-9 px-4 rounded-[10px] text-[13px] font-bold border transition-colors disabled:opacity-50',
               allHidden
-                ? 'bg-[#5EE08A] text-[#0E1510] border-[#5EE08A] hover:bg-[#4ADE80]'
-                : 'bg-[#151C18] text-[#9AA39C] border-[#24302A] hover:border-[#5EE08A] hover:text-[#5EE08A]'
+                ? 'bg-[#63B882] text-[#0E1510] border-[#63B882] hover:bg-[#52A06E]'
+                : 'bg-[#151C18] text-[#9AA39C] border-[#24302A] hover:border-[#63B882] hover:text-[#63B882]'
             )}
           >
             {allHidden ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
@@ -315,7 +315,7 @@ export function AdminParksPage() {
               {park.isHidden && <EyeOff className="size-3.5 text-[#8B958C] shrink-0" />}
               <ParkSetupIcon park={park} />
               <div className="min-w-0">
-                <p className="text-[14px] font-semibold text-[#F2F5F2] truncate">{park.name}</p>
+                <p className="text-[14px] font-semibold text-[#E6EBE6] truncate">{park.name}</p>
                 {park.city && <p className="text-[12px] text-[#8B958C] truncate">{park.city}</p>}
               </div>
             </div>
@@ -350,7 +350,7 @@ export function AdminParksPage() {
             <div className="flex justify-end gap-1.5">
               <button
                 onClick={() => navigate(`/admin/parks/${encodeURIComponent(park.name)}/edit`)}
-                className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#24302A] text-[#8B958C] hover:text-[#5EE08A] transition-colors"
+                className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#24302A] text-[#8B958C] hover:text-[#63B882] transition-colors"
                 title="Edit"
               >
                 <Pencil className="size-3.5" />

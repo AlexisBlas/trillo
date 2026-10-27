@@ -40,19 +40,19 @@ export function ForgotPasswordPage() {
         <div className="size-12 rounded-full bg-[#1E3A28] flex items-center justify-center mb-4">
           <Mail className="size-6 text-white" />
         </div>
-        <h1 className="text-[24px] font-bold text-[#F2F5F2] leading-tight">{t('forgot_password_title')}</h1>
+        <h1 className="text-[24px] font-bold text-[#E6EBE6] leading-tight">{t('forgot_password_title')}</h1>
         <p className="text-[14px] text-[#A8C4A0] mt-1">{t('forgot_password_subtitle')}</p>
       </div>
 
       <div className="px-5 pb-8">
         {sent ? (
           <div className="bg-[#151C18] border-[1.5px] border-[#24302A] rounded-[16px] p-6 text-center">
-            <CheckCircle className="size-10 text-[#5EE08A] mx-auto mb-3" />
-            <p className="text-[15px] font-bold text-[#F2F5F2] mb-1">{t('reset_sent_title')}</p>
+            <CheckCircle className="size-10 text-[#63B882] mx-auto mb-3" />
+            <p className="text-[15px] font-bold text-[#E6EBE6] mb-1">{t('reset_sent_title')}</p>
             <p className="text-[13px] text-[#9AA39C] leading-relaxed">{t('reset_sent_body')}</p>
             <Link
               to="/auth/signin"
-              className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-bold text-[#5EE08A]"
+              className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-bold text-[#63B882]"
             >
               <ArrowLeft className="size-3.5" />
               {t('back_to_signin')}
@@ -73,13 +73,13 @@ export function ForgotPasswordPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full h-[48px] border-[1.5px] border-[#24302A] rounded-[12px] px-4 text-[15px] text-[#F2F5F2] bg-[#151C18] focus:outline-none focus:border-[#5EE08A]"
+                className="w-full h-[48px] border-[1.5px] border-[#24302A] rounded-[12px] px-4 text-[15px] text-[#E6EBE6] bg-[#151C18] focus:outline-none focus:border-[#63B882]"
               />
             </div>
             <button
               type="submit"
               disabled={loading || !email.trim()}
-              className="w-full h-[48px] bg-[#5EE08A] rounded-[12px] text-[#0E1510] text-[14px] font-bold disabled:opacity-50"
+              className="w-full h-[48px] bg-[#63B882] rounded-[12px] text-[#0E1510] text-[14px] font-bold disabled:opacity-50"
             >
               {loading ? t('sending') : t('send_reset_link')}
             </button>

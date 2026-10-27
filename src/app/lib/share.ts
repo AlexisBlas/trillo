@@ -37,9 +37,9 @@ export function shareUrlFor(path: string): string {
 }
 
 const STATUS_DOT: Record<ShareStatus, string> = {
-  green: '#10b981',
+  green: '#4A9E68',
   yellow: '#f59e0b',
-  red: '#ef4444',
+  red: '#C96B6B',
 };
 
 const STATUS_TEXT: Record<ShareStatus, string> = {
@@ -214,7 +214,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     ctx.fill();
 
     // Brand
-    ctx.fillStyle = '#5EE08A';
+    ctx.fillStyle = '#63B882';
     ctx.font = '700 40px system-ui, -apple-system, sans-serif';
     const brand = 'TRILLO';
     let brandX = 80;
@@ -224,7 +224,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     }
 
     // Park / trail title above the card
-    ctx.fillStyle = '#5EE08A';
+    ctx.fillStyle = '#63B882';
     ctx.font = '800 64px system-ui, -apple-system, sans-serif';
     const titleLines = wrapLines(ctx, payload.title, width - 160, 2);
     let titleY = TOP_SAFE + 88;
@@ -300,7 +300,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
       ctx.fillStyle = '#6b7280';
       ctx.font = '500 28px system-ui, -apple-system, sans-serif';
       ctx.fillText(payload.updatedLabel || '', dividerX + 28, rowTop + 18);
-      ctx.fillStyle = '#F2F5F2';
+      ctx.fillStyle = '#E6EBE6';
       ctx.font = '700 40px system-ui, -apple-system, sans-serif';
       ctx.fillText(payload.updatedValue || '—', dividerX + 28, rowTop + 68);
     }
@@ -391,7 +391,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     }
 
     // Footer — above Stories bottom tray
-    ctx.fillStyle = '#5EE08A';
+    ctx.fillStyle = '#63B882';
     ctx.font = '700 30px system-ui, -apple-system, sans-serif';
     ctx.fillText('eltrillo.app', 80, height - BOTTOM_SAFE + 40);
     ctx.fillStyle = '#8B958C';

@@ -98,7 +98,7 @@ function TrailModal({
         onSubmit={handleSubmit}
       >
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-[16px] font-bold text-[#F2F5F2]">{isEdit ? 'Edit Trail' : 'New Trail'}</h2>
+          <h2 className="text-[16px] font-bold text-[#E6EBE6]">{isEdit ? 'Edit Trail' : 'New Trail'}</h2>
           <button type="button" onClick={onClose} className="size-7 flex items-center justify-center rounded-full hover:bg-[#24302A]">
             <X className="size-4 text-[#8B958C]" />
           </button>
@@ -111,7 +111,7 @@ function TrailModal({
             value={form.name}
             onChange={set('name')}
             placeholder="e.g. El Yunque Peak Trail"
-            className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[14px] text-[#F2F5F2] focus:outline-none focus:ring-2 focus:ring-[#5EE08A]/30"
+            className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[14px] text-[#E6EBE6] focus:outline-none focus:ring-2 focus:ring-[#63B882]/30"
           />
         </div>
 
@@ -121,7 +121,7 @@ function TrailModal({
           <select
             value={parkSelect}
             onChange={(e) => handleParkSelect(e.target.value)}
-            className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[14px] text-[#F2F5F2] bg-[#151C18] focus:outline-none focus:ring-2 focus:ring-[#5EE08A]/30"
+            className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[14px] text-[#E6EBE6] bg-[#151C18] focus:outline-none focus:ring-2 focus:ring-[#63B882]/30"
           >
             <option value="">— No park —</option>
             {parkNames.map((name) => (
@@ -134,7 +134,7 @@ function TrailModal({
               value={customLocation}
               onChange={(e) => handleCustomLocation(e.target.value)}
               placeholder="Enter park name"
-              className="mt-2 w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[14px] text-[#F2F5F2] focus:outline-none focus:ring-2 focus:ring-[#5EE08A]/30"
+              className="mt-2 w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[14px] text-[#E6EBE6] focus:outline-none focus:ring-2 focus:ring-[#63B882]/30"
             />
           )}
         </div>
@@ -146,7 +146,7 @@ function TrailModal({
             value={form.qr_code ?? ''}
             onChange={set('qr_code')}
             placeholder="e.g. TRAIL_YUNQUE_PEAK"
-            className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[14px] text-[#F2F5F2] focus:outline-none focus:ring-2 focus:ring-[#5EE08A]/30"
+            className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[14px] text-[#E6EBE6] focus:outline-none focus:ring-2 focus:ring-[#63B882]/30"
           />
         </div>
 
@@ -154,7 +154,7 @@ function TrailModal({
           <button type="button" onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#24302A] text-[13px] font-bold text-[#9AA39C] hover:bg-[#24302A]">
             Cancel
           </button>
-          <button type="submit" disabled={isPending} className="flex-1 h-10 rounded-[10px] bg-[#5EE08A] text-[#0E1510] text-[13px] font-bold hover:bg-[#4ADE80] disabled:opacity-50">
+          <button type="submit" disabled={isPending} className="flex-1 h-10 rounded-[10px] bg-[#63B882] text-[#0E1510] text-[13px] font-bold hover:bg-[#52A06E] disabled:opacity-50">
             {isPending ? 'Saving…' : isEdit ? 'Save Changes' : 'Create Trail'}
           </button>
         </div>
@@ -188,7 +188,7 @@ function DeleteTrailModal({
         <div className="size-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
           <AlertTriangle className="size-6 text-red-500" />
         </div>
-        <h2 className="text-[16px] font-bold text-[#F2F5F2] text-center mb-2">Delete Trail</h2>
+        <h2 className="text-[16px] font-bold text-[#E6EBE6] text-center mb-2">Delete Trail</h2>
         <p className="text-[13px] text-[#9AA39C] text-center leading-relaxed">
           Permanently delete <strong>{trail.name}</strong> and all its reports?
         </p>
@@ -224,20 +224,20 @@ export function AdminTrailsPage() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-[24px] font-bold text-[#F2F5F2]">Trails</h1>
+          <h1 className="text-[24px] font-bold text-[#E6EBE6]">Trails</h1>
           <p className="text-[14px] text-[#8B958C] mt-1">{trails?.length ?? 0} total</p>
         </div>
         <div className="flex gap-2">
           <button
             onClick={() => setImportOpen(true)}
-            className="flex items-center gap-2 h-10 px-4 bg-[#151C18] border border-[#24302A] text-[#9AA39C] text-[13px] font-bold rounded-[10px] hover:border-[#5EE08A] hover:text-[#5EE08A] transition-colors"
+            className="flex items-center gap-2 h-10 px-4 bg-[#151C18] border border-[#24302A] text-[#9AA39C] text-[13px] font-bold rounded-[10px] hover:border-[#63B882] hover:text-[#63B882] transition-colors"
           >
             <Upload className="size-4" />
             Import CSV
           </button>
           <button
             onClick={() => setEditing('new')}
-            className="flex items-center gap-2 h-10 px-4 bg-[#5EE08A] text-[#0E1510] text-[13px] font-bold rounded-[10px] hover:bg-[#4ADE80]"
+            className="flex items-center gap-2 h-10 px-4 bg-[#63B882] text-[#0E1510] text-[13px] font-bold rounded-[10px] hover:bg-[#52A06E]"
           >
             <Plus className="size-4" />
             New Trail
@@ -281,12 +281,12 @@ export function AdminTrailsPage() {
               key={trail.id}
               className={`grid grid-cols-[1fr_1fr_80px] px-5 py-3.5 items-center ${i !== pageItems.length - 1 ? 'border-b border-[#24302A]' : ''}`}
             >
-              <p className="text-[13.5px] font-semibold text-[#F2F5F2] truncate pr-4">{displayName}</p>
+              <p className="text-[13.5px] font-semibold text-[#E6EBE6] truncate pr-4">{displayName}</p>
               <p className="text-[13px] text-[#8B958C] truncate pr-4">{trail.location ?? '—'}</p>
               <div className="flex justify-end gap-1.5">
                 <button
                   onClick={() => setEditing(trail)}
-                  className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#24302A] text-[#8B958C] hover:text-[#5EE08A] transition-colors"
+                  className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#24302A] text-[#8B958C] hover:text-[#63B882] transition-colors"
                 >
                   <Pencil className="size-3.5" />
                 </button>

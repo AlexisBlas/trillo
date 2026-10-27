@@ -208,7 +208,7 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-[#24302A] shrink-0">
           <div>
-            <h2 className="text-[16px] font-bold text-[#F2F5F2]">Import from CSV</h2>
+            <h2 className="text-[16px] font-bold text-[#E6EBE6]">Import from CSV</h2>
             <p className="text-[12px] text-[#8B958C] mt-0.5">{stepLabels[step]}</p>
           </div>
           <button onClick={onClose} className="size-7 flex items-center justify-center rounded-full hover:bg-[#24302A]">
@@ -229,14 +229,14 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
                 onClick={() => fileRef.current?.click()}
                 className={cn(
                   'border-2 border-dashed rounded-[16px] p-10 flex flex-col items-center gap-3 cursor-pointer transition-colors',
-                  dragOver ? 'border-[#5EE08A] bg-[#24302A]' : 'border-[#24302A] hover:border-[#5EE08A] hover:bg-[#1A221C]'
+                  dragOver ? 'border-[#63B882] bg-[#24302A]' : 'border-[#24302A] hover:border-[#63B882] hover:bg-[#1A221C]'
                 )}
               >
                 <div className="size-12 rounded-full bg-[#24302A] flex items-center justify-center">
-                  <Upload className="size-5 text-[#5EE08A]" />
+                  <Upload className="size-5 text-[#63B882]" />
                 </div>
                 <div className="text-center">
-                  <p className="text-[14px] font-bold text-[#F2F5F2]">Drop your CSV here</p>
+                  <p className="text-[14px] font-bold text-[#E6EBE6]">Drop your CSV here</p>
                   <p className="text-[12px] text-[#8B958C] mt-1">or click to browse</p>
                 </div>
                 <input ref={fileRef} type="file" accept=".csv,text/csv" className="hidden" onChange={onFileChange} />
@@ -285,7 +285,7 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
                   const row = mappedRows[i];
                   return (
                     <div key={i} className={cn('grid grid-cols-[1fr_1fr] px-4 py-2.5', i < previewRows.length - 1 && 'border-b border-[#24302A]')}>
-                      <p className="text-[13px] font-medium text-[#F2F5F2] truncate pr-3">{row?.name || '—'}</p>
+                      <p className="text-[13px] font-medium text-[#E6EBE6] truncate pr-3">{row?.name || '—'}</p>
                       <p className="text-[13px] text-[#8B958C] truncate">{row?.location || '—'}</p>
                     </div>
                   );
@@ -305,7 +305,7 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
                   ? <AlertCircle className="size-7 text-amber-500" />
                   : <CheckCircle className="size-7 text-green-500" />}
               </div>
-              <p className="text-[18px] font-bold text-[#F2F5F2]">
+              <p className="text-[18px] font-bold text-[#E6EBE6]">
                 {result.inserted} trail{result.inserted !== 1 ? 's' : ''} imported
               </p>
               {result.skipped > 0 && (
@@ -332,7 +332,7 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
               <button
                 onClick={() => setStep('preview')}
                 disabled={!mapping.name}
-                className="flex-1 h-10 rounded-[10px] bg-[#5EE08A] text-[#0E1510] text-[13px] font-bold hover:bg-[#4ADE80] disabled:opacity-40 flex items-center justify-center gap-1.5"
+                className="flex-1 h-10 rounded-[10px] bg-[#63B882] text-[#0E1510] text-[13px] font-bold hover:bg-[#52A06E] disabled:opacity-40 flex items-center justify-center gap-1.5"
               >
                 Preview <ChevronRight className="size-4" />
               </button>
@@ -346,14 +346,14 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
               <button
                 onClick={handleImport}
                 disabled={importing}
-                className="flex-1 h-10 rounded-[10px] bg-[#5EE08A] text-[#0E1510] text-[13px] font-bold hover:bg-[#4ADE80] disabled:opacity-50"
+                className="flex-1 h-10 rounded-[10px] bg-[#63B882] text-[#0E1510] text-[13px] font-bold hover:bg-[#52A06E] disabled:opacity-50"
               >
                 {importing ? 'Importing…' : `Import ${mappedRows.length} trails`}
               </button>
             </>
           )}
           {step === 'result' && (
-            <button onClick={onClose} className="flex-1 h-10 rounded-[10px] bg-[#5EE08A] text-[#0E1510] text-[13px] font-bold hover:bg-[#4ADE80]">
+            <button onClick={onClose} className="flex-1 h-10 rounded-[10px] bg-[#63B882] text-[#0E1510] text-[13px] font-bold hover:bg-[#52A06E]">
               Done
             </button>
           )}

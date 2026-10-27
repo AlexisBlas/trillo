@@ -24,10 +24,10 @@ function statusShareLabel(status: 'green' | 'yellow' | 'red'): TranslationKey {
 }
 
 const STATUS_FILTERS: { value: 'all' | 'green' | 'yellow' | 'red'; labelKey: TranslationKey; dot: string | null; bg: string; text: string }[] = [
-  { value: 'all', labelKey: 'reports_all', dot: null, bg: '#5EE08A', text: '#0E1510' },
-  { value: 'green', labelKey: 'reports_filter_good', dot: '#5ee08a', bg: '#12352a', text: '#5ee08a' },
-  { value: 'yellow', labelKey: 'reports_filter_caution', dot: '#fbbf24', bg: '#3a2e12', text: '#fbbf24' },
-  { value: 'red', labelKey: 'reports_filter_closed', dot: '#f87171', bg: '#3a1616', text: '#f87171' },
+  { value: 'all', labelKey: 'reports_all', dot: null, bg: '#63B882', text: '#0E1510' },
+  { value: 'green', labelKey: 'reports_filter_good', dot: '#63b882', bg: '#12352a', text: '#63b882' },
+  { value: 'yellow', labelKey: 'reports_filter_caution', dot: '#C9A84A', bg: '#3a2e12', text: '#C9A84A' },
+  { value: 'red', labelKey: 'reports_filter_closed', dot: '#C97A7A', bg: '#3a1616', text: '#C97A7A' },
 ];
 
 export function ReportsPage() {
@@ -93,7 +93,7 @@ export function ReportsPage() {
       </div>
 
       <div className="px-5 pt-6 pb-4">
-        <h1 className="text-[24px] font-bold text-[#F2F5F2] mb-1">{t('reports_title')}</h1>
+        <h1 className="text-[24px] font-bold text-[#E6EBE6] mb-1">{t('reports_title')}</h1>
         <p className="text-[14px] text-[#A8C4A0] mb-5">{t('reports_grouped_by')}</p>
 
         <div className="relative">
@@ -163,7 +163,7 @@ export function ReportsPage() {
                 <FileText className="size-6 text-[#9AA39C]" />
               )}
             </div>
-            <h3 className="text-[15.5px] font-bold text-[#F2F5F2] mb-2">
+            <h3 className="text-[15.5px] font-bold text-[#E6EBE6] mb-2">
               {q || statusFilter !== 'all' ? t('reports_no_match') : t('reports_none_yet')}
             </h3>
             <p className="text-[13px] text-[#9AA39C]">
@@ -200,7 +200,7 @@ export function ReportsPage() {
                           conditions={parkHazards.map((h) => h.tag)}
                         />
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#F2F5F2] truncate">
+                          <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#E6EBE6] truncate">
                             {parkTitle}
                           </h3>
                           <p className="text-[13px] text-[#9AA39C] truncate">
@@ -258,7 +258,7 @@ export function ReportsPage() {
                                   className="mt-0.5"
                                 />
                                 <div className="flex-1 min-w-0">
-                                  <h4 className="text-[14px] font-bold tracking-[-0.2px] text-[#F2F5F2] truncate">
+                                  <h4 className="text-[14px] font-bold tracking-[-0.2px] text-[#E6EBE6] truncate">
                                     {trailName}
                                   </h4>
                                   <p className="text-[12px] text-[#8B958C]">

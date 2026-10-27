@@ -19,7 +19,7 @@ export function BackButton({ to, className, ariaLabel = 'Back' }: BackButtonProp
       )}
       aria-label={ariaLabel}
     >
-      <ChevronLeft className="size-[18px] text-[#F2F5F2]" strokeWidth={1.65} />
+      <ChevronLeft className="size-[18px] text-[#E6EBE6]" strokeWidth={1.65} />
     </button>
   );
 }

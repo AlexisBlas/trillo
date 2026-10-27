@@ -30,12 +30,12 @@ export function TrailCard({ report }: TrailCardProps) {
 
   return (
     <Link to={`/trails/${trails.id}`}>
-      <div className="bg-[#151C18] rounded-[16px] border-[1.5px] border-[#24302A] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#5EE08A] transition-colors">
+      <div className="bg-[#151C18] rounded-[16px] border-[1.5px] border-[#24302A] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#63B882] transition-colors">
         <div className="p-[15.5px] flex items-center gap-3.5">
           <StatusWithHazards status={status} reported conditions={conditions} />
 
           <div className="flex-1 min-w-0">
-            <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#F2F5F2] truncate mb-0.5">
+            <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#E6EBE6] truncate mb-0.5">
               {trails.name}
             </h3>
             <p className="text-[13px] text-[#9AA39C] truncate mb-0.5">

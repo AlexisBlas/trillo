@@ -2,9 +2,9 @@ import { cn } from '../ui/utils';
 import { useLang } from '../../contexts/LangContext';
 
 const statusConfig = {
-  green: { bg: '#12352a', text: '#5ee08a', labelKey: 'reports_filter_good' as const },
-  yellow: { bg: '#3a2e12', text: '#fbbf24', labelKey: 'reports_filter_caution' as const },
-  red: { bg: '#3a1616', text: '#f87171', labelKey: 'reports_filter_closed' as const },
+  green: { bg: '#12352a', text: '#63b882', labelKey: 'reports_filter_good' as const },
+  yellow: { bg: '#3a2e12', text: '#C9A84A', labelKey: 'reports_filter_caution' as const },
+  red: { bg: '#3a1616', text: '#C97A7A', labelKey: 'reports_filter_closed' as const },
 };
 
 interface StatusBadgeProps {

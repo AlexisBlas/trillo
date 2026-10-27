@@ -41,20 +41,20 @@ export function ErrorPage() {
         <p className="mb-2 text-[11px] font-bold tracking-[1.4px] uppercase text-[#8B958C]">
           {code}
         </p>
-        <h1 className="mb-3 text-[24px] font-bold text-[#F2F5F2]">{title}</h1>
+        <h1 className="mb-3 text-[24px] font-bold text-[#E6EBE6]">{title}</h1>
         <p className="mb-8 text-[15px] leading-relaxed text-[#A8C4A0]">{message}</p>
 
         <div className="flex flex-col gap-2.5 w-full">
           <button
             onClick={() => navigate('/')}
-            className="h-12 w-full inline-flex items-center justify-center gap-2 rounded-[14px] bg-[#5EE08A] text-[#0E1510] text-[15px] font-bold hover:bg-[#4ADE80] transition-colors"
+            className="h-12 w-full inline-flex items-center justify-center gap-2 rounded-[14px] bg-[#63B882] text-[#0E1510] text-[15px] font-bold hover:bg-[#52A06E] transition-colors"
           >
             <Home className="size-[18px]" />
             Back to Home
           </button>
           <button
             onClick={() => window.location.reload()}
-            className="h-12 w-full inline-flex items-center justify-center gap-2 rounded-[14px] border-[1.5px] border-[#24302A] bg-[#151C18] text-[#F2F5F2] text-[15px] font-bold hover:border-[#5EE08A] transition-colors"
+            className="h-12 w-full inline-flex items-center justify-center gap-2 rounded-[14px] border-[1.5px] border-[#24302A] bg-[#151C18] text-[#E6EBE6] text-[15px] font-bold hover:border-[#63B882] transition-colors"
           >
             <RotateCcw className="size-[18px]" />
             Try Again

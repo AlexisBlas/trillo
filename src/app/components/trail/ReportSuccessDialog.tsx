@@ -52,7 +52,7 @@ export function ReportSuccessDialog({
           <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-[#d1fae5] border border-[#065f46]">
             <Check className="size-8 text-[#065f46]" strokeWidth={2.6} />
           </div>
-          <DialogTitle className="text-[19px] font-bold text-[#F2F5F2]">
+          <DialogTitle className="text-[19px] font-bold text-[#E6EBE6]">
             {title}
           </DialogTitle>
           <DialogDescription className="text-[14px] leading-relaxed text-[#A8C4A0] pt-1.5">
@@ -63,7 +63,7 @@ export function ReportSuccessDialog({
         <div className="mt-5 flex flex-col gap-2.5">
           <button
             onClick={onAction}
-            className="h-12 w-full inline-flex items-center justify-center rounded-[14px] bg-[#5EE08A] text-[#0E1510] text-[15px] font-bold hover:bg-[#4ADE80] transition-colors"
+            className="h-12 w-full inline-flex items-center justify-center rounded-[14px] bg-[#63B882] text-[#0E1510] text-[15px] font-bold hover:bg-[#52A06E] transition-colors"
           >
             {actionLabel}
           </button>

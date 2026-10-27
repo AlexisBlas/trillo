@@ -21,7 +21,7 @@ export function OverallRatingLabel({
   if (!rating) return null;
   return (
     <span className={className}>
-      {t('report_overall')}: <span className="font-bold text-[#F2F5F2]">{t(RATING_KEY[rating])}</span>
+      {t('report_overall')}: <span className="font-bold text-[#E6EBE6]">{t(RATING_KEY[rating])}</span>
     </span>
   );
 }

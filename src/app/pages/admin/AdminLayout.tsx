@@ -30,8 +30,8 @@ export function AdminLayout() {
       <aside className="w-[240px] shrink-0 flex flex-col bg-[#151C18] min-h-screen sticky top-0 border-r border-[#24302A]">
         {/* Logo */}
         <div className="px-6 h-[64px] flex items-center border-b border-[#24302A]">
-          <span className="font-bold text-[13px] tracking-[3px] text-[#F2F5F2]">TRILLO</span>
-          <span className="ml-2 text-[10px] font-bold tracking-[1px] text-[#5EE08A] bg-[#5EE08A]/10 px-1.5 py-0.5 rounded-[4px]">
+          <span className="font-bold text-[13px] tracking-[3px] text-[#E6EBE6]">TRILLO</span>
+          <span className="ml-2 text-[10px] font-bold tracking-[1px] text-[#63B882] bg-[#63B882]/10 px-1.5 py-0.5 rounded-[4px]">
             ADMIN
           </span>
         </div>
@@ -47,15 +47,15 @@ export function AdminLayout() {
                 cn(
                   'flex items-center gap-3 px-3 h-10 rounded-[10px] text-[13.5px] font-medium transition-colors',
                   isActive
-                    ? 'bg-[#5EE08A] text-[#0E1510] font-bold'
-                    : 'text-[#9AA39C] hover:text-[#F2F5F2] hover:bg-[#1A221C]'
+                    ? 'bg-[#63B882] text-[#0E1510] font-bold'
+                    : 'text-[#9AA39C] hover:text-[#E6EBE6] hover:bg-[#1A221C]'
                 )
               }
             >
               <Icon className="size-4 shrink-0" />
               <span className="flex-1">{label}</span>
               {label === 'Requests' && openRequestCount > 0 && (
-                <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-[#ef4444] text-white text-[11px] font-bold flex items-center justify-center">
+                <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-[#C96B6B] text-white text-[11px] font-bold flex items-center justify-center">
                   {openRequestCount > 99 ? '99+' : openRequestCount}
                 </span>
               )}
@@ -70,7 +70,7 @@ export function AdminLayout() {
           </div>
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-3 px-3 h-10 w-full rounded-[10px] text-[13.5px] font-medium text-[#9AA39C] hover:text-[#F2F5F2] hover:bg-[#1A221C] transition-colors"
+            className="flex items-center gap-3 px-3 h-10 w-full rounded-[10px] text-[13.5px] font-medium text-[#9AA39C] hover:text-[#E6EBE6] hover:bg-[#1A221C] transition-colors"
           >
             <LogOut className="size-4 shrink-0" />
             Sign out

@@ -76,7 +76,7 @@ export function ReportPage() {
     <div className="min-h-screen bg-[#0E1510]">
       <div className="relative px-4 pt-3.5 h-[52px] flex items-center">
         <BackButton />
-        <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-[#F2F5F2]">
+        <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-[#E6EBE6]">
           {t('report_conditions')}
         </h1>
       </div>
@@ -84,10 +84,10 @@ export function ReportPage() {
       <div className="px-4 pt-6">
         <div className="bg-[#151C18] rounded-[14px] border-[1.5px] border-[#24302A] p-4 mb-5 flex items-center gap-3">
           <div className="size-10 rounded-full bg-[#24302A] flex items-center justify-center shrink-0">
-            <MapPin className="size-5 text-[#5EE08A]" />
+            <MapPin className="size-5 text-[#63B882]" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[15px] font-bold text-[#F2F5F2]">{trail.name}</p>
+            <p className="text-[15px] font-bold text-[#E6EBE6]">{trail.name}</p>
             <p className="text-[13px] text-[#9AA39C]">{trail.location || 'Trail location'}</p>
           </div>
         </div>
@@ -97,11 +97,11 @@ export function ReportPage() {
         {!user && (
           <Link
             to="/auth/signup"
-            className="mt-4 mb-8 flex items-start gap-3 bg-[#151C18] border-[1.5px] border-[#24302A] rounded-[16px] p-4 hover:border-[#5EE08A] transition-colors"
+            className="mt-4 mb-8 flex items-start gap-3 bg-[#151C18] border-[1.5px] border-[#24302A] rounded-[16px] p-4 hover:border-[#63B882] transition-colors"
           >
-            <UserCircle className="size-5 text-[#5EE08A] shrink-0 mt-0.5" />
+            <UserCircle className="size-5 text-[#63B882] shrink-0 mt-0.5" />
             <div>
-              <p className="text-[13px] font-bold text-[#F2F5F2]">{t('account_benefits_title')}</p>
+              <p className="text-[13px] font-bold text-[#E6EBE6]">{t('account_benefits_title')}</p>
               <p className="text-[12px] text-[#A8C4A0] mt-0.5 leading-relaxed">{t('account_benefits_body')}</p>
             </div>
           </Link>

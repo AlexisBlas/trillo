@@ -64,11 +64,11 @@ export function AdminRequestsPage() {
     <div className="p-8">
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-[24px] font-bold text-[#F2F5F2] flex items-center gap-2.5">
-            <Bell className="size-5 text-[#5EE08A]" />
+          <h1 className="text-[24px] font-bold text-[#E6EBE6] flex items-center gap-2.5">
+            <Bell className="size-5 text-[#63B882]" />
             Requests
             {openCount > 0 && (
-              <span className="text-[12px] font-bold bg-[#ef4444] text-white px-2 py-0.5 rounded-full">
+              <span className="text-[12px] font-bold bg-[#C96B6B] text-white px-2 py-0.5 rounded-full">
                 {openCount} open
               </span>
             )}
@@ -92,8 +92,8 @@ export function AdminRequestsPage() {
             className={cn(
               'h-9 px-3.5 rounded-[10px] text-[13px] font-bold border-[1.5px] transition-colors',
               filter === opt.value
-                ? 'bg-[#5EE08A] text-[#0E1510] border-[#5EE08A]'
-                : 'bg-[#151C18] text-[#9AA39C] border-[#24302A] hover:border-[#5EE08A]'
+                ? 'bg-[#63B882] text-[#0E1510] border-[#63B882]'
+                : 'bg-[#151C18] text-[#9AA39C] border-[#24302A] hover:border-[#63B882]'
             )}
           >
             {opt.label}
@@ -138,7 +138,7 @@ export function AdminRequestsPage() {
                     </span>
                   )}
                 </div>
-                <p className="text-[16px] font-bold text-[#F2F5F2] mt-1.5">{req.name}</p>
+                <p className="text-[16px] font-bold text-[#E6EBE6] mt-1.5">{req.name}</p>
                 {req.details && (
                   <p className="text-[13px] text-[#9AA39C] mt-1 leading-[19px]">{req.details}</p>
                 )}
@@ -151,7 +151,7 @@ export function AdminRequestsPage() {
               <div className="flex items-center gap-2 shrink-0 flex-wrap">
                 <button
                   onClick={() => goAddFromRequest(req)}
-                  className="h-9 px-3 rounded-[10px] text-[12px] font-bold border-[1.5px] border-[#5EE08A] text-[#5EE08A] bg-[#151C18] flex items-center gap-1.5 hover:bg-[#24302A]"
+                  className="h-9 px-3 rounded-[10px] text-[12px] font-bold border-[1.5px] border-[#63B882] text-[#63B882] bg-[#151C18] flex items-center gap-1.5 hover:bg-[#24302A]"
                 >
                   <Plus className="size-3.5" />
                   {req.kind === 'park' ? 'Add park' : 'Add trail'}
@@ -160,7 +160,7 @@ export function AdminRequestsPage() {
                   <>
                     <button
                       onClick={() => setStatus(req, 'done')}
-                      className="h-9 px-3 rounded-[10px] text-[12px] font-bold bg-[#5EE08A] text-[#0E1510] flex items-center gap-1.5"
+                      className="h-9 px-3 rounded-[10px] text-[12px] font-bold bg-[#63B882] text-[#0E1510] flex items-center gap-1.5"
                     >
                       <Check className="size-3.5" />
                       Done

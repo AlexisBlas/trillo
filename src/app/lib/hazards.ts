@@ -4,7 +4,7 @@ import type { TranslationKey } from '../contexts/LangContext';
 /** Shared palette for hazard callouts / badges. */
 export const HAZARD_COLORS = {
   ink: '#F5E6C8',
-  iconBg: '#D97706',
+  iconBg: '#C08640',
   iconFg: '#ffffff',
   cardBg: '#1C1A14',
   cardBorder: '#3D3428',

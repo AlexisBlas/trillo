@@ -49,7 +49,7 @@ function EditModal({ report, onClose }: { report: AdminReport; onClose: () => vo
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-[16px] font-bold text-[#F2F5F2]">Edit Report</h2>
+          <h2 className="text-[16px] font-bold text-[#E6EBE6]">Edit Report</h2>
           <button onClick={onClose} className="size-7 flex items-center justify-center rounded-full hover:bg-[#24302A]">
             <X className="size-4 text-[#8B958C]" />
           </button>
@@ -69,7 +69,7 @@ function EditModal({ report, onClose }: { report: AdminReport; onClose: () => vo
                     ? s === 'green' ? 'bg-green-600 text-white border-green-600'
                       : s === 'yellow' ? 'bg-yellow-500 text-white border-yellow-500'
                       : 'bg-red-500 text-white border-red-500'
-                    : 'bg-[#151C18] text-[#9AA39C] border-[#24302A] hover:border-[#5EE08A]'
+                    : 'bg-[#151C18] text-[#9AA39C] border-[#24302A] hover:border-[#63B882]'
                 )}
               >
                 {STATUS_LABELS[s]}
@@ -100,7 +100,7 @@ function EditModal({ report, onClose }: { report: AdminReport; onClose: () => vo
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={3}
-            className="w-full border border-[#24302A] rounded-[10px] px-3 py-2.5 text-[13px] text-[#F2F5F2] resize-none focus:outline-none"
+            className="w-full border border-[#24302A] rounded-[10px] px-3 py-2.5 text-[13px] text-[#E6EBE6] resize-none focus:outline-none"
           />
         </div>
 
@@ -111,7 +111,7 @@ function EditModal({ report, onClose }: { report: AdminReport; onClose: () => vo
           <button
             onClick={handleSave}
             disabled={update.isPending}
-            className="flex-1 h-10 rounded-[10px] bg-[#5EE08A] text-[#0E1510] text-[13px] font-bold hover:bg-[#4ADE80] disabled:opacity-50"
+            className="flex-1 h-10 rounded-[10px] bg-[#63B882] text-[#0E1510] text-[13px] font-bold hover:bg-[#52A06E] disabled:opacity-50"
           >
             {update.isPending ? 'Saving…' : 'Save'}
           </button>
@@ -130,7 +130,7 @@ function DeleteAllModal({ count, onClose }: { count: number; onClose: () => void
         <div className="size-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
           <AlertTriangle className="size-6 text-red-500" />
         </div>
-        <h2 className="text-[16px] font-bold text-[#F2F5F2] text-center mb-2">Delete all reports</h2>
+        <h2 className="text-[16px] font-bold text-[#E6EBE6] text-center mb-2">Delete all reports</h2>
         <p className="text-[13px] text-[#9AA39C] text-center">
           Permanently delete <strong>{count}</strong> {count === 1 ? 'report' : 'reports'}? They will disappear from the map and this cannot be undone.
         </p>
@@ -168,7 +168,7 @@ function DeleteModal({ report, onClose }: { report: AdminReport; onClose: () => 
         <div className="size-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
           <AlertTriangle className="size-6 text-red-500" />
         </div>
-        <h2 className="text-[16px] font-bold text-[#F2F5F2] text-center mb-2">Delete Report</h2>
+        <h2 className="text-[16px] font-bold text-[#E6EBE6] text-center mb-2">Delete Report</h2>
         <p className="text-[13px] text-[#9AA39C] text-center">
           Delete this <strong>{report.status}</strong> report on <strong>{report.trail_name}</strong>?
         </p>
@@ -228,7 +228,7 @@ export function AdminReportsPage() {
     <div className="p-8">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-[24px] font-bold text-[#F2F5F2]">Reports</h1>
+          <h1 className="text-[24px] font-bold text-[#E6EBE6]">Reports</h1>
           <p className="text-[14px] text-[#8B958C] mt-1">{totalReports} total</p>
         </div>
         <div className="flex gap-2">
@@ -284,7 +284,7 @@ export function AdminReportsPage() {
             className={cn('grid grid-cols-[1fr_1fr_80px_120px_80px] px-5 py-3 items-center', i < pageItems.length - 1 && 'border-b border-[#24302A]')}
           >
             <div className="min-w-0 pr-3">
-              <p className="text-[13px] font-semibold text-[#F2F5F2] truncate">{report.trail_name}</p>
+              <p className="text-[13px] font-semibold text-[#E6EBE6] truncate">{report.trail_name}</p>
               <p className="text-[11px] text-[#8B958C] truncate">
                 {report.trail_id ? (report.trail_location ?? '—') : 'Park overview'}
               </p>
@@ -303,7 +303,7 @@ export function AdminReportsPage() {
             <div className="flex justify-end gap-1.5">
               <button
                 onClick={() => setEditing(report)}
-                className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#24302A] text-[#8B958C] hover:text-[#5EE08A] transition-colors"
+                className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#24302A] text-[#8B958C] hover:text-[#63B882] transition-colors"
               >
                 <Pencil className="size-3.5" />
               </button>

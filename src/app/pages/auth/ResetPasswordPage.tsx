@@ -128,7 +128,7 @@ export function ResetPasswordPage() {
         <div className="size-12 rounded-full bg-[#1E3A28] flex items-center justify-center mb-4">
           <Lock className="size-6 text-white" />
         </div>
-        <h1 className="text-[24px] font-bold text-[#F2F5F2] leading-tight">
+        <h1 className="text-[24px] font-bold text-[#E6EBE6] leading-tight">
           {t('reset_password_title')}
         </h1>
         <p className="text-[14px] text-[#A8C4A0] mt-1">{t('reset_password_subtitle')}</p>
@@ -137,8 +137,8 @@ export function ResetPasswordPage() {
       <div className="px-5 pb-8 flex-1">
         {done ? (
           <div className="bg-[#151C18] border-[1.5px] border-[#24302A] rounded-[16px] p-6 text-center">
-            <CheckCircle className="size-10 text-[#5EE08A] mx-auto mb-3" />
-            <p className="text-[15px] font-bold text-[#F2F5F2]">{t('password_updated')}</p>
+            <CheckCircle className="size-10 text-[#63B882] mx-auto mb-3" />
+            <p className="text-[15px] font-bold text-[#E6EBE6]">{t('password_updated')}</p>
             <p className="text-[13px] text-[#8B958C] mt-1">{t('redirecting')}</p>
           </div>
         ) : linkError && !ready ? (
@@ -146,13 +146,13 @@ export function ResetPasswordPage() {
             <div className="size-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-3">
               <AlertTriangle className="size-6 text-amber-600" />
             </div>
-            <p className="text-[15px] font-bold text-[#F2F5F2]">{t('reset_link_invalid_title')}</p>
+            <p className="text-[15px] font-bold text-[#E6EBE6]">{t('reset_link_invalid_title')}</p>
             <p className="text-[13px] text-[#9AA39C] mt-2 leading-relaxed">
               {t('reset_link_invalid_body')}
             </p>
             <Link
               to="/auth/forgot-password"
-              className="mt-5 inline-flex h-11 items-center justify-center px-4 rounded-[12px] bg-[#5EE08A] text-[#0E1510] text-[13px] font-bold"
+              className="mt-5 inline-flex h-11 items-center justify-center px-4 rounded-[12px] bg-[#63B882] text-[#0E1510] text-[13px] font-bold"
             >
               {t('reset_request_new_link')}
             </Link>
@@ -192,14 +192,14 @@ export function ResetPasswordPage() {
                     key === 'password' ? setPassword(e.target.value) : setConfirm(e.target.value)
                   }
                   placeholder={placeholder}
-                  className="w-full h-[48px] border-[1.5px] border-[#24302A] rounded-[12px] px-4 text-[15px] text-[#F2F5F2] bg-[#151C18] focus:outline-none focus:border-[#5EE08A]"
+                  className="w-full h-[48px] border-[1.5px] border-[#24302A] rounded-[12px] px-4 text-[15px] text-[#E6EBE6] bg-[#151C18] focus:outline-none focus:border-[#63B882]"
                 />
               </div>
             ))}
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-[48px] bg-[#5EE08A] rounded-[12px] text-[#0E1510] text-[14px] font-bold disabled:opacity-50"
+              className="w-full h-[48px] bg-[#63B882] rounded-[12px] text-[#0E1510] text-[14px] font-bold disabled:opacity-50"
             >
               {loading ? t('saving') : t('update_password')}
             </button>

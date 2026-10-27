@@ -73,7 +73,7 @@ export function AdminTablePagination({
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1}
           aria-label="Previous page"
-          className="size-8 flex items-center justify-center rounded-[8px] border border-[#24302A] bg-[#151C18] text-[#9AA39C] hover:border-[#5EE08A] hover:text-[#5EE08A] disabled:opacity-40 disabled:hover:border-[#24302A] disabled:hover:text-[#9AA39C] transition-colors"
+          className="size-8 flex items-center justify-center rounded-[8px] border border-[#24302A] bg-[#151C18] text-[#9AA39C] hover:border-[#63B882] hover:text-[#63B882] disabled:opacity-40 disabled:hover:border-[#24302A] disabled:hover:text-[#9AA39C] transition-colors"
         >
           <ChevronLeft className="size-4" />
         </button>
@@ -85,7 +85,7 @@ export function AdminTablePagination({
           onClick={() => onPageChange(page + 1)}
           disabled={page >= pageCount}
           aria-label="Next page"
-          className="size-8 flex items-center justify-center rounded-[8px] border border-[#24302A] bg-[#151C18] text-[#9AA39C] hover:border-[#5EE08A] hover:text-[#5EE08A] disabled:opacity-40 disabled:hover:border-[#24302A] disabled:hover:text-[#9AA39C] transition-colors"
+          className="size-8 flex items-center justify-center rounded-[8px] border border-[#24302A] bg-[#151C18] text-[#9AA39C] hover:border-[#63B882] hover:text-[#63B882] disabled:opacity-40 disabled:hover:border-[#24302A] disabled:hover:text-[#9AA39C] transition-colors"
         >
           <ChevronRight className="size-4" />
         </button>

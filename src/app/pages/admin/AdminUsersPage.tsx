@@ -30,9 +30,9 @@ function ConfirmModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
       <div className="bg-[#151C18] rounded-[20px] p-6 w-full max-w-sm shadow-xl" onClick={(e) => e.stopPropagation()}>
         <div className={`size-12 rounded-full flex items-center justify-center mx-auto mb-4 ${danger ? 'bg-red-50' : 'bg-[#24302A]'}`}>
-          <AlertTriangle className={`size-6 ${danger ? 'text-red-500' : 'text-[#5EE08A]'}`} />
+          <AlertTriangle className={`size-6 ${danger ? 'text-red-500' : 'text-[#63B882]'}`} />
         </div>
-        <h2 className="text-[16px] font-bold text-[#F2F5F2] text-center mb-2">{title}</h2>
+        <h2 className="text-[16px] font-bold text-[#E6EBE6] text-center mb-2">{title}</h2>
         <p className="text-[13px] text-[#9AA39C] text-center leading-relaxed">{description}</p>
         <div className="flex gap-2 mt-5">
           <button onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#24302A] text-[13px] font-bold text-[#9AA39C] hover:bg-[#24302A]">
@@ -40,7 +40,7 @@ function ConfirmModal({
           </button>
           <button
             onClick={onConfirm}
-            className={`flex-1 h-10 rounded-[10px] text-white text-[13px] font-bold ${danger ? 'bg-red-500 hover:bg-red-600' : 'bg-[#5EE08A] hover:bg-[#4ADE80]'}`}
+            className={`flex-1 h-10 rounded-[10px] text-white text-[13px] font-bold ${danger ? 'bg-red-500 hover:bg-red-600' : 'bg-[#63B882] hover:bg-[#52A06E]'}`}
           >
             {confirmLabel}
           </button>
@@ -140,7 +140,7 @@ export function AdminUsersPage() {
     <div className="p-8">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-[24px] font-bold text-[#F2F5F2]">Users</h1>
+          <h1 className="text-[24px] font-bold text-[#E6EBE6]">Users</h1>
           <p className="text-[14px] text-[#8B958C] mt-1">{users?.length ?? 0} registered</p>
         </div>
         <input
@@ -175,10 +175,10 @@ export function AdminUsersPage() {
               className={`grid grid-cols-[1fr_80px_80px_148px] px-5 py-3.5 items-center ${i !== pageItems.length - 1 ? 'border-b border-[#24302A]' : ''} ${user.is_banned ? 'opacity-60' : ''}`}
             >
               <div className="min-w-0 pr-4">
-                <p className="text-[13.5px] font-semibold text-[#F2F5F2] truncate">{user.email ?? '—'}</p>
+                <p className="text-[13.5px] font-semibold text-[#E6EBE6] truncate">{user.email ?? '—'}</p>
                 <p className="text-[11px] text-[#8B958C] mt-0.5">
                   Joined {user.created_at ? format(new Date(user.created_at), 'MMM d, yyyy') : '—'}
-                  {isSelf && <span className="ml-1.5 text-[#5EE08A] font-bold">· you</span>}
+                  {isSelf && <span className="ml-1.5 text-[#63B882] font-bold">· you</span>}
                 </p>
               </div>
 
@@ -186,7 +186,7 @@ export function AdminUsersPage() {
 
               <div className="flex justify-center">
                 {user.is_admin ? (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#5EE08A] bg-[#5EE08A]/10 px-2 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#63B882] bg-[#63B882]/10 px-2 py-0.5 rounded-full">
                     <Shield className="size-3" /> Admin
                   </span>
                 ) : user.is_banned ? (
@@ -230,7 +230,7 @@ export function AdminUsersPage() {
                       <button
                         onClick={() => setPending({ type: 'promote', user })}
                         title="Grant admin"
-                        className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#24302A] text-[#8B958C] hover:text-[#5EE08A] transition-colors"
+                        className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#24302A] text-[#8B958C] hover:text-[#63B882] transition-colors"
                       >
                         <Shield className="size-3.5" />
                       </button>

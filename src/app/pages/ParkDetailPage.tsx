@@ -229,7 +229,7 @@ export function ParkDetailPage() {
     <div className="min-h-screen bg-[#0E1510]">
       <div className="sticky top-0 z-40 bg-[#0E1510]/95 backdrop-blur-sm px-4 pt-3.5 h-[52px] flex items-center justify-between">
         <BackButton />
-        <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-[#F2F5F2] truncate max-w-[55%] text-center">
+        <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-[#E6EBE6] truncate max-w-[55%] text-center">
           {decoded}
         </h1>
         <ShareButton
@@ -272,7 +272,7 @@ export function ParkDetailPage() {
         </p>
         <div className="mt-1 flex items-start justify-between gap-3">
           <div className="min-w-0 flex items-start gap-2">
-            <h2 className="text-[28px] font-bold text-[#F2F5F2] leading-[32px] tracking-[-0.6px] text-balance min-w-0">
+            <h2 className="text-[28px] font-bold text-[#E6EBE6] leading-[32px] tracking-[-0.6px] text-balance min-w-0">
               {decoded}
             </h2>
             {isParkNew(parkMeta?.created_at) && (
@@ -296,7 +296,7 @@ export function ParkDetailPage() {
               <button
                 type="button"
                 onClick={() => setDescExpanded((v) => !v)}
-                className="mt-1.5 text-[13px] font-bold text-[#5EE08A] hover:text-[#4ADE80] transition-colors"
+                className="mt-1.5 text-[13px] font-bold text-[#63B882] hover:text-[#52A06E] transition-colors"
               >
                 {descExpanded ? t('park_show_less') : t('park_show_more')}
               </button>
@@ -322,7 +322,7 @@ export function ParkDetailPage() {
                 />
                 <p
                   className="text-[clamp(1.75rem,8.2vw,2.75rem)] font-bold tracking-[-1.2px] leading-none whitespace-nowrap"
-                  style={{ color: statusText ?? '#F2F5F2' }}
+                  style={{ color: statusText ?? '#E6EBE6' }}
                 >
                   {effectiveStatus ? t(STATUS_LABEL[effectiveStatus]) : '—'}
                 </p>
@@ -340,7 +340,7 @@ export function ParkDetailPage() {
                   <p className="text-[13px] font-normal text-[#6b7280] leading-none">
                     {updateMeta.label}
                   </p>
-                  <p className="mt-1.5 text-[18px] sm:text-[20px] font-bold tracking-[-0.4px] text-[#F2F5F2] leading-none tabular-nums whitespace-nowrap">
+                  <p className="mt-1.5 text-[18px] sm:text-[20px] font-bold tracking-[-0.4px] text-[#E6EBE6] leading-none tabular-nums whitespace-nowrap">
                     {updateMeta.value}
                   </p>
                 </div>
@@ -373,7 +373,7 @@ export function ParkDetailPage() {
           <button
             onClick={handleReport}
             disabled={parkTrails.length === 0}
-            className="w-full h-[52px] bg-[#5EE08A] rounded-[14px] text-[#0E1510] text-[13px] font-bold tracking-[1.5px] disabled:opacity-60 active:scale-[0.99] transition-transform"
+            className="w-full h-[52px] bg-[#63B882] rounded-[14px] text-[#0E1510] text-[13px] font-bold tracking-[1.5px] disabled:opacity-60 active:scale-[0.99] transition-transform"
           >
             {t('park_report_btn')}
           </button>
@@ -383,9 +383,9 @@ export function ParkDetailPage() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t('park_directions_aria').replace('{name}', decoded)}
-              className="w-full h-[52px] inline-flex items-center justify-center gap-2 rounded-[14px] border border-[#24302A] bg-[#151C18] text-[#F2F5F2] text-[13px] font-bold tracking-[1.5px] hover:border-[#5EE08A]/50 active:scale-[0.99] transition-[transform,border-color]"
+              className="w-full h-[52px] inline-flex items-center justify-center gap-2 rounded-[14px] border border-[#24302A] bg-[#151C18] text-[#E6EBE6] text-[13px] font-bold tracking-[1.5px] hover:border-[#63B882]/50 active:scale-[0.99] transition-[transform,border-color]"
             >
-              <Navigation className="size-4 text-[#5EE08A]" strokeWidth={2.5} aria-hidden />
+              <Navigation className="size-4 text-[#63B882]" strokeWidth={2.5} aria-hidden />
               {t('park_directions_btn')}
             </a>
           )}
@@ -412,7 +412,7 @@ export function ParkDetailPage() {
             <div className="size-12 rounded-full bg-[#24302A] flex items-center justify-center mx-auto mb-4">
               <Mountain className="size-6 text-[#9AA39C]" />
             </div>
-            <h3 className="text-[15.5px] font-bold text-[#F2F5F2] mb-2">{t('park_no_trails')}</h3>
+            <h3 className="text-[15.5px] font-bold text-[#E6EBE6] mb-2">{t('park_no_trails')}</h3>
             <p className="text-[13px] text-[#9AA39C]">{t('park_no_trails_body')}</p>
           </div>
         )}
@@ -426,7 +426,7 @@ export function ParkDetailPage() {
               className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left active:bg-[#1A221C] transition-colors"
             >
               <div className="min-w-0">
-                <p className="text-[15px] font-bold tracking-[-0.2px] text-[#F2F5F2]">
+                <p className="text-[15px] font-bold tracking-[-0.2px] text-[#E6EBE6]">
                   {t('park_trails_by_condition')}
                 </p>
                 <p className="text-[12px] text-[#8a8478] mt-0.5">
@@ -461,7 +461,7 @@ export function ParkDetailPage() {
                       key={trail.id}
                       type="button"
                       onClick={() => navigate(`/trails/${trail.id}`)}
-                      className="bg-[#1A221C] border border-[#24302A] hover:border-[#5EE08A]/40 transition-colors pl-3.5 pr-3.5 py-3 flex items-center gap-3 text-left rounded-[16px] active:scale-[0.99] overflow-visible"
+                      className="bg-[#1A221C] border border-[#24302A] hover:border-[#63B882]/40 transition-colors pl-3.5 pr-3.5 py-3 flex items-center gap-3 text-left rounded-[16px] active:scale-[0.99] overflow-visible"
                     >
                       <StatusWithHazards
                         status={status}
@@ -469,7 +469,7 @@ export function ParkDetailPage() {
                         conditions={hazardTags}
                       />
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-[15px] font-bold tracking-[-0.2px] text-[#F2F5F2] truncate">
+                        <h3 className="text-[15px] font-bold tracking-[-0.2px] text-[#E6EBE6] truncate">
                           {displayName}
                         </h3>
                         {trailSource === 'estimate' && (

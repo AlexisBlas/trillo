@@ -85,7 +85,7 @@ export function SuggestPlaceDialog({ open, onOpenChange }: SuggestPlaceDialogPro
       >
         <div className="overflow-y-auto overscroll-contain px-5 pb-5 pt-5">
           <DialogHeader className="space-y-1.5 text-left mb-4 pr-8">
-            <DialogTitle className="text-[18px] font-bold leading-snug text-[#F2F5F2]">
+            <DialogTitle className="text-[18px] font-bold leading-snug text-[#E6EBE6]">
               {t('suggest_title')}
             </DialogTitle>
             <DialogDescription className="text-[13.5px] leading-[20px] text-[#9AA39C]">
@@ -110,7 +110,7 @@ export function SuggestPlaceDialog({ open, onOpenChange }: SuggestPlaceDialogPro
                     className={cn(
                       'h-11 rounded-[14px] border-[1.5px] text-[14px] font-bold transition-colors',
                       kind === opt.value
-                        ? 'border-[#5EE08A] bg-[#5EE08A] text-[#0E1510]'
+                        ? 'border-[#63B882] bg-[#63B882] text-[#0E1510]'
                         : 'border-[#24302A] bg-[#151C18] text-[#9AA39C]'
                     )}
                   >
@@ -153,14 +153,14 @@ export function SuggestPlaceDialog({ open, onOpenChange }: SuggestPlaceDialogPro
                 placeholder={t('suggest_details_placeholder')}
                 rows={3}
                 disabled={submitting}
-                className="w-full max-w-full resize-none rounded-[14px] border-[1.5px] border-[#24302A] bg-[#151C18] px-3 py-2.5 text-[16px] text-[#F2F5F2] placeholder:text-[#9ca3af] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5EE08A]/30 disabled:opacity-60"
+                className="w-full max-w-full resize-none rounded-[14px] border-[1.5px] border-[#24302A] bg-[#151C18] px-3 py-2.5 text-[16px] text-[#E6EBE6] placeholder:text-[#9ca3af] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#63B882]/30 disabled:opacity-60"
               />
             </div>
 
             <button
               type="submit"
               disabled={submitting}
-              className="mt-1 flex min-h-[48px] w-full items-center justify-center rounded-[12px] bg-[#5EE08A] px-4 py-3 text-[13px] font-bold tracking-[1px] text-[#0E1510] transition-transform active:scale-[0.99] disabled:opacity-60"
+              className="mt-1 flex min-h-[48px] w-full items-center justify-center rounded-[12px] bg-[#63B882] px-4 py-3 text-[13px] font-bold tracking-[1px] text-[#0E1510] transition-transform active:scale-[0.99] disabled:opacity-60"
             >
               {submitting ? t('form_submitting') : t('suggest_submit')}
             </button>

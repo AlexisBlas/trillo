@@ -22,7 +22,7 @@ function StatCard({
         <Icon className="size-5" style={{ color: accent }} />
       </div>
       <div>
-        <p className="text-[28px] font-bold text-[#F2F5F2] leading-none">{value}</p>
+        <p className="text-[28px] font-bold text-[#E6EBE6] leading-none">{value}</p>
         <p className="text-[12px] text-[#8B958C] mt-1 font-medium">{label}</p>
       </div>
     </div>
@@ -37,7 +37,7 @@ export function AdminOverview() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-[24px] font-bold text-[#F2F5F2]">Overview</h1>
+        <h1 className="text-[24px] font-bold text-[#E6EBE6]">Overview</h1>
         <p className="text-[14px] text-[#8B958C] mt-1">Trillo admin dashboard</p>
       </div>
 
@@ -49,20 +49,20 @@ export function AdminOverview() {
         </div>
       ) : (
         <div className="grid grid-cols-2 xl:grid-cols-3 gap-4">
-          <StatCard label="Total Trails" value={stats?.trails ?? 0} icon={Trees} accent="#5EE08A" />
+          <StatCard label="Total Trails" value={stats?.trails ?? 0} icon={Trees} accent="#63B882" />
           <StatCard label="Parks" value={stats?.parks ?? 0} icon={Map} accent="#065F46" />
           <StatCard label="Total Reports" value={stats?.reports ?? 0} icon={FileText} accent="#b45309" />
           <StatCard label="Active Reports" value={stats?.activeReports ?? 0} icon={Activity} accent="#16a34a" />
           <StatCard label="Registered Users" value={stats?.users ?? 0} icon={Users} accent="#6366f1" />
-          <StatCard label="Open Requests" value={openRequests.length} icon={Bell} accent="#ef4444" />
+          <StatCard label="Open Requests" value={openRequests.length} icon={Bell} accent="#C96B6B" />
         </div>
       )}
 
       {openRequests.length > 0 && (
         <div className="mt-8">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[14px] font-bold text-[#F2F5F2]">New place requests</h2>
-            <Link to="/admin/requests" className="text-[13px] font-bold text-[#5EE08A]">
+            <h2 className="text-[14px] font-bold text-[#E6EBE6]">New place requests</h2>
+            <Link to="/admin/requests" className="text-[13px] font-bold text-[#63B882]">
               View all
             </Link>
           </div>
@@ -71,11 +71,11 @@ export function AdminOverview() {
               <Link
                 key={req.id}
                 to="/admin/requests"
-                className="bg-[#151C18] rounded-[14px] border border-[#24302A] px-4 py-3.5 flex items-center gap-3 hover:border-[#5EE08A]/40 transition-colors"
+                className="bg-[#151C18] rounded-[14px] border border-[#24302A] px-4 py-3.5 flex items-center gap-3 hover:border-[#63B882]/40 transition-colors"
               >
-                <span className="size-2 rounded-full bg-[#ef4444] shrink-0" />
+                <span className="size-2 rounded-full bg-[#C96B6B] shrink-0" />
                 <div className="min-w-0 flex-1">
-                  <p className="text-[14px] font-bold text-[#F2F5F2] truncate">{req.name}</p>
+                  <p className="text-[14px] font-bold text-[#E6EBE6] truncate">{req.name}</p>
                   <p className="text-[12px] text-[#8B958C] capitalize">{req.kind} request</p>
                 </div>
               </Link>

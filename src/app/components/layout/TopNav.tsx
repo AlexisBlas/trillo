@@ -64,13 +64,13 @@ export function TopNav() {
           aria-label="Open menu"
           className="size-10 flex flex-col items-start justify-center gap-[5px] px-[9px] py-3"
         >
-          <div className="bg-[#F2F5F2] h-[2px] w-[22px] rounded-[1px]" />
-          <div className="bg-[#F2F5F2] h-[2px] w-4 rounded-[1px]" />
-          <div className="bg-[#F2F5F2] h-[2px] w-5 rounded-[1px]" />
+          <div className="bg-[#E6EBE6] h-[2px] w-[22px] rounded-[1px]" />
+          <div className="bg-[#E6EBE6] h-[2px] w-4 rounded-[1px]" />
+          <div className="bg-[#E6EBE6] h-[2px] w-5 rounded-[1px]" />
         </button>
 
         <Link to="/" className="flex items-center">
-          <h1 className="font-bold text-[14px] tracking-[3px] text-[#F2F5F2]">
+          <h1 className="font-bold text-[14px] tracking-[3px] text-[#E6EBE6]">
             TRILLO
           </h1>
         </Link>
@@ -80,11 +80,11 @@ export function TopNav() {
           aria-label={t('notif_open')}
           className="relative size-10 flex items-center justify-center"
         >
-          <Bell className="size-[22px] text-[#F2F5F2]" strokeWidth={1.83333} />
+          <Bell className="size-[22px] text-[#E6EBE6]" strokeWidth={1.83333} />
           {unreadCount > 0 && (
             <span
               className={cn(
-                'absolute top-1.5 right-1.5 size-2.5 rounded-full bg-[#ef4444] ring-2',
+                'absolute top-1.5 right-1.5 size-2.5 rounded-full bg-[#C96B6B] ring-2',
                 'ring-[#0E1510]'
               )}
               aria-hidden
@@ -124,13 +124,13 @@ export function TopNav() {
           >
             {/* Header */}
             <div className="flex items-center justify-between h-[60px] px-5 border-b border-[#24302A]">
-              <span className="font-bold text-[14px] tracking-[3px] text-[#F2F5F2]">TRILLO</span>
+              <span className="font-bold text-[14px] tracking-[3px] text-[#E6EBE6]">TRILLO</span>
               <button
                 onClick={() => setMenuOpen(false)}
                 aria-label="Close menu"
                 className="size-9 flex items-center justify-center rounded-full hover:bg-[#24302A] transition-colors"
               >
-                <X className="size-5 text-[#F2F5F2]" />
+                <X className="size-5 text-[#E6EBE6]" />
               </button>
             </div>
 
@@ -151,8 +151,8 @@ export function TopNav() {
                       className={cn(
                         'flex-1 h-11 rounded-[14px] text-[14px] font-bold transition-colors border-[1.5px]',
                         lang === value
-                          ? 'bg-[#5EE08A] text-[#0E1510] border-[#5EE08A]'
-                          : 'bg-[#151C18] text-[#9AA39C] border-[#24302A] hover:border-[#5EE08A]'
+                          ? 'bg-[#63B882] text-[#0E1510] border-[#63B882]'
+                          : 'bg-[#151C18] text-[#9AA39C] border-[#24302A] hover:border-[#63B882]'
                       )}
                     >
                       {label}
@@ -169,7 +169,7 @@ export function TopNav() {
                     <Link
                       to="/admin"
                       onClick={() => setMenuOpen(false)}
-                      className="flex items-center gap-3 w-full h-11 px-4 rounded-[14px] bg-[#5EE08A] text-[#0E1510] text-[14px] font-bold hover:bg-[#5EE08A] transition-colors"
+                      className="flex items-center gap-3 w-full h-11 px-4 rounded-[14px] bg-[#63B882] text-[#0E1510] text-[14px] font-bold hover:bg-[#63B882] transition-colors"
                     >
                       <LayoutDashboard className="size-4 shrink-0" />
                       Admin Dashboard
@@ -190,7 +190,7 @@ export function TopNav() {
                   </p>
                 </div>
                 <div className="bg-[#151C18] rounded-[16px] border-[1.5px] border-[#24302A] p-4">
-                  <p className="text-[13px] font-bold text-[#F2F5F2] mb-1">Trillo</p>
+                  <p className="text-[13px] font-bold text-[#E6EBE6] mb-1">Trillo</p>
                   <p className="text-[12px] text-[#9AA39C] leading-[18px]">
                     {t('about_description')}
                   </p>
@@ -208,7 +208,7 @@ export function TopNav() {
                   href="https://humbol.studio"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-bold text-[#5EE08A] underline underline-offset-2"
+                  className="font-bold text-[#63B882] underline underline-offset-2"
                 >
                   humbol.studio
                 </a>
@@ -230,13 +230,13 @@ export function TopNav() {
             className="fixed top-0 right-0 bottom-0 z-[60] w-[86vw] max-w-[360px] bg-[#0E1510] flex flex-col shadow-[-4px_0_32px_rgba(0,0,0,0.12)]"
           >
             <div className="flex items-center justify-between h-[60px] px-5 border-b border-[#24302A]">
-              <h2 className="text-[15px] font-bold text-[#F2F5F2]">{t('notif_title')}</h2>
+              <h2 className="text-[15px] font-bold text-[#E6EBE6]">{t('notif_title')}</h2>
               <button
                 onClick={() => setNotifOpen(false)}
                 aria-label="Close notifications"
                 className="size-9 flex items-center justify-center rounded-full hover:bg-[#24302A] transition-colors"
               >
-                <X className="size-5 text-[#F2F5F2]" />
+                <X className="size-5 text-[#E6EBE6]" />
               </button>
             </div>
 
@@ -271,7 +271,7 @@ export function TopNav() {
                         >
                           <div className="flex items-start justify-between gap-2">
                             <div className="min-w-0 flex-1">
-                              <p className="text-[14px] font-bold text-[#F2F5F2] truncate">
+                              <p className="text-[14px] font-bold text-[#E6EBE6] truncate">
                                 {displayName}
                               </p>
                               <p className="text-[12px] text-[#8B958C] truncate mt-0.5">
@@ -283,7 +283,7 @@ export function TopNav() {
                                 })}
                               </p>
                             </div>
-                            <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-[#D97706] text-white">
+                            <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-[#C08640] text-white">
                               {t('notif_new_trail_badge')}
                             </span>
                           </div>
@@ -325,7 +325,7 @@ export function TopNav() {
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0 flex-1">
-                            <p className="text-[14px] font-bold text-[#F2F5F2] truncate">
+                            <p className="text-[14px] font-bold text-[#E6EBE6] truncate">
                               {title}
                             </p>
                             <p className="text-[12px] text-[#8B958C] truncate mt-0.5">
@@ -356,7 +356,7 @@ export function TopNav() {
                   setNotifOpen(false);
                   navigate('/reports');
                 }}
-                className="mt-4 w-full h-11 rounded-[14px] text-[13px] font-bold text-[#5EE08A] border-[1.5px] border-[#24302A] bg-[#151C18]"
+                className="mt-4 w-full h-11 rounded-[14px] text-[13px] font-bold text-[#63B882] border-[1.5px] border-[#24302A] bg-[#151C18]"
               >
                 {t('notif_view_all')}
               </button>

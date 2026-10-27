@@ -132,7 +132,7 @@ export function Home() {
         key={park.name}
         type="button"
         onClick={() => navigate(`/parks/${encodeURIComponent(park.name)}`)}
-        className="bg-[#151C18] border-[1.5px] border-[#24302A] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#5EE08A] transition-colors p-[15.5px] flex items-center gap-3.5 text-left rounded-[32px]"
+        className="bg-[#151C18] border-[1.5px] border-[#24302A] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#63B882] transition-colors p-[15.5px] flex items-center gap-3.5 text-left rounded-[32px]"
       >
         <StatusWithHazards
           status={status}
@@ -141,7 +141,7 @@ export function Home() {
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 min-w-0">
-            <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#F2F5F2] truncate">
+            <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#E6EBE6] truncate">
               {park.name}
             </h3>
             {showNew && <NewParkBadge />}
@@ -186,7 +186,7 @@ export function Home() {
         />
         <div className="relative z-10 flex min-h-[200px] flex-col justify-end px-5 pb-6 pt-14 text-left">
           <p className="text-[13px] text-[#A8C4A0] mb-1.5">{getGreeting()}</p>
-          <h1 className="text-[36px] leading-[38px] font-bold tracking-[-2px] text-[#F2F5F2] mb-2">
+          <h1 className="text-[36px] leading-[38px] font-bold tracking-[-2px] text-[#E6EBE6] mb-2">
             {t('home_headline').split('\n').map((line, i) => (
               <span key={i}>
                 {line}
@@ -195,7 +195,7 @@ export function Home() {
             ))}
           </h1>
           <p className="text-[16px] text-[#9AA39C]">
-            <b className="text-[#5EE08A]">
+            <b className="text-[#63B882]">
               {freshReportCount} {freshReportCount === 1 ? t('home_report') : t('home_reports')}
             </b>{' '}
             {t('home_active_reports')}
@@ -244,7 +244,7 @@ export function Home() {
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1.5 min-w-0">
-                                <p className="text-[14px] font-bold text-[#F2F5F2] truncate">
+                                <p className="text-[14px] font-bold text-[#E6EBE6] truncate">
                                   {parkTitle}
                                 </p>
                                 {isParkNameNew(parksMeta, p.name) && <NewParkBadge />}
@@ -278,10 +278,10 @@ export function Home() {
                             className="w-full px-4 py-2.5 flex items-center gap-3 hover:bg-[#1A221C] text-left"
                           >
                             <div className="size-9 rounded-full bg-[#24302A] flex items-center justify-center shrink-0">
-                              <Mountain className="size-4 text-[#5EE08A]" />
+                              <Mountain className="size-4 text-[#63B882]" />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-[14px] font-bold text-[#F2F5F2] truncate">
+                              <p className="text-[14px] font-bold text-[#E6EBE6] truncate">
                                 {displayName}
                               </p>
                               <p className="text-[12px] text-[#9AA39C] truncate">
@@ -312,7 +312,7 @@ export function Home() {
             {!user ? (
               <button
                 type="button"
-                className="text-[13px] font-bold text-[#5EE08A]"
+                className="text-[13px] font-bold text-[#63B882]"
                 onClick={() =>
                   navigate('/auth/signin', { state: { redirectAfter: '/' } })
                 }
@@ -322,7 +322,7 @@ export function Home() {
             ) : followingParks.length > 2 ? (
               <button
                 type="button"
-                className="text-[13px] font-bold text-[#5EE08A]"
+                className="text-[13px] font-bold text-[#63B882]"
                 onClick={() => navigate('/search')}
               >
                 {t('home_see_all')}
@@ -360,7 +360,7 @@ export function Home() {
             {t('home_recently_reported')}
           </h2>
           <button
-            className="text-[13px] font-bold text-[#5EE08A]"
+            className="text-[13px] font-bold text-[#63B882]"
             onClick={() => navigate('/search')}
           >
             {t('home_see_all')}
@@ -388,15 +388,15 @@ export function Home() {
         {!isLoading && recentParks.length === 0 && !error && (
           <div className="bg-[#151C18] rounded-[16px] border-[1.5px] border-[#24302A] shadow-sm p-8 text-center">
             <div className="size-12 rounded-full bg-[#24302A] flex items-center justify-center mx-auto mb-4">
-              <Plus className="size-6 text-[#5EE08A]" />
+              <Plus className="size-6 text-[#63B882]" />
             </div>
-            <h3 className="text-[15.5px] font-bold text-[#F2F5F2] mb-2">{t('home_no_parks')}</h3>
+            <h3 className="text-[15.5px] font-bold text-[#E6EBE6] mb-2">{t('home_no_parks')}</h3>
             <p className="text-[13px] text-[#9AA39C] mb-6">
               {t('home_no_parks_body')}
             </p>
             <Button
               onClick={() => navigate('/search')}
-              className="bg-[#5EE08A] hover:bg-[#4ADE80] text-[#0E1510] rounded-[14px] h-11"
+              className="bg-[#63B882] hover:bg-[#52A06E] text-[#0E1510] rounded-[14px] h-11"
             >
               {t('home_browse')}
             </Button>
@@ -411,7 +411,7 @@ export function Home() {
 
         {!isLoading && (
           <div className="mt-6 pt-5 border-t border-[#24302A] min-w-0">
-            <p className="text-[15px] font-bold tracking-[-0.2px] text-[#F2F5F2] text-balance">
+            <p className="text-[15px] font-bold tracking-[-0.2px] text-[#E6EBE6] text-balance">
               {t('home_suggest_title')}
             </p>
             <p className="text-[13px] text-[#8B958C] mt-1 leading-[19px] text-pretty">
@@ -420,7 +420,7 @@ export function Home() {
             <button
               type="button"
               onClick={() => setSuggestOpen(true)}
-              className="mt-3.5 w-full min-h-[48px] h-auto py-3 px-4 rounded-[14px] border-[1.5px] border-[#5EE08A] text-[#5EE08A] text-[13px] font-bold tracking-[0.6px] leading-snug bg-[#151C18] active:scale-[0.99] transition-transform whitespace-normal text-center"
+              className="mt-3.5 w-full min-h-[48px] h-auto py-3 px-4 rounded-[14px] border-[1.5px] border-[#63B882] text-[#63B882] text-[13px] font-bold tracking-[0.6px] leading-snug bg-[#151C18] active:scale-[0.99] transition-transform whitespace-normal text-center"
             >
               {t('home_suggest_cta')}
             </button>

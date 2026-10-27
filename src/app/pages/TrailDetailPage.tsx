@@ -57,7 +57,7 @@ export function TrailDetailPage() {
           <AlertDescription>{t('trail_not_found')}</AlertDescription>
         </Alert>
         <button
-          className="mt-4 text-[#5EE08A] font-bold text-[13px]"
+          className="mt-4 text-[#63B882] font-bold text-[13px]"
           onClick={() => navigate('/search')}
         >
           {t('trail_back_to_search')}
@@ -83,7 +83,7 @@ export function TrailDetailPage() {
           <AlertDescription>{t('trail_not_found')}</AlertDescription>
         </Alert>
         <button
-          className="mt-4 text-[#5EE08A] font-bold text-[13px]"
+          className="mt-4 text-[#63B882] font-bold text-[13px]"
           onClick={() => navigate('/search')}
         >
           {t('trail_back_to_search')}
@@ -116,7 +116,7 @@ export function TrailDetailPage() {
       {/* Header: back + centered park name + share */}
       <div className="relative px-4 pt-3.5 h-[52px] flex items-center justify-between">
         <BackButton />
-        <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-[#F2F5F2] truncate max-w-[55%] text-center">
+        <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-[#E6EBE6] truncate max-w-[55%] text-center">
           {headerTitle}
         </h1>
         <ShareButton
@@ -147,7 +147,7 @@ export function TrailDetailPage() {
               <Mountain className="size-6 text-white opacity-85" />
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="text-[18px] font-bold tracking-[-0.3px] text-[#F2F5F2]">
+              <h2 className="text-[18px] font-bold tracking-[-0.3px] text-[#E6EBE6]">
                 {trailDisplayName}
               </h2>
               <p className="text-[13.5px] text-[#9AA39C]">
@@ -181,7 +181,7 @@ export function TrailDetailPage() {
 
           <button
             onClick={() => navigate(`/trails/${trail.id}/report`)}
-            className="mt-4 w-full h-[53px] bg-[#5EE08A] rounded-[14px] text-[#0E1510] text-[13px] font-bold tracking-[1.5px]"
+            className="mt-4 w-full h-[53px] bg-[#63B882] rounded-[14px] text-[#0E1510] text-[13px] font-bold tracking-[1.5px]"
           >
             {t('trail_report_conditions')}
           </button>
@@ -211,7 +211,7 @@ export function TrailDetailPage() {
           <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#9AA39C]">
             {t('trail_recent_reports')}
           </h2>
-          <button className="text-[13px] font-bold text-[#5EE08A]">{t('home_see_all')}</button>
+          <button className="text-[13px] font-bold text-[#63B882]">{t('home_see_all')}</button>
         </div>
 
         {visibleReports.length === 0 && (
@@ -231,11 +231,11 @@ export function TrailDetailPage() {
                 className="bg-[#151C18] border-[1.5px] border-[#24302A] p-4 rounded-[32px]"
               >
                 <div className="flex items-center gap-2.5">
-                  <div className="bg-[#5EE08A] rounded-full size-[34px] flex items-center justify-center shrink-0">
+                  <div className="bg-[#63B882] rounded-full size-[34px] flex items-center justify-center shrink-0">
                     <span className="text-[12px] font-bold text-white">{initials}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-bold text-[#F2F5F2]">
+                    <p className="text-[14px] font-bold text-[#E6EBE6]">
                       {report.profiles?.email?.split('@')[0] || t('anonymous')}
                     </p>
                     <p className="text-[12px] text-[#8B958C]">

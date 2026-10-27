@@ -187,7 +187,7 @@ export function AddParkPage() {
           <ChevronLeft className="size-4" />
         </button>
         <div>
-          <h1 className="text-[24px] font-bold text-[#F2F5F2]">New Park</h1>
+          <h1 className="text-[24px] font-bold text-[#E6EBE6]">New Park</h1>
           <p className="text-[14px] text-[#8B958C] mt-0.5">
             {fromRequest
               ? `Prefilling from ${fromRequest.kind} request`
@@ -199,7 +199,7 @@ export function AddParkPage() {
       {fromRequest && (
         <div className="mb-5 rounded-[12px] border border-[#24302A] bg-[#151C18] px-4 py-3 text-[13px] text-[#9AA39C]">
           Requested {fromRequest.kind}:{' '}
-          <span className="font-bold text-[#F2F5F2]">{fromRequest.name}</span>
+          <span className="font-bold text-[#E6EBE6]">{fromRequest.name}</span>
           {fromRequest.details ? (
             <span className="block mt-1 text-[#8B958C]">{fromRequest.details}</span>
           ) : null}
@@ -218,7 +218,7 @@ export function AddParkPage() {
                 value={parkName}
                 onChange={(e) => setParkName(e.target.value)}
                 placeholder="e.g. Cerro Gordo Trail Network"
-                className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#F2F5F2] focus:outline-none focus:border-[#5EE08A]"
+                className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#E6EBE6] focus:outline-none focus:border-[#63B882]"
               />
             </div>
             <div>
@@ -233,7 +233,7 @@ export function AddParkPage() {
                   if (suggested) setParkRegion(suggested);
                 }}
                 placeholder="e.g. Vega Alta"
-                className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#F2F5F2] focus:outline-none focus:border-[#5EE08A]"
+                className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#E6EBE6] focus:outline-none focus:border-[#63B882]"
               />
               <datalist id="pr-municipalities">
                 {PR_MUNICIPALITIES.map((m) => <option key={m} value={m} />)}
@@ -246,7 +246,7 @@ export function AddParkPage() {
             <select
               value={parkRegion}
               onChange={(e) => setParkRegion((e.target.value || '') as ParkRegion | '')}
-              className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#F2F5F2] focus:outline-none focus:border-[#5EE08A] bg-[#151C18]"
+              className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#E6EBE6] focus:outline-none focus:border-[#63B882] bg-[#151C18]"
             >
               <option value="">Select region…</option>
               {PARK_REGIONS.map((r) => (
@@ -272,7 +272,7 @@ export function AddParkPage() {
                 placeholder={
                   cityDefaultCoords ? String(cityDefaultCoords.lat) : 'Latitude'
                 }
-                className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#F2F5F2] focus:outline-none focus:border-[#5EE08A]"
+                className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#E6EBE6] focus:outline-none focus:border-[#63B882]"
               />
               <input
                 value={parkLng}
@@ -281,7 +281,7 @@ export function AddParkPage() {
                 placeholder={
                   cityDefaultCoords ? String(cityDefaultCoords.lng) : 'Longitude'
                 }
-                className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#F2F5F2] focus:outline-none focus:border-[#5EE08A]"
+                className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#E6EBE6] focus:outline-none focus:border-[#63B882]"
               />
             </div>
             <p className="mt-1 text-[11px] text-[#8B958C]">
@@ -300,7 +300,7 @@ export function AddParkPage() {
               value={parkDirections}
               onChange={(e) => setParkDirections(e.target.value)}
               placeholder="https://maps.app.goo.gl/… or 18.40914, -66.14125"
-              className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#F2F5F2] focus:outline-none focus:border-[#5EE08A]"
+              className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#E6EBE6] focus:outline-none focus:border-[#63B882]"
             />
             <p className="mt-1 text-[11px] text-[#8B958C]">
               Paste a Google or Apple Maps link, or the trailhead / parking coordinates.
@@ -315,7 +315,7 @@ export function AddParkPage() {
               onChange={(e) => setParkDescription(e.target.value)}
               placeholder="Describe the park, access points, highlights…"
               rows={3}
-              className="w-full border border-[#24302A] rounded-[10px] px-3 py-2.5 text-[13px] text-[#F2F5F2] resize-none focus:outline-none focus:border-[#5EE08A]"
+              className="w-full border border-[#24302A] rounded-[10px] px-3 py-2.5 text-[13px] text-[#E6EBE6] resize-none focus:outline-none focus:border-[#63B882]"
             />
           </div>
           <div>
@@ -325,7 +325,7 @@ export function AddParkPage() {
               onChange={(e) => setParkDescriptionEs(e.target.value)}
               placeholder="Describe el parque, puntos de acceso, atractivos…"
               rows={3}
-              className="w-full border border-[#24302A] rounded-[10px] px-3 py-2.5 text-[13px] text-[#F2F5F2] resize-none focus:outline-none focus:border-[#5EE08A]"
+              className="w-full border border-[#24302A] rounded-[10px] px-3 py-2.5 text-[13px] text-[#E6EBE6] resize-none focus:outline-none focus:border-[#63B882]"
             />
           </div>
         </div>
@@ -334,12 +334,12 @@ export function AddParkPage() {
         <div className="bg-[#151C18] rounded-[16px] border border-[#24302A] p-6 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <h2 className="text-[13px] font-bold tracking-[1px] uppercase text-[#8B958C]">
-              Trails <span className="text-[#5EE08A]">{trails.filter((t) => t.name.trim()).length}</span>
+              Trails <span className="text-[#63B882]">{trails.filter((t) => t.name.trim()).length}</span>
             </h2>
             <button
               type="button"
               onClick={addTrail}
-              className="flex items-center gap-1.5 h-8 px-3 rounded-[8px] bg-[#24302A] hover:bg-[#24302A] text-[#5EE08A] text-[12px] font-bold transition-colors"
+              className="flex items-center gap-1.5 h-8 px-3 rounded-[8px] bg-[#24302A] hover:bg-[#24302A] text-[#63B882] text-[12px] font-bold transition-colors"
             >
               <Plus className="size-3.5" />
               Add trail
@@ -368,7 +368,7 @@ export function AddParkPage() {
                     value={trail.name}
                     onChange={(e) => updateTrail(trail.id, 'name', e.target.value)}
                     placeholder="Trail name"
-                    className="w-full border border-[#24302A] rounded-[8px] px-3 h-9 text-[13px] text-[#F2F5F2] focus:outline-none focus:border-[#5EE08A]"
+                    className="w-full border border-[#24302A] rounded-[8px] px-3 h-9 text-[13px] text-[#E6EBE6] focus:outline-none focus:border-[#63B882]"
                   />
                 </div>
 
@@ -403,7 +403,7 @@ export function AddParkPage() {
           <button
             type="submit"
             disabled={create.isPending || !parkName.trim()}
-            className="flex-1 h-10 rounded-[10px] bg-[#5EE08A] text-[#0E1510] text-[13px] font-bold hover:bg-[#4ADE80] disabled:opacity-50"
+            className="flex-1 h-10 rounded-[10px] bg-[#63B882] text-[#0E1510] text-[13px] font-bold hover:bg-[#52A06E] disabled:opacity-50"
           >
             {create.isPending ? 'Creating…' : 'Create Park'}
           </button>
