@@ -43,9 +43,9 @@ const STATUS_DOT: Record<ShareStatus, string> = {
 };
 
 const STATUS_TEXT: Record<ShareStatus, string> = {
-  green: '#346538',
-  yellow: '#92400e',
-  red: '#9f2f2d',
+  green: '#63B882',
+  yellow: '#C9A84A',
+  red: '#C97A7A',
 };
 
 function wrapLines(
@@ -195,7 +195,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
 
-    // Page background (app cream)
+    // Page background
     ctx.fillStyle = '#0E1510';
     ctx.fillRect(0, 0, width, height);
 
@@ -239,7 +239,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
       titleY += 52;
     }
 
-    // White conditions card
+    // Conditions card
     const cardX = 56;
     const cardY = titleY + 40;
     const cardW = width - cardX * 2;
@@ -255,7 +255,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     if (notes) estimatedH += 180;
     estimatedH = Math.min(Math.max(estimatedH, 420), height - cardY - BOTTOM_SAFE - 100);
 
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = '#151C18';
     roundRect(ctx, cardX, cardY, cardW, estimatedH, 48);
     ctx.fill();
     ctx.strokeStyle = '#24302A';
@@ -374,7 +374,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
       const boxH = Math.min(160, cardY + estimatedH - contentY - cardPad);
 
       if (boxH > 60) {
-        ctx.fillStyle = '#f5f2ec';
+        ctx.fillStyle = '#1A221C';
         roundRect(ctx, boxX, boxY, boxW, boxH, 28);
         ctx.fill();
 

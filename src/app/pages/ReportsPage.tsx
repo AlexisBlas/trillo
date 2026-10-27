@@ -192,7 +192,7 @@ export function ReportsPage() {
                     <div className="flex items-stretch">
                       <button
                         onClick={() => navigate(`/parks/${encodeURIComponent(park)}`)}
-                        className="flex-1 min-w-0 p-[15.5px] flex items-center gap-3.5 text-left hover:bg-[#faf8f4] transition-colors rounded-l-[32px] rounded-r-[0px]"
+                        className="flex-1 min-w-0 p-[15.5px] flex items-center gap-3.5 text-left hover:bg-[#1A221C] transition-colors rounded-l-[32px] rounded-r-[0px]"
                       >
                         <StatusWithHazards
                           status={byPark.get(park)?.status ?? null}
@@ -216,7 +216,7 @@ export function ReportsPage() {
                         onClick={() => toggle(park)}
                         aria-expanded={isOpen}
                         aria-label={isOpen ? `Collapse ${parkTitle} reports` : `Expand ${parkTitle} reports`}
-                        className="shrink-0 px-4 flex items-center justify-center border-l-[1.5px] border-[#f5f2ec] hover:bg-[#faf8f4] transition-colors disabled:opacity-40"
+                        className="shrink-0 px-4 flex items-center justify-center border-l-[1.5px] border-[#24302A] hover:bg-[#1A221C] transition-colors disabled:opacity-40"
                         disabled={forceOpen}
                       >
                         <ChevronDown
@@ -243,13 +243,13 @@ export function ReportsPage() {
                           return (
                             <div
                               key={report.id}
-                              className="w-full pl-[18px] pr-2 py-3 flex items-start gap-2 border-b-[1.5px] border-[#f5f2ec] last:border-b-0"
+                              className="w-full pl-[18px] pr-2 py-3 flex items-start gap-2 border-b-[1.5px] border-[#24302A] last:border-b-0"
                             >
                               <button
                                 type="button"
                                 onClick={() => path && navigate(path)}
                                 disabled={!path}
-                                className="flex-1 min-w-0 flex items-start gap-3 text-left hover:bg-[#faf8f4] transition-colors rounded-[12px] py-0.5 disabled:opacity-50"
+                                className="flex-1 min-w-0 flex items-start gap-3 text-left hover:bg-[#1A221C] transition-colors rounded-[12px] py-0.5 disabled:opacity-50"
                               >
                                 <StatusWithHazards
                                   status={report.status}

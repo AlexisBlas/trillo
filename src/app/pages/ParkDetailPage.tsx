@@ -44,9 +44,9 @@ const STATUS_LABEL: Record<TrailStatus, TranslationKey> = {
 };
 
 const STATUS_TEXT: Record<TrailStatus, string> = {
-  green: '#346538',
-  yellow: '#92400e',
-  red: '#9f2f2d',
+  green: '#63B882',
+  yellow: '#C9A84A',
+  red: '#C97A7A',
 };
 
 export function ParkDetailPage() {
@@ -361,7 +361,7 @@ export function ParkDetailPage() {
           ) : null}
 
           {summaryNotes ? (
-            <div className="mx-4 mb-4 rounded-[16px] bg-[#f5f2ec] px-4 py-3.5">
+            <div className="mx-4 mb-4 rounded-[16px] border-[1.5px] border-[#24302A] bg-[#151C18] px-4 py-3.5">
               <p className="text-[14px] leading-[21px] text-[#9AA39C] text-pretty">
                 {summaryNotes}
               </p>
@@ -429,14 +429,14 @@ export function ParkDetailPage() {
                 <p className="text-[15px] font-bold tracking-[-0.2px] text-[#E6EBE6]">
                   {t('park_trails_by_condition')}
                 </p>
-                <p className="text-[12px] text-[#8a8478] mt-0.5">
+                <p className="text-[12px] text-[#8B958C] mt-0.5">
                   {sortedTrails.length}{' '}
                   {sortedTrails.length === 1 ? t('trail_singular') : t('trail_plural')}
                 </p>
               </div>
               <ChevronDown
                 className={cn(
-                  'size-5 text-[#8a8478] shrink-0 transition-transform duration-200',
+                  'size-5 text-[#8B958C] shrink-0 transition-transform duration-200',
                   trailsOpen && 'rotate-180'
                 )}
               />
@@ -473,7 +473,7 @@ export function ParkDetailPage() {
                           {displayName}
                         </h3>
                         {trailSource === 'estimate' && (
-                          <p className="text-[11px] text-[#8a8478] mt-0.5">
+                          <p className="text-[11px] text-[#8B958C] mt-0.5">
                             {trailRainAdjusted
                               ? t('condition_rain_adjusted')
                               : t('condition_estimated')}
@@ -482,7 +482,7 @@ export function ParkDetailPage() {
                       </div>
                       <span
                         className="shrink-0 text-[12px] font-bold"
-                        style={{ color: status ? STATUS_TEXT[status] : '#8a8478' }}
+                        style={{ color: status ? STATUS_TEXT[status] : '#8B958C' }}
                       >
                         {statusWord(status)}
                       </span>

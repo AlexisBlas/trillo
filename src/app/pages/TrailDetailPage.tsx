@@ -34,9 +34,9 @@ const STATUS_LABEL: Record<'green' | 'yellow' | 'red', TranslationKey> = {
 };
 
 const STATUS_TEXT: Record<'green' | 'yellow' | 'red', string> = {
-  green: '#346538',
-  yellow: '#92400e',
-  red: '#9f2f2d',
+  green: '#63B882',
+  yellow: '#C9A84A',
+  red: '#C97A7A',
 };
 
 export function TrailDetailPage() {
@@ -157,7 +157,7 @@ export function TrailDetailPage() {
           </div>
 
           {statusSource === 'estimate' && estimatedStatus && (
-            <div className="mt-4 flex items-center gap-3 rounded-[16px] bg-[#f5f2ec] px-3.5 py-3">
+            <div className="mt-4 flex items-center gap-3 rounded-[16px] border-[1.5px] border-[#24302A] bg-[#151C18] px-3.5 py-3">
               <StatusCircle
                 status={estimatedStatus}
                 reported={false}

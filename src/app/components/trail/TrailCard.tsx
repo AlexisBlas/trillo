@@ -21,10 +21,10 @@ export function TrailCard({ report }: TrailCardProps) {
 
   const badge = (() => {
     switch (status) {
-      case 'green': return { label: t('reports_filter_good'), text: '#346538' };
-      case 'yellow': return { label: t('reports_filter_caution'), text: '#92400e' };
-      case 'red': return { label: t('reports_filter_closed'), text: '#9f2f2d' };
-      default: return { label: t('reports_filter_good'), text: '#346538' };
+      case 'green': return { label: t('reports_filter_good'), text: '#63B882' };
+      case 'yellow': return { label: t('reports_filter_caution'), text: '#C9A84A' };
+      case 'red': return { label: t('reports_filter_closed'), text: '#C97A7A' };
+      default: return { label: t('reports_filter_good'), text: '#63B882' };
     }
   })();
 
