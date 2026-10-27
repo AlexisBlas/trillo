@@ -5,9 +5,9 @@ type Status = 'green' | 'yellow' | 'red';
 
 /** Community trail-condition colors: Dry / Wet / Muddy */
 export const STATUS_DOT: Record<Status, string> = {
-  green: '#56B078',
-  yellow: '#CDB045',
-  red: '#D17676',
+  green: '#49BD74',
+  yellow: '#D9B638',
+  red: '#DB6D6D',
 };
 
 const UNKNOWN_DOT = '#d1d5db';
