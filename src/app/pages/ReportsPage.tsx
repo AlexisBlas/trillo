@@ -10,10 +10,9 @@ import { StatusWithHazards } from '../components/trail/StatusWithHazards';
 import { OverallRatingLabel } from '../components/trail/OverallRatingLabel';
 import { getOverallRating } from '../lib/schemas';
 import { useParkReports } from '../hooks/useParkReports';
-import { cleanNotes, formatUpdatedAgo, isReportFresh, getReportPath, normalizeSearchText, searchIncludes } from '../lib/text';
+import { cleanNotes, formatUpdatedAgo, formatRelativeTime, isReportFresh, getReportPath, normalizeSearchText, searchIncludes } from '../lib/text';
 import { shareUrlFor } from '../lib/share';
 import { useTrailReports } from '../hooks/useTrailReports';
-import { formatDistanceToNow } from 'date-fns';
 import { useLang, TranslationKey } from '../contexts/LangContext';
 import { getParkCity, useParksMeta } from '../hooks/useParksMeta';
 
@@ -32,7 +31,7 @@ const STATUS_FILTERS: { value: 'all' | 'green' | 'yellow' | 'red'; labelKey: Tra
 
 export function ReportsPage() {
   const navigate = useNavigate();
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { data: reports, isLoading, error } = useTrailReports(100);
   const { byPark, hazardsByPark } = useParkReports();
   const [searchQuery, setSearchQuery] = useState('');
@@ -181,7 +180,7 @@ export function ReportsPage() {
                 const city = getParkCity(parksMeta, park);
                 const isOpen = forceOpen || expanded.has(park);
                 // Reports arrive newest-first, so the first one is the latest.
-                const latestAgo = formatUpdatedAgo(parkReports![0]?.created_at);
+                const latestAgo = formatUpdatedAgo(parkReports![0]?.created_at, lang);
                 const parkHazards = hazardsByPark.get(park) ?? [];
                 return (
                   <div
@@ -262,9 +261,7 @@ export function ReportsPage() {
                                     {trailName}
                                   </h4>
                                   <p className="text-[12px] text-[#8B958C]">
-                                    {formatDistanceToNow(new Date(report.created_at), {
-                                      addSuffix: true,
-                                    })}
+                                    {formatRelativeTime(report.created_at, lang)}
                                     {getOverallRating(report.conditions) && ' · '}
                                     <OverallRatingLabel conditions={report.conditions} />
                                   </p>

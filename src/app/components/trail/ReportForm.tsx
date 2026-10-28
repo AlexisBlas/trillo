@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { Smile, Meh, Frown, Sun, Droplet, Check } from 'lucide-react';
 import { ReportFormData, OVERALL_OPTIONS, SURFACE_OPTIONS, HAZARD_OPTIONS } from '../../lib/schemas';
 import { cn } from '../ui/utils';
@@ -47,6 +47,22 @@ const surfaceIcons: Record<string, React.ComponentType<{ className?: string }>> 
 /** A wet or muddy surface caps the overall rating at Fair. */
 const WET_SURFACE_OVERALL = ['fair', 'poor'];
 
+function moveRadioSelection(
+  values: string[],
+  current: string,
+  key: string
+): string | null {
+  const idx = values.indexOf(current);
+  if (idx < 0) return values[0] ?? null;
+  if (key === 'ArrowRight' || key === 'ArrowDown') {
+    return values[(idx + 1) % values.length] ?? null;
+  }
+  if (key === 'ArrowLeft' || key === 'ArrowUp') {
+    return values[(idx - 1 + values.length) % values.length] ?? null;
+  }
+  return null;
+}
+
 export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
   const { t } = useLang();
   const [overall, setOverall] = useState<string>('great');
@@ -54,8 +70,19 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
   const [hazards, setHazards] = useState<string[]>([]);
   const [notes, setNotes] = useState('');
 
+  const overallLabelId = useId();
+  const surfaceLabelId = useId();
+  const hazardsLabelId = useId();
+  const wetHintId = useId();
+  const overallRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const surfaceRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
   const isOverallAllowed = (value: string) =>
     surface === 'dry' || WET_SURFACE_OVERALL.includes(value);
+
+  const allowedOverallValues = OVERALL_OPTIONS.map((o) => o.value).filter(isOverallAllowed);
+  const surfaceValues = SURFACE_OPTIONS.map((o) => o.value);
+  const wetSurface = surface !== 'dry';
 
   const selectSurface = (value: string) => {
     setSurface(value);
@@ -90,10 +117,18 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
     <form onSubmit={handleSubmit} className="space-y-6 pb-24">
       {/* Overall Condition */}
       <section>
-        <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#9AA39C] mb-3">
+        <h2
+          id={overallLabelId}
+          className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#9AA39C] mb-3"
+        >
           {t('form_condition_label')}
         </h2>
-        <div className="grid grid-cols-4 gap-2">
+        <div
+          role="radiogroup"
+          aria-labelledby={overallLabelId}
+          aria-describedby={wetSurface ? wetHintId : undefined}
+          className="grid grid-cols-4 gap-2"
+        >
           {OVERALL_OPTIONS.map((opt) => {
             const Icon = overallIcons[opt.value];
             const active = overall === opt.value;
@@ -101,10 +136,23 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
             return (
               <button
                 key={opt.value}
+                ref={(el) => {
+                  overallRefs.current[opt.value] = el;
+                }}
                 type="button"
-                onClick={() => setOverall(opt.value)}
+                role="radio"
+                aria-checked={active}
+                aria-disabled={!allowed}
+                tabIndex={active ? 0 : -1}
                 disabled={!allowed}
-                aria-pressed={active}
+                onClick={() => setOverall(opt.value)}
+                onKeyDown={(e) => {
+                  const next = moveRadioSelection(allowedOverallValues, overall, e.key);
+                  if (!next) return;
+                  e.preventDefault();
+                  setOverall(next);
+                  overallRefs.current[next]?.focus();
+                }}
                 className={cn(
                   'h-[78px] border-[1.5px] flex flex-col items-center justify-center gap-1 transition-colors rounded-[20px]',
                   active
@@ -119,26 +167,53 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
             );
           })}
         </div>
-        {surface !== 'dry' && (
-          <p className="mt-2 text-[12px] text-[#8B958C]">{t('form_overall_wet_hint')}</p>
+        {wetSurface && (
+          <p
+            id={wetHintId}
+            role="status"
+            aria-live="polite"
+            className="mt-2 text-[12px] text-[#8B958C]"
+          >
+            {t('form_overall_wet_hint')}
+          </p>
         )}
       </section>
 
       {/* Trail Surface */}
       <section>
-        <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#9AA39C] mb-3">
+        <h2
+          id={surfaceLabelId}
+          className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#9AA39C] mb-3"
+        >
           {t('form_surface_label')}
         </h2>
-        <div className="grid grid-cols-3 gap-2">
+        <div
+          role="radiogroup"
+          aria-labelledby={surfaceLabelId}
+          className="grid grid-cols-3 gap-2"
+        >
           {SURFACE_OPTIONS.map((opt) => {
             const Icon = surfaceIcons[opt.value];
             const active = surface === opt.value;
             return (
               <button
                 key={opt.value}
+                ref={(el) => {
+                  surfaceRefs.current[opt.value] = el;
+                }}
                 type="button"
+                role="radio"
+                aria-checked={active}
+                tabIndex={active ? 0 : -1}
                 onClick={() => selectSurface(opt.value)}
-                aria-pressed={active}
+                onKeyDown={(e) => {
+                  const next = moveRadioSelection(surfaceValues, surface, e.key);
+                  if (!next) return;
+                  e.preventDefault();
+                  selectSurface(next);
+                  // Focus after state update — next tick so disabled overall radios settle.
+                  requestAnimationFrame(() => surfaceRefs.current[next]?.focus());
+                }}
                 className={cn(
                   'h-[78px] border-[1.5px] flex flex-col items-center justify-center gap-1 transition-colors rounded-[20px]',
                   active
@@ -165,7 +240,10 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
       {/* Hazards — multi-select */}
       <section>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#9AA39C]">
+          <h2
+            id={hazardsLabelId}
+            className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#9AA39C]"
+          >
             {t('form_hazards_label')}
           </h2>
           <span className="text-[12px] text-[#8B958C]">{t('form_select_hazards')}</span>
@@ -173,7 +251,7 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
         <div
           className="flex flex-wrap gap-2"
           role="group"
-          aria-label={t('form_hazards_label')}
+          aria-labelledby={hazardsLabelId}
         >
           <button
             type="button"

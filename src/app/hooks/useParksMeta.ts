@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import { resolveParkCity } from '../lib/text';
-import { getCityRegion, isParkRegion, type ParkRegion } from '../lib/regions';
+import { getCityRegion, type ParkRegion } from '../lib/regions';
 import { resolveParkCoords, type Coords } from '../lib/municipalityCoords';
 
 export type ParkMetaPublic = {
@@ -20,28 +20,14 @@ export const NEW_PARK_DAYS = 5;
 type ParksMetaRow = {
   name: string;
   city: string | null;
-  region: string | null;
   created_at: string | null;
   lat: number | null;
   lng: number | null;
 };
 
 async function fetchParksMetaRows(): Promise<ParksMetaRow[]> {
-  const full = await supabase
-    .from('parks')
-    .select('name, city, region, created_at, lat, lng');
-  if (!full.error) {
-    return (full.data ?? []).map((p) => ({
-      name: p.name,
-      city: p.city ?? null,
-      region: p.region ?? null,
-      created_at: p.created_at ?? null,
-      lat: asNullableNumber(p.lat),
-      lng: asNullableNumber(p.lng),
-    }));
-  }
-
-  // Coords without region (014 applied, 012/013 not yet).
+  // Do not select `region` — the column is not in production. Region is
+  // derived from city via getCityRegion (same as the old fallback path).
   const withCoords = await supabase
     .from('parks')
     .select('name, city, created_at, lat, lng');
@@ -49,35 +35,17 @@ async function fetchParksMetaRows(): Promise<ParksMetaRow[]> {
     return (withCoords.data ?? []).map((p) => ({
       name: p.name,
       city: p.city ?? null,
-      region: null,
       created_at: p.created_at ?? null,
       lat: asNullableNumber(p.lat),
       lng: asNullableNumber(p.lng),
     }));
   }
 
-  // Region without coords (012 applied, 014 not yet).
-  const withRegion = await supabase
-    .from('parks')
-    .select('name, city, region, created_at');
-  if (!withRegion.error) {
-    return (withRegion.data ?? []).map((p) => ({
-      name: p.name,
-      city: p.city ?? null,
-      region: p.region ?? null,
-      created_at: p.created_at ?? null,
-      lat: null,
-      lng: null,
-    }));
-  }
-
-  // Minimal columns.
   const basic = await supabase.from('parks').select('name, city, created_at');
   if (basic.error) throw basic.error;
   return (basic.data ?? []).map((p) => ({
     name: p.name,
     city: p.city ?? null,
-    region: null,
     created_at: p.created_at ?? null,
     lat: null,
     lng: null,
@@ -96,19 +64,18 @@ function asNullableNumber(value: unknown): number | null {
 /** Map of park name → city + region + createdAt for list UI. */
 export function useParksMeta() {
   return useQuery({
-    queryKey: ['parks-meta-public', 'v8'],
+    queryKey: ['parks-meta-public', 'v9'],
     queryFn: async () => {
       const rows = await fetchParksMetaRows();
 
       return new Map(
         rows.map((p) => {
           const city = resolveParkCity(p.name, p.city);
-          const region = isParkRegion(p.region) ? p.region : getCityRegion(city);
           return [
             p.name,
             {
               city,
-              region,
+              region: getCityRegion(city),
               createdAt: p.created_at ?? null,
               lat: p.lat,
               lng: p.lng,

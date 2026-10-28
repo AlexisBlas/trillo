@@ -23,6 +23,7 @@ import {
   cleanNotes,
   pickLocalizedText,
   isValidTrailId,
+  formatRelativeTime,
 } from '../lib/text';
 import { useLang, TranslationKey } from '../contexts/LangContext';
 import { isParkNew } from '../hooks/useParksMeta';
@@ -188,28 +189,11 @@ export function ParkDetailPage() {
       };
     }
     if (!reportSummary?.createdAt) return null;
-    const diffMs = Date.now() - new Date(reportSummary.createdAt).getTime();
-    if (Number.isNaN(diffMs)) return null;
-    const minutes = Math.floor(diffMs / (60 * 1000));
-    if (minutes < 1) {
-      return {
-        label: t('park_updated'),
-        value: t('park_updated_just_now').toLowerCase(),
-      };
-    }
-    const value =
-      minutes < 60
-        ? `${minutes}m`
-        : minutes < 24 * 60
-          ? `${Math.floor(minutes / 60)}h`
-          : `${Math.floor(minutes / (24 * 60))}d`;
-    // EN: "39m ago" · ES: "hace 39m"
+    const value = formatRelativeTime(reportSummary.createdAt, lang);
+    if (!value) return null;
     return {
       label: t('park_updated'),
-      value:
-        lang === 'es'
-          ? `${t('park_updated_ago')} ${value}`
-          : `${value} ${t('park_updated_ago')}`,
+      value,
     };
   }, [reportSummary?.createdAt, statusSource, rainAdjusted, t, lang]);
 

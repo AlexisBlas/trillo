@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { TrailReportWithDetails } from '../../lib/supabase';
-import { formatDistanceToNow } from 'date-fns';
 import { useLang } from '../../contexts/LangContext';
+import { formatUpdatedAgo } from '../../lib/text';
 import { StatusWithHazards } from './StatusWithHazards';
 
 interface TrailCardProps {
@@ -9,7 +9,7 @@ interface TrailCardProps {
 }
 
 export function TrailCard({ report }: TrailCardProps) {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { trails, status, conditions, created_at } = report;
 
   const surfaceCondition = (conditions || []).find((c) => c.startsWith('surface:'))?.replace('surface:', '');
@@ -42,7 +42,7 @@ export function TrailCard({ report }: TrailCardProps) {
               {trails.location || 'Trail location'}
             </p>
             <p className="text-[12px] text-[#8B958C]">
-              Updated {formatDistanceToNow(new Date(created_at), { addSuffix: true })}
+              {formatUpdatedAgo(created_at, lang)}
             </p>
           </div>
 

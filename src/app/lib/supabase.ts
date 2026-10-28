@@ -42,10 +42,10 @@ export interface ParkFollow {
 
 export interface TrailReportWithDetails extends TrailReport {
   trails: Trail | null;
+  /** Public pages never load email — id only, or null for guest reports. */
   profiles: {
     id: string;
-    email: string;
-  };
+  } | null;
 }
 
 // Create Supabase client

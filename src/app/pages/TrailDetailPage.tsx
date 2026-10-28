@@ -16,9 +16,8 @@ import {
   getEffectiveParkStatus,
   useConditionEstimates,
 } from '../hooks/useConditionEstimates';
-import { cleanNotes, isReportFresh, isValidTrailId } from '../lib/text';
+import { cleanNotes, formatRelativeTime, isReportFresh, isValidTrailId } from '../lib/text';
 import { shareUrlFor } from '../lib/share';
-import { formatDistanceToNow } from 'date-fns';
 import { useLang, type TranslationKey } from '../contexts/LangContext';
 
 function statusShareLabel(status: 'green' | 'yellow' | 'red'): TranslationKey {
@@ -42,7 +41,7 @@ const STATUS_TEXT: Record<'green' | 'yellow' | 'red', string> = {
 export function TrailDetailPage() {
   const { trailId } = useParams<{ trailId: string }>();
   const navigate = useNavigate();
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const validTrailId = isValidTrailId(trailId) ? trailId : undefined;
   const { data: trail, isLoading: trailLoading } = useTrail(validTrailId);
   const { data: reports, isLoading: reportsLoading } = useTrailReportsByTrail(validTrailId || '');
@@ -133,7 +132,7 @@ export function TrailDetailPage() {
           hazardTrailName={trailDisplayName}
           updatedValue={
             latestReport
-              ? formatDistanceToNow(new Date(latestReport.created_at), { addSuffix: true })
+              ? formatRelativeTime(latestReport.created_at, lang)
               : null
           }
         />
@@ -222,9 +221,7 @@ export function TrailDetailPage() {
 
         <div className="space-y-2.5">
           {visibleReports.map((report) => {
-            const initials = (report.profiles?.email?.split('@')[0] || 'AN')
-              .slice(0, 2)
-              .toUpperCase();
+            const initials = 'AN';
             return (
               <div
                 key={report.id}
@@ -236,10 +233,10 @@ export function TrailDetailPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[14px] font-bold text-[#E6EBE6]">
-                      {report.profiles?.email?.split('@')[0] || t('anonymous')}
+                      {t('anonymous')}
                     </p>
                     <p className="text-[12px] text-[#8B958C]">
-                      {formatDistanceToNow(new Date(report.created_at), { addSuffix: true })}
+                      {formatRelativeTime(report.created_at, lang)}
                       {getOverallRating(report.conditions) && ' · '}
                       <OverallRatingLabel conditions={report.conditions} />
                     </p>
@@ -255,9 +252,7 @@ export function TrailDetailPage() {
                     notes={cleanNotes(report.notes)}
                     conditions={report.conditions}
                     hazardTrailName={trailDisplayName}
-                    updatedValue={formatDistanceToNow(new Date(report.created_at), {
-                      addSuffix: true,
-                    })}
+                    updatedValue={formatRelativeTime(report.created_at, lang)}
                     className="shadow-none border-[1.5px] border-[#24302A] bg-[#151C18]"
                   />
                 </div>

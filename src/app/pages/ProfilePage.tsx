@@ -6,9 +6,8 @@ import { ShareButton } from '../components/layout/ShareButton';
 import { StatusBadge } from '../components/trail/StatusBadge';
 import { useAuth } from '../contexts/AuthContext';
 import { useUserReports } from '../hooks/useTrailReports';
-import { cleanNotes, isReportFresh, getReportPath } from '../lib/text';
+import { cleanNotes, formatRelativeTime, isReportFresh, getReportPath } from '../lib/text';
 import { shareUrlFor } from '../lib/share';
-import { formatDistanceToNow } from 'date-fns';
 import { useLang, type TranslationKey } from '../contexts/LangContext';
 
 function statusShareLabel(status: 'green' | 'yellow' | 'red'): TranslationKey {
@@ -34,7 +33,7 @@ function reportTitle(
 
 export function ProfilePage() {
   const navigate = useNavigate();
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { user, signOut } = useAuth();
   const { data: allReports, isLoading } = useUserReports(user?.id);
   const reports = (allReports || []).filter((r) =>
@@ -118,13 +117,7 @@ export function ProfilePage() {
               const path = getReportPath(report);
               const title = reportTitle(report, t('park_report'), t('reports_unknown_trail'));
               const notes = cleanNotes(report.notes);
-              const createdLabel = (() => {
-                try {
-                  return formatDistanceToNow(new Date(report.created_at), { addSuffix: true });
-                } catch {
-                  return '';
-                }
-              })();
+              const createdLabel = formatRelativeTime(report.created_at, lang) ?? '';
 
               const displayTitle = title.includes(' - ')
                 ? title.split(' - ').slice(1).join(' - ')

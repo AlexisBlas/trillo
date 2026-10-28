@@ -129,7 +129,7 @@ function OptionButton({
 
 export function SearchPage() {
   const navigate = useNavigate();
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { data: trails, isLoading, error } = useTrails();
   const { byPark, hazardsByPark } = useParkReports();
   const { byPark: estimatesByPark } = useConditionEstimates();
@@ -456,7 +456,7 @@ export function SearchPage() {
                     : null,
                   estimatesByPark.get(park.name)
                 );
-                const updatedAgo = formatUpdatedAgo(report?.createdAt);
+                const updatedAgo = formatUpdatedAgo(report?.createdAt, lang);
                 const parkHazards = hazardsByPark.get(park.name) ?? [];
                 return (
                   <button

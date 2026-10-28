@@ -28,7 +28,7 @@ type Park = { name: string; city: string | null; trails: TrailWithCity[] };
 
 export function Home() {
   const navigate = useNavigate();
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { user } = useAuth();
   const { data: trails, isLoading, error } = useTrails();
   const { data: reports } = useTrailReports(200);
@@ -124,7 +124,7 @@ export function Home() {
         : null,
       estimatesByPark.get(park.name)
     );
-    const updatedAgo = formatUpdatedAgo(report?.createdAt);
+    const updatedAgo = formatUpdatedAgo(report?.createdAt, lang);
     const parkHazards = hazardsByPark.get(park.name) ?? [];
     const showNew = isParkNameNew(parksMeta, park.name);
     return (

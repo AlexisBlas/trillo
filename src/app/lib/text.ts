@@ -22,25 +22,52 @@ export function isReportFresh(
   return Date.now() - new Date(createdAt).getTime() < ttlDays * DAY_MS;
 }
 
+export type UiLang = 'en' | 'es';
+
 /**
- * Formats a timestamp as a short relative "time ago" string, e.g.
- * "Updated 2h ago", "Updated 3d ago", or "Updated just now".
- * Returns null when no timestamp is provided.
+ * Shared relative-time formatter (same created_at → same label everywhere).
+ * Uses floor rounding so park and /reports never disagree.
+ * ES: "hace un momento", "hace 1 min", "hace 2 h", "hace 3 d"
+ * EN: "just now", "1m ago", "2h ago", "3d ago"
  */
-export function formatUpdatedAgo(createdAt: string | null | undefined): string | null {
+export function formatRelativeTime(
+  createdAt: string | null | undefined,
+  lang: UiLang = 'en'
+): string | null {
   if (!createdAt) return null;
   const diffMs = Date.now() - new Date(createdAt).getTime();
   if (Number.isNaN(diffMs)) return null;
 
-  const minutes = Math.floor(diffMs / (60 * 1000));
-  if (minutes < 1) return 'Updated just now';
-  if (minutes < 60) return `Updated ${minutes}m ago`;
+  const minutes = Math.max(0, Math.floor(diffMs / (60 * 1000)));
+  if (minutes < 1) {
+    return lang === 'es' ? 'hace un momento' : 'just now';
+  }
+  if (minutes < 60) {
+    return lang === 'es' ? `hace ${minutes} min` : `${minutes}m ago`;
+  }
 
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `Updated ${hours}h ago`;
+  if (hours < 24) {
+    return lang === 'es' ? `hace ${hours} h` : `${hours}h ago`;
+  }
 
   const days = Math.floor(hours / 24);
-  return `Updated ${days}d ago`;
+  return lang === 'es' ? `hace ${days} d` : `${days}d ago`;
+}
+
+/**
+ * Relative time with an "Updated" / "Actualizado" prefix.
+ * ES: "Actualizado hace 1 h" · EN: "Updated 1h ago"
+ */
+export function formatUpdatedAgo(
+  createdAt: string | null | undefined,
+  lang: UiLang = 'en'
+): string | null {
+  const rel = formatRelativeTime(createdAt, lang);
+  if (!rel) return null;
+  if (lang === 'es') return `Actualizado ${rel}`;
+  if (rel === 'just now') return 'Updated just now';
+  return `Updated ${rel}`;
 }
 
 export function cleanNotes(text: string | null | undefined): string {

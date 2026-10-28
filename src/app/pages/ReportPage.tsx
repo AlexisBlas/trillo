@@ -11,6 +11,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { useLang } from '../contexts/LangContext';
 import { supabase } from '../lib/supabase';
 import { ReportFormData } from '../lib/schemas';
+import { refreshTrailReports } from '../lib/trailReportCache';
+import type { TrailReportWithDetails } from '../lib/supabase';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -31,16 +33,37 @@ export function ReportPage() {
     if (!trailId) return;
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.from('trail_reports').insert({
-        trail_id: trailId,
-        park_name: null,
-        user_id: user?.id ?? null,
-        status: data.status,
-        conditions: data.conditions || null,
-        notes: data.notes || null,
-      });
+      const { data: inserted, error } = await supabase
+        .from('trail_reports')
+        .insert({
+          trail_id: trailId,
+          park_name: null,
+          user_id: user?.id ?? null,
+          status: data.status,
+          conditions: data.conditions || null,
+          notes: data.notes || null,
+        })
+        .select('*')
+        .single();
       if (error) throw error;
-      queryClient.invalidateQueries({ queryKey: ['trail-reports'] });
+
+      const optimistic: TrailReportWithDetails = {
+        ...(inserted as TrailReportWithDetails),
+        trails: trail
+          ? {
+              id: trail.id,
+              name: trail.name,
+              location: trail.location,
+              description: trail.description,
+              difficulty: trail.difficulty,
+              qr_code: trail.qr_code,
+              created_at: trail.created_at,
+              updated_at: trail.updated_at,
+            }
+          : null,
+        profiles: user?.id ? { id: user.id } : null,
+      };
+      await refreshTrailReports(queryClient, optimistic);
       setLastStatus(data.status);
       setLastNotes(data.notes?.trim() || null);
       setLastConditions(data.conditions?.length ? data.conditions : null);

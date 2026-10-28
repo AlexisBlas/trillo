@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 import { Bell, X, Globe, Info, LayoutDashboard } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
-import { formatDistanceToNow } from 'date-fns';
 import { cn } from '../ui/utils';
 import { useLang, Lang } from '../../contexts/LangContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useReportNotifications } from '../../hooks/useReportNotifications';
 import { StatusBadge } from '../trail/StatusBadge';
-import { cleanNotes } from '../../lib/text';
+import { cleanNotes, formatRelativeTime } from '../../lib/text';
 
 export function TopNav() {
   const [scrolled, setScrolled] = useState(false);
@@ -278,9 +277,7 @@ export function TopNav() {
                                 {trail.location || t('notif_new_trail')}
                               </p>
                               <p className="text-[11px] text-[#8B958C] mt-1">
-                                {formatDistanceToNow(new Date(trail.created_at), {
-                                  addSuffix: true,
-                                })}
+                                {formatRelativeTime(trail.created_at, lang)}
                               </p>
                             </div>
                             <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-[#C08640] text-white">
@@ -332,9 +329,7 @@ export function TopNav() {
                               {subtitle}
                             </p>
                             <p className="text-[11px] text-[#8B958C] mt-1">
-                              {formatDistanceToNow(new Date(report.created_at), {
-                                addSuffix: true,
-                              })}
+                              {formatRelativeTime(report.created_at, lang)}
                             </p>
                           </div>
                           <StatusBadge status={report.status} size="sm" />
