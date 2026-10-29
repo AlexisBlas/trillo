@@ -254,6 +254,9 @@ const translations = {
     delete: 'Delete',
     back: 'Back',
     search: 'Search parks, trails, or cities',
+    search_recent: 'Recent',
+    search_clear_history: 'Clear',
+    search_remove_history: 'Remove from history',
   },
   es: {
     // Nav
@@ -506,6 +509,9 @@ const translations = {
     delete: 'Eliminar',
     back: 'Atrás',
     search: 'Buscar parques, senderos o ciudades',
+    search_recent: 'Recientes',
+    search_clear_history: 'Borrar',
+    search_remove_history: 'Quitar del historial',
   },
 } satisfies Record<Lang, Record<string, string>>;
 

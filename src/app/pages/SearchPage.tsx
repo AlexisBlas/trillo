@@ -9,7 +9,6 @@ import {
   SlidersHorizontal,
   Check,
 } from 'lucide-react';
-import { Input } from '../components/ui/input';
 import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { BackButton } from '../components/layout/BackButton';
@@ -19,6 +18,7 @@ import { useParkReports } from '../hooks/useParkReports';
 import { StatusWithHazards } from '../components/trail/StatusWithHazards';
 import { ConditionSourceLegend } from '../components/trail/ConditionSourceLegend';
 import { NewParkBadge } from '../components/trail/NewParkBadge';
+import { ParkTrailSearchField } from '../components/trail/ParkTrailSearchField';
 import { formatUpdatedAgo, normalizeSearchText, searchIncludes } from '../lib/text';
 import type { ParkRegion } from '../lib/regions';
 import { useLang, type TranslationKey } from '../contexts/LangContext';
@@ -173,6 +173,21 @@ export function SearchPage() {
       if (city) cities.add(city);
     }
     return Array.from(cities).sort((a, b) => a.localeCompare(b));
+  }, [trails, parksMeta]);
+
+  const allParks = useMemo(() => {
+    const map = new Map<string, TrailWithCity[]>();
+    for (const trail of trails || []) {
+      const park = trail.location || 'Other';
+      if (!map.has(park)) map.set(park, []);
+      map.get(park)!.push(trail);
+    }
+    return Array.from(map.entries()).map(([name, parkTrails]) => ({
+      name,
+      city: getParkCity(parksMeta, name) ?? parkTrails[0]?.city ?? null,
+      trailCount: parkTrails.length,
+      trails: parkTrails,
+    }));
   }, [trails, parksMeta]);
 
   const parks = useMemo(() => {
@@ -361,16 +376,15 @@ export function SearchPage() {
         <h1 className="text-[24px] font-bold text-[#E6EBE6] mb-5">{t('search_title')}</h1>
 
         <div className="flex flex-col gap-3">
-          <div className="relative">
-            <Search className="absolute left-[17.5px] top-1/2 -translate-y-1/2 size-[20px] text-[#8B958C] pointer-events-none" />
-            <Input
-              type="text"
-              placeholder={t('search_placeholder')}
-              className="h-[52px] pl-[48px] pr-4 border-[1.5px] border-[#24302A] bg-[#151C18] text-[16px] shadow-sm rounded-[24px]"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+          <ParkTrailSearchField
+            value={searchQuery}
+            onChange={setSearchQuery}
+            parks={allParks}
+            trails={trails || []}
+            parksMeta={parksMeta}
+            placeholder={t('search_placeholder')}
+            inputClassName="h-[52px] pl-[48px]"
+          />
 
           <button
             type="button"

@@ -1,10 +1,9 @@
 import { useMemo, useState } from 'react';
-import { Search, Plus, Database, MapPin, Mountain, ChevronRight } from 'lucide-react';
+import { Plus, Database, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { TopNav } from '../components/layout/TopNav';
 import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert';
-import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { SuggestPlaceDialog } from '../components/home/SuggestPlaceDialog';
 import { useTrails } from '../hooks/useTrails';
@@ -14,7 +13,8 @@ import { useParkReports } from '../hooks/useParkReports';
 import { StatusWithHazards } from '../components/trail/StatusWithHazards';
 import { ConditionSourceLegend } from '../components/trail/ConditionSourceLegend';
 import { NewParkBadge } from '../components/trail/NewParkBadge';
-import { isReportFresh, formatUpdatedAgo, normalizeSearchText, searchIncludes } from '../lib/text';
+import { ParkTrailSearchField } from '../components/trail/ParkTrailSearchField';
+import { isReportFresh, formatUpdatedAgo } from '../lib/text';
 import { useLang } from '../contexts/LangContext';
 import { useAuth } from '../contexts/AuthContext';
 import { getParkCity, isParkNameNew, useParksMeta } from '../hooks/useParksMeta';
@@ -66,29 +66,15 @@ export function Home() {
       .sort((a, b) => b.trails.length - a.trails.length);
   }, [trails, parksMeta]);
 
-  const q = normalizeSearchText(searchQuery);
-
-  const suggestions = useMemo(() => {
-    if (!q) return { parks: [] as Park[], trails: [] as TrailWithCity[] };
-    const parkMatches = parks
-      .filter((p) => searchIncludes(p.name, q) || searchIncludes(p.city, q))
-      .slice(0, 4);
-    const trailMatches = (trails || [])
-      .filter((trail) => {
-        const displayName = trail.name.includes(' - ')
-          ? trail.name.split(' - ').slice(1).join(' - ')
-          : trail.name;
-        const parkCity = trail.city ?? getParkCity(parksMeta, trail.location);
-        return (
-          searchIncludes(displayName, q) ||
-          searchIncludes(trail.name, q) ||
-          searchIncludes(trail.location, q) ||
-          searchIncludes(parkCity, q)
-        );
-      })
-      .slice(0, 6);
-    return { parks: parkMatches, trails: trailMatches };
-  }, [q, parks, trails, parksMeta]);
+  const searchParks = useMemo(
+    () =>
+      parks.map((p) => ({
+        name: p.name,
+        city: p.city,
+        trailCount: p.trails.length,
+      })),
+    [parks]
+  );
 
   // Surface the parks with the most recent fresh reports first, so the section
   // highlights where the latest on-the-ground conditions are. Parks without a
@@ -207,101 +193,14 @@ export function Home() {
       </section>
 
       <div className="m-[0px] px-[20px] pt-1">
-        {/* Search Bar with autocomplete */}
-        <div className="relative">
-          <Search className="absolute left-[17.5px] top-[22px] -translate-y-1/2 size-[18px] text-[#8B958C] z-10" />
-          <Input
-            type="text"
-            placeholder={t('search')}
-            className="h-[45.5px] pl-[45px] pr-4 border-[1.5px] border-[#24302A] bg-[#151C18] text-[16px] shadow-sm rounded-[24px]"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-
-          {q && (
-            <div className="absolute left-0 right-0 top-[52px] z-20 bg-[#151C18] rounded-[14px] border-[1.5px] border-[#24302A] shadow-[0px_8px_24px_rgba(0,0,0,0.08)] overflow-hidden">
-              {suggestions.parks.length === 0 && suggestions.trails.length === 0 ? (
-                <div className="p-4 text-[13px] text-[#9AA39C] text-center">
-                  {t('home_no_matches')} &ldquo;{searchQuery}&rdquo;
-                </div>
-              ) : (
-                <div className="max-h-[360px] overflow-y-auto">
-                  {suggestions.parks.length > 0 && (
-                    <div>
-                      <p className="px-4 pt-3 pb-1.5 text-[10px] font-bold tracking-[1.2px] uppercase text-[#8B958C]">
-                        {t('park_plural')}
-                      </p>
-                      {suggestions.parks.map((p) => {
-                        const parkTitle = p.name;
-                        return (
-                          <button
-                            key={p.name}
-                            onClick={() => {
-                              setSearchQuery('');
-                              navigate(`/parks/${encodeURIComponent(p.name)}`);
-                            }}
-                            className="w-full px-4 py-2.5 flex items-center gap-3 hover:bg-[#1A221C] text-left"
-                          >
-                            <div className="size-9 rounded-full bg-[#1E3A28] flex items-center justify-center shrink-0">
-                              <MapPin className="size-4 text-white" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5 min-w-0">
-                                <p className="text-[14px] font-bold text-[#E6EBE6] truncate">
-                                  {parkTitle}
-                                </p>
-                                {isParkNameNew(parksMeta, p.name) && <NewParkBadge />}
-                              </div>
-                              <p className="text-[12px] text-[#9AA39C] truncate">
-                                {p.city ? `${p.city} · ` : ''}{p.trails.length} {p.trails.length === 1 ? t('trail_singular') : t('trail_plural')}
-                              </p>
-                            </div>
-                            <ChevronRight className="size-4 text-[#8B958C]" />
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                  {suggestions.trails.length > 0 && (
-                    <div className="border-t border-[#24302A]">
-                      <p className="px-4 pt-3 pb-1.5 text-[10px] font-bold tracking-[1.2px] uppercase text-[#8B958C]">
-                        {t('trail_plural')}
-                      </p>
-                      {suggestions.trails.map((trail) => {
-                        const displayName = trail.name.includes(' - ')
-                          ? trail.name.split(' - ').slice(1).join(' - ')
-                          : trail.name;
-                        return (
-                          <button
-                            key={trail.id}
-                            onClick={() => {
-                              setSearchQuery('');
-                              navigate(`/trails/${trail.id}`);
-                            }}
-                            className="w-full px-4 py-2.5 flex items-center gap-3 hover:bg-[#1A221C] text-left"
-                          >
-                            <div className="size-9 rounded-full bg-[#24302A] flex items-center justify-center shrink-0">
-                              <Mountain className="size-4 text-[#63B882]" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-[14px] font-bold text-[#E6EBE6] truncate">
-                                {displayName}
-                              </p>
-                              <p className="text-[12px] text-[#9AA39C] truncate">
-                                {trail.location || t('trail_singular')}
-                              </p>
-                            </div>
-                            <ChevronRight className="size-4 text-[#8B958C]" />
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+        <ParkTrailSearchField
+          value={searchQuery}
+          onChange={setSearchQuery}
+          parks={searchParks}
+          trails={trails || []}
+          parksMeta={parksMeta}
+          placeholder={t('search')}
+        />
       </div>
 
       {/* Following + Recently Reported */}
