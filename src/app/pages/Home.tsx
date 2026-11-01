@@ -16,6 +16,7 @@ import { NewParkBadge } from '../components/trail/NewParkBadge';
 import { ParkTrailSearchField } from '../components/trail/ParkTrailSearchField';
 import { isReportFresh, formatUpdatedAgo } from '../lib/text';
 import { useLang } from '../contexts/LangContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { getParkCity, isParkNameNew, useParksMeta } from '../hooks/useParksMeta';
 import { useParkFollows } from '../hooks/useParkFollows';
@@ -29,6 +30,7 @@ type Park = { name: string; city: string | null; trails: TrailWithCity[] };
 export function Home() {
   const navigate = useNavigate();
   const { t, lang } = useLang();
+  const { theme } = useTheme();
   const { user } = useAuth();
   const { data: trails, isLoading, error } = useTrails();
   const { data: reports } = useTrailReports(200);
@@ -155,22 +157,40 @@ export function Home() {
     <div className="min-h-screen bg-background">
       <TopNav />
 
-      <section className="px-5 pt-5 pb-3 text-left">
-        <p className="text-[13px] text-muted-foreground mb-1">{getGreeting()}</p>
-        <h1 className="text-[36px] leading-[1.1] font-bold text-foreground mb-1.5">
-          {t('home_headline').split('\n').map((line, i) => (
-            <span key={i}>
-              {line}
-              {i === 0 && <br />}
-            </span>
-          ))}
-        </h1>
-        <p className="text-[15px] text-muted-foreground">
-          <b className="text-primary">
-            {freshReportCount} {freshReportCount === 1 ? t('home_report') : t('home_reports')}
-          </b>{' '}
-          {t('home_active_reports')}
-        </p>
+      <section className="relative isolate overflow-hidden">
+        <img
+          src={theme === 'light' ? '/home-hero-light.png' : '/home-hero-dark.png'}
+          alt=""
+          aria-hidden
+          className="absolute inset-0 size-full object-cover object-[center_58%] select-none pointer-events-none [mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)]"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(180deg, color-mix(in srgb, var(--background) 12%, transparent) 0%, color-mix(in srgb, var(--background) 28%, transparent) 58%, color-mix(in srgb, var(--background) 82%, transparent) 88%, var(--background) 100%)',
+          }}
+        />
+        <div className="relative z-10 flex min-h-[220px] flex-col justify-end px-5 pb-6 pt-14 text-left">
+          <p className="text-[13px] text-muted-foreground mb-1">
+            {getGreeting()}
+          </p>
+          <h1 className="text-[36px] leading-[1.1] font-bold text-foreground mb-1.5">
+            {t('home_headline').split('\n').map((line, i) => (
+              <span key={i}>
+                {line}
+                {i === 0 && <br />}
+              </span>
+            ))}
+          </h1>
+          <p className="text-[15px] text-muted-foreground">
+            <b className="text-primary">
+              {freshReportCount} {freshReportCount === 1 ? t('home_report') : t('home_reports')}
+            </b>{' '}
+            {t('home_active_reports')}
+          </p>
+        </div>
       </section>
 
       <div className="m-[0px] px-[20px] pt-1">
