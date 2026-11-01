@@ -162,14 +162,14 @@ export function Home() {
           src={theme === 'light' ? '/home-hero-light.png' : '/home-hero-dark.png'}
           alt=""
           aria-hidden
-          className="absolute inset-0 size-full object-cover object-[center_58%] select-none pointer-events-none [mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)]"
+          className="absolute inset-0 size-full object-cover object-[center_42%] select-none pointer-events-none [mask-image:linear-gradient(to_bottom,black_72%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_72%,transparent_100%)]"
         />
         <div
           aria-hidden
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(180deg, color-mix(in srgb, var(--background) 12%, transparent) 0%, color-mix(in srgb, var(--background) 28%, transparent) 58%, color-mix(in srgb, var(--background) 82%, transparent) 88%, var(--background) 100%)',
+              'linear-gradient(180deg, color-mix(in srgb, var(--background) 6%, transparent) 0%, color-mix(in srgb, var(--background) 18%, transparent) 55%, color-mix(in srgb, var(--background) 70%, transparent) 88%, var(--background) 100%)',
           }}
         />
         <div className="relative z-10 flex min-h-[220px] flex-col justify-end px-5 pb-6 pt-14 text-left">
