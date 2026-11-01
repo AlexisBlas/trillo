@@ -1,11 +1,23 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Trillo — Tu trillo, ahora mismo.</title>
     <meta name="description" content="Condiciones de senderos, ahora mismo. Reportes de la comunidad más una estimación por lluvia. Gratis. Sin cuenta para mirar." />
     <style>html, body { min-height: 100%; margin: 0; } #root { min-height: 100%; }</style>
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem('trillo:theme');
+          if (theme !== 'light' && theme !== 'dark') theme = 'dark';
+          var root = document.documentElement;
+          root.classList.toggle('dark', theme === 'dark');
+          root.classList.toggle('light', theme === 'light');
+          root.style.colorScheme = theme;
+        } catch (e) {}
+      })();
+    </script>
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-PT95H55N18"></script>

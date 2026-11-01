@@ -58,8 +58,8 @@ export function FollowParkButton({
         className={cn(
           'inline-flex items-center gap-1.5 h-10 px-3.5 rounded-[12px] text-[13px] font-bold border-[1.5px] transition-colors disabled:opacity-60',
           following
-            ? 'bg-[#63B882] text-[#0E1510] border-[#63B882]'
-            : 'bg-[#151C18] text-[#63B882] border-[#63B882]',
+            ? 'bg-primary text-primary-foreground border-primary'
+            : 'bg-card text-primary border-primary',
           className
         )}
       >
@@ -83,8 +83,8 @@ export function FollowParkButton({
       className={cn(
         'size-10 shrink-0 flex items-center justify-center rounded-full transition-colors disabled:opacity-60',
         following
-          ? 'text-[#63B882] bg-[#63B882]/10'
-          : 'text-[#8B958C] hover:text-[#63B882] hover:bg-[#24302A]',
+          ? 'text-primary bg-primary/10'
+          : 'text-muted-foreground hover:text-primary hover:bg-muted',
         className
       )}
     >

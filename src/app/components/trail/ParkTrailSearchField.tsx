@@ -152,7 +152,7 @@ export function ParkTrailSearchField({
 
   return (
     <div ref={wrapRef} className={cn('relative scroll-mt-3', className)}>
-      <Search className="absolute left-[17.5px] top-1/2 -translate-y-1/2 size-[18px] text-[#8B958C] z-10 pointer-events-none" />
+      <Search className="absolute left-[17.5px] top-1/2 -translate-y-1/2 size-[18px] text-muted-foreground z-10 pointer-events-none" />
       <Input
         type="search"
         enterKeyHint="search"
@@ -161,7 +161,7 @@ export function ParkTrailSearchField({
         spellCheck={false}
         placeholder={placeholder}
         className={cn(
-          'h-[45.5px] pl-[45px] pr-4 border-[1.5px] border-[#24302A] bg-[#151C18] text-[16px] shadow-sm rounded-[24px]',
+          'h-[45.5px] pl-[45px] pr-4 border-[1.5px] border-border bg-card text-[16px] shadow-sm rounded-[24px]',
           inputClassName
         )}
         value={value}
@@ -174,18 +174,18 @@ export function ParkTrailSearchField({
       />
 
       {panelOpen && (
-        <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-20 bg-[#151C18] rounded-[14px] border-[1.5px] border-[#24302A] shadow-[0px_8px_24px_rgba(0,0,0,0.2)] overflow-hidden">
+        <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-20 bg-card rounded-[14px] border-[1.5px] border-border shadow-[0px_8px_24px_rgba(0,0,0,0.2)] overflow-hidden">
           {showHistory && (
             <div className="max-h-[320px] overflow-y-auto">
               <div className="px-4 pt-3 pb-1.5 flex items-center justify-between gap-2">
-                <p className="text-[10px] font-bold tracking-[1.2px] uppercase text-[#8B958C]">
+                <p className="text-[10px] font-bold tracking-[1.2px] uppercase text-muted-foreground">
                   {t('search_recent')}
                 </p>
                 <button
                   type="button"
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={clear}
-                  className="text-[12px] font-bold text-[#63B882]"
+                  className="text-[12px] font-bold text-primary"
                 >
                   {t('search_clear_history')}
                 </button>
@@ -199,10 +199,10 @@ export function ParkTrailSearchField({
                     type="button"
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => applyHistory(term)}
-                    className="flex-1 min-w-0 px-2 py-2.5 flex items-center gap-3 hover:bg-[#1A221C] text-left rounded-[10px]"
+                    className="flex-1 min-w-0 px-2 py-2.5 flex items-center gap-3 hover:bg-secondary text-left rounded-[10px]"
                   >
-                    <Clock className="size-4 text-[#8B958C] shrink-0" />
-                    <span className="text-[14px] font-bold text-[#E6EBE6] truncate">
+                    <Clock className="size-4 text-muted-foreground shrink-0" />
+                    <span className="text-[14px] font-bold text-foreground truncate">
                       {term}
                     </span>
                   </button>
@@ -211,7 +211,7 @@ export function ParkTrailSearchField({
                     aria-label={t('search_remove_history')}
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => remove(term)}
-                    className="size-9 flex items-center justify-center text-[#8B958C] hover:text-[#E6EBE6] shrink-0"
+                    className="size-9 flex items-center justify-center text-muted-foreground hover:text-foreground shrink-0"
                   >
                     <X className="size-4" />
                   </button>
@@ -223,14 +223,14 @@ export function ParkTrailSearchField({
           {showSuggestions && (
             <>
               {suggestions.parks.length === 0 && suggestions.trails.length === 0 ? (
-                <div className="p-4 text-[13px] text-[#9AA39C] text-center">
+                <div className="p-4 text-[13px] text-muted-foreground text-center">
                   {t('home_no_matches')} &ldquo;{value}&rdquo;
                 </div>
               ) : (
                 <div className="max-h-[360px] overflow-y-auto">
                   {suggestions.parks.length > 0 && (
                     <div>
-                      <p className="px-4 pt-3 pb-1.5 text-[10px] font-bold tracking-[1.2px] uppercase text-[#8B958C]">
+                      <p className="px-4 pt-3 pb-1.5 text-[10px] font-bold tracking-[1.2px] uppercase text-muted-foreground">
                         {t('park_plural')}
                       </p>
                       {suggestions.parks.map((p) => {
@@ -241,19 +241,19 @@ export function ParkTrailSearchField({
                             type="button"
                             onMouseDown={(e) => e.preventDefault()}
                             onClick={() => goPark(p.name)}
-                            className="w-full px-4 py-2.5 flex items-center gap-3 hover:bg-[#1A221C] text-left"
+                            className="w-full px-4 py-2.5 flex items-center gap-3 hover:bg-secondary text-left"
                           >
-                            <div className="size-9 rounded-full bg-[#1E3A28] flex items-center justify-center shrink-0">
+                            <div className="size-9 rounded-full bg-accent flex items-center justify-center shrink-0">
                               <MapPin className="size-4 text-white" />
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1.5 min-w-0">
-                                <p className="text-[14px] font-bold text-[#E6EBE6] truncate">
+                                <p className="text-[14px] font-bold text-foreground truncate">
                                   {p.name}
                                 </p>
                                 {isParkNameNew(parksMeta, p.name) && <NewParkBadge />}
                               </div>
-                              <p className="text-[12px] text-[#9AA39C] truncate">
+                              <p className="text-[12px] text-muted-foreground truncate">
                                 {p.city ? `${p.city}` : ''}
                                 {p.city && trailCount != null ? ' · ' : ''}
                                 {trailCount != null
@@ -261,15 +261,15 @@ export function ParkTrailSearchField({
                                   : ''}
                               </p>
                             </div>
-                            <ChevronRight className="size-4 text-[#8B958C]" />
+                            <ChevronRight className="size-4 text-muted-foreground" />
                           </button>
                         );
                       })}
                     </div>
                   )}
                   {suggestions.trails.length > 0 && (
-                    <div className={suggestions.parks.length > 0 ? 'border-t border-[#24302A]' : ''}>
-                      <p className="px-4 pt-3 pb-1.5 text-[10px] font-bold tracking-[1.2px] uppercase text-[#8B958C]">
+                    <div className={suggestions.parks.length > 0 ? 'border-t border-border' : ''}>
+                      <p className="px-4 pt-3 pb-1.5 text-[10px] font-bold tracking-[1.2px] uppercase text-muted-foreground">
                         {t('trail_plural')}
                       </p>
                       {suggestions.trails.map((trail) => {
@@ -282,20 +282,20 @@ export function ParkTrailSearchField({
                             type="button"
                             onMouseDown={(e) => e.preventDefault()}
                             onClick={() => goTrail(trail)}
-                            className="w-full px-4 py-2.5 flex items-center gap-3 hover:bg-[#1A221C] text-left"
+                            className="w-full px-4 py-2.5 flex items-center gap-3 hover:bg-secondary text-left"
                           >
-                            <div className="size-9 rounded-full bg-[#24302A] flex items-center justify-center shrink-0">
-                              <Mountain className="size-4 text-[#63B882]" />
+                            <div className="size-9 rounded-full bg-muted flex items-center justify-center shrink-0">
+                              <Mountain className="size-4 text-primary" />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-[14px] font-bold text-[#E6EBE6] truncate">
+                              <p className="text-[14px] font-bold text-foreground truncate">
                                 {displayName}
                               </p>
-                              <p className="text-[12px] text-[#9AA39C] truncate">
+                              <p className="text-[12px] text-muted-foreground truncate">
                                 {trail.location || t('trail_singular')}
                               </p>
                             </div>
-                            <ChevronRight className="size-4 text-[#8B958C]" />
+                            <ChevronRight className="size-4 text-muted-foreground" />
                           </button>
                         );
                       })}

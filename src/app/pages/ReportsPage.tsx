@@ -23,10 +23,10 @@ function statusShareLabel(status: 'green' | 'yellow' | 'red'): TranslationKey {
 }
 
 const STATUS_FILTERS: { value: 'all' | 'green' | 'yellow' | 'red'; labelKey: TranslationKey; dot: string | null; bg: string; text: string }[] = [
-  { value: 'all', labelKey: 'reports_all', dot: null, bg: '#63B882', text: '#0E1510' },
-  { value: 'green', labelKey: 'reports_filter_good', dot: '#63b882', bg: '#12352a', text: '#63b882' },
-  { value: 'yellow', labelKey: 'reports_filter_caution', dot: '#C9A84A', bg: '#3a2e12', text: '#C9A84A' },
-  { value: 'red', labelKey: 'reports_filter_closed', dot: '#C97A7A', bg: '#3a1616', text: '#C97A7A' },
+  { value: 'all', labelKey: 'reports_all', dot: null, bg: 'var(--primary)', text: 'var(--primary-foreground)' },
+  { value: 'green', labelKey: 'reports_filter_good', dot: 'var(--status-green-foreground)', bg: 'var(--status-green)', text: 'var(--status-green-foreground)' },
+  { value: 'yellow', labelKey: 'reports_filter_caution', dot: 'var(--status-yellow-foreground)', bg: 'var(--status-yellow)', text: 'var(--status-yellow-foreground)' },
+  { value: 'red', labelKey: 'reports_filter_closed', dot: 'var(--status-red-foreground)', bg: 'var(--status-red)', text: 'var(--status-red-foreground)' },
 ];
 
 export function ReportsPage() {
@@ -86,21 +86,21 @@ export function ReportsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0E1510]">
+    <div className="min-h-screen bg-background">
       <div className="px-4 pt-3.5">
         <BackButton />
       </div>
 
       <div className="px-5 pt-6 pb-4">
-        <h1 className="text-[24px] font-bold text-[#E6EBE6] mb-1">{t('reports_title')}</h1>
-        <p className="text-[14px] text-[#A8C4A0] mb-5">{t('reports_grouped_by')}</p>
+        <h1 className="text-[24px] font-bold text-foreground mb-1">{t('reports_title')}</h1>
+        <p className="text-[14px] text-accent-foreground mb-5">{t('reports_grouped_by')}</p>
 
         <div className="relative">
-          <Search className="absolute left-[17.5px] top-1/2 -translate-y-1/2 size-[18px] text-[#8B958C]" />
+          <Search className="absolute left-[17.5px] top-1/2 -translate-y-1/2 size-[18px] text-muted-foreground" />
           <Input
             type="text"
             placeholder={t('reports_search_placeholder')}
-            className="h-[45.5px] pl-[45px] pr-4 border-[1.5px] border-[#24302A] bg-[#151C18] text-[16px] shadow-sm rounded-[24px]"
+            className="h-[45.5px] pl-[45px] pr-4 border-[1.5px] border-border bg-card text-[16px] shadow-sm rounded-[24px]"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -154,18 +154,18 @@ export function ReportsPage() {
         )}
 
         {!isLoading && filtered.length === 0 && (
-          <div className="bg-[#151C18] rounded-[16px] border-[1.5px] border-[#24302A] shadow-sm p-8 text-center">
-            <div className="size-12 rounded-full bg-[#24302A] flex items-center justify-center mx-auto mb-4">
+          <div className="bg-card rounded-[16px] border-[1.5px] border-border shadow-sm p-8 text-center">
+            <div className="size-12 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
               {q || statusFilter !== 'all' ? (
-                <Search className="size-6 text-[#9AA39C]" />
+                <Search className="size-6 text-muted-foreground" />
               ) : (
-                <FileText className="size-6 text-[#9AA39C]" />
+                <FileText className="size-6 text-muted-foreground" />
               )}
             </div>
-            <h3 className="text-[15.5px] font-bold text-[#E6EBE6] mb-2">
+            <h3 className="text-[15.5px] font-bold text-foreground mb-2">
               {q || statusFilter !== 'all' ? t('reports_no_match') : t('reports_none_yet')}
             </h3>
-            <p className="text-[13px] text-[#9AA39C]">
+            <p className="text-[13px] text-muted-foreground">
               {q || statusFilter !== 'all' ? t('reports_no_match_hint') : t('reports_none_yet_hint')}
             </p>
           </div>
@@ -185,13 +185,13 @@ export function ReportsPage() {
                 return (
                   <div
                     key={park}
-                    className="bg-[#151C18] border-[1.5px] border-[#24302A] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] overflow-hidden rounded-[32px]"
+                    className="bg-card border-[1.5px] border-border shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] overflow-hidden rounded-[32px]"
                   >
                     {/* Park header — main area opens overview, chevron toggles reports */}
                     <div className="flex items-stretch">
                       <button
                         onClick={() => navigate(`/parks/${encodeURIComponent(park)}`)}
-                        className="flex-1 min-w-0 p-[15.5px] flex items-center gap-3.5 text-left hover:bg-[#1A221C] transition-colors rounded-l-[32px] rounded-r-[0px]"
+                        className="flex-1 min-w-0 p-[15.5px] flex items-center gap-3.5 text-left hover:bg-secondary transition-colors rounded-l-[32px] rounded-r-[0px]"
                       >
                         <StatusWithHazards
                           status={byPark.get(park)?.status ?? null}
@@ -199,13 +199,13 @@ export function ReportsPage() {
                           conditions={parkHazards.map((h) => h.tag)}
                         />
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#E6EBE6] truncate">
+                          <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-foreground truncate">
                             {parkTitle}
                           </h3>
-                          <p className="text-[13px] text-[#9AA39C] truncate">
+                          <p className="text-[13px] text-muted-foreground truncate">
                             {city ?? ''}
                           </p>
-                          <p className="text-[12px] text-[#8B958C] mt-0.5">
+                          <p className="text-[12px] text-muted-foreground mt-0.5">
                             {parkReports!.length} {parkReports!.length === 1 ? t('home_report') : t('home_reports')}
                             {latestAgo && <span> · {latestAgo}</span>}
                           </p>
@@ -215,11 +215,11 @@ export function ReportsPage() {
                         onClick={() => toggle(park)}
                         aria-expanded={isOpen}
                         aria-label={isOpen ? `Collapse ${parkTitle} reports` : `Expand ${parkTitle} reports`}
-                        className="shrink-0 px-4 flex items-center justify-center border-l-[1.5px] border-[#24302A] hover:bg-[#1A221C] transition-colors disabled:opacity-40"
+                        className="shrink-0 px-4 flex items-center justify-center border-l-[1.5px] border-border hover:bg-secondary transition-colors disabled:opacity-40"
                         disabled={forceOpen}
                       >
                         <ChevronDown
-                          className={`size-5 text-[#8B958C] transition-transform ${
+                          className={`size-5 text-muted-foreground transition-transform ${
                             isOpen ? 'rotate-180' : ''
                           }`}
                         />
@@ -228,7 +228,7 @@ export function ReportsPage() {
 
                     {/* Nested reports */}
                     {isOpen && (
-                      <div className="border-t-[1.5px] border-[#24302A]">
+                      <div className="border-t-[1.5px] border-border">
                         {parkReports!.map((report) => {
                           const isParkReport = !report.trail_id && !!report.park_name;
                           const rawTrailName = report.trails?.name;
@@ -242,13 +242,13 @@ export function ReportsPage() {
                           return (
                             <div
                               key={report.id}
-                              className="w-full pl-[18px] pr-2 py-3 flex items-start gap-2 border-b-[1.5px] border-[#24302A] last:border-b-0"
+                              className="w-full pl-[18px] pr-2 py-3 flex items-start gap-2 border-b-[1.5px] border-border last:border-b-0"
                             >
                               <button
                                 type="button"
                                 onClick={() => path && navigate(path)}
                                 disabled={!path}
-                                className="flex-1 min-w-0 flex items-start gap-3 text-left hover:bg-[#1A221C] transition-colors rounded-[12px] py-0.5 disabled:opacity-50"
+                                className="flex-1 min-w-0 flex items-start gap-3 text-left hover:bg-secondary transition-colors rounded-[12px] py-0.5 disabled:opacity-50"
                               >
                                 <StatusWithHazards
                                   status={report.status}
@@ -257,21 +257,21 @@ export function ReportsPage() {
                                   className="mt-0.5"
                                 />
                                 <div className="flex-1 min-w-0">
-                                  <h4 className="text-[14px] font-bold tracking-[-0.2px] text-[#E6EBE6] truncate">
+                                  <h4 className="text-[14px] font-bold tracking-[-0.2px] text-foreground truncate">
                                     {trailName}
                                   </h4>
-                                  <p className="text-[12px] text-[#8B958C]">
+                                  <p className="text-[12px] text-muted-foreground">
                                     {formatRelativeTime(report.created_at, lang)}
                                     {getOverallRating(report.conditions) && ' · '}
                                     <OverallRatingLabel conditions={report.conditions} />
                                   </p>
                                   {notes && (
-                                    <p className="text-[13px] text-[#9AA39C] leading-[19px] mt-1 line-clamp-2">
+                                    <p className="text-[13px] text-muted-foreground leading-[19px] mt-1 line-clamp-2">
                                       {notes}
                                     </p>
                                   )}
                                 </div>
-                                <ChevronRight className="size-4 text-[#8B958C] shrink-0 mt-1" />
+                                <ChevronRight className="size-4 text-muted-foreground shrink-0 mt-1" />
                               </button>
                               {path && (
                                 <ShareButton
@@ -281,7 +281,7 @@ export function ReportsPage() {
                                   text={t('share_report_text').replace('{name}', trailName)}
                                   status={report.status}
                                   statusLabel={t(statusShareLabel(report.status))}
-                                  className="shadow-none border-[1.5px] border-[#24302A] bg-[#151C18] mt-0.5"
+                                  className="shadow-none border-[1.5px] border-border bg-card mt-0.5"
                                 />
                               )}
                             </div>

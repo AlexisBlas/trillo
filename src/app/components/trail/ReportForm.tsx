@@ -119,7 +119,7 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
       <section>
         <h2
           id={overallLabelId}
-          className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#9AA39C] mb-3"
+          className="text-[11px] font-bold tracking-[1.2px] uppercase text-muted-foreground mb-3"
         >
           {t('form_condition_label')}
         </h2>
@@ -156,8 +156,8 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
                 className={cn(
                   'h-[78px] border-[1.5px] flex flex-col items-center justify-center gap-1 transition-colors rounded-[20px]',
                   active
-                    ? 'bg-[#63B882] border-[#63B882] text-[#0E1510]'
-                    : 'bg-[#151C18] border-[#24302A] text-[#E6EBE6]',
+                    ? 'bg-primary border-primary text-primary-foreground'
+                    : 'bg-card border-border text-foreground',
                   !allowed && 'opacity-35 cursor-not-allowed'
                 )}
               >
@@ -172,7 +172,7 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
             id={wetHintId}
             role="status"
             aria-live="polite"
-            className="mt-2 text-[12px] text-[#8B958C]"
+            className="mt-2 text-[12px] text-muted-foreground"
           >
             {t('form_overall_wet_hint')}
           </p>
@@ -183,7 +183,7 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
       <section>
         <h2
           id={surfaceLabelId}
-          className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#9AA39C] mb-3"
+          className="text-[11px] font-bold tracking-[1.2px] uppercase text-muted-foreground mb-3"
         >
           {t('form_surface_label')}
         </h2>
@@ -217,8 +217,8 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
                 className={cn(
                   'h-[78px] border-[1.5px] flex flex-col items-center justify-center gap-1 transition-colors rounded-[20px]',
                   active
-                    ? 'text-[#0E1510]'
-                    : 'bg-[#151C18] border-[#24302A] text-[#E6EBE6]'
+                    ? 'text-primary-foreground'
+                    : 'bg-card border-border text-foreground'
                 )}
                 style={
                   active
@@ -242,11 +242,11 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
         <div className="flex items-center justify-between mb-3">
           <h2
             id={hazardsLabelId}
-            className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#9AA39C]"
+            className="text-[11px] font-bold tracking-[1.2px] uppercase text-muted-foreground"
           >
             {t('form_hazards_label')}
           </h2>
-          <span className="text-[12px] text-[#8B958C]">{t('form_select_hazards')}</span>
+          <span className="text-[12px] text-muted-foreground">{t('form_select_hazards')}</span>
         </div>
         <div
           className="flex flex-wrap gap-2"
@@ -260,8 +260,8 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
             className={cn(
               'h-9 px-4 rounded-full border-[1.5px] text-[13px] font-bold transition-colors inline-flex items-center gap-1.5',
               hazards.length === 0
-                ? 'bg-[#63B882] border-[#63B882] text-[#0E1510]'
-                : 'bg-[#151C18] border-[#24302A] text-[#E6EBE6]'
+                ? 'bg-primary border-primary text-primary-foreground'
+                : 'bg-card border-border text-foreground'
             )}
           >
             {t('hazard_none')}
@@ -277,8 +277,8 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
                 className={cn(
                   'h-9 px-4 rounded-full border-[1.5px] text-[13px] font-bold transition-colors inline-flex items-center gap-1.5',
                   active
-                    ? 'bg-[#63B882] border-[#63B882] text-[#0E1510]'
-                    : 'bg-[#151C18] border-[#24302A] text-[#E6EBE6]'
+                    ? 'bg-primary border-primary text-primary-foreground'
+                    : 'bg-card border-border text-foreground'
                 )}
               >
                 {active && <Check className="size-3.5 shrink-0" strokeWidth={2.5} />}
@@ -291,18 +291,18 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
 
       {/* Notes */}
       <section>
-        <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#9AA39C] mb-3">
+        <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-muted-foreground mb-3">
           {t('form_notes_label')}
         </h2>
-        <div className="bg-[#151C18] rounded-[14px] border-[1.5px] border-[#24302A] p-4">
+        <div className="bg-card rounded-[14px] border-[1.5px] border-border p-4">
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value.slice(0, 250))}
             placeholder={t('form_notes_submit_placeholder')}
-            className="w-full min-h-[100px] text-[16px] text-[#E6EBE6] placeholder:text-[#8B958C] resize-none outline-none"
+            className="w-full min-h-[100px] text-[16px] text-foreground placeholder:text-muted-foreground resize-none outline-none"
             maxLength={250}
           />
-          <p className="text-right text-[12px] text-[#8B958C] mt-2">{notes.length}/250</p>
+          <p className="text-right text-[12px] text-muted-foreground mt-2">{notes.length}/250</p>
         </div>
       </section>
 
@@ -310,7 +310,7 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full h-[53px] bg-[#63B882] rounded-[14px] text-[#0E1510] text-[13px] font-bold tracking-[1.5px] disabled:opacity-60"
+        className="w-full h-[53px] bg-primary rounded-[14px] text-primary-foreground text-[13px] font-bold tracking-[1.5px] disabled:opacity-60"
       >
         {isSubmitting ? t('form_submitting').toUpperCase() : t('form_submit').toUpperCase()}
       </button>

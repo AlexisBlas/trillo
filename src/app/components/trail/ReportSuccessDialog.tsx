@@ -47,15 +47,15 @@ export function ReportSuccessDialog({
 }: ReportSuccessDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[340px] rounded-[20px] border-[1.5px] border-[#24302A] p-6 text-center">
+      <DialogContent className="max-w-[340px] rounded-[20px] border-[1.5px] border-border p-6 text-center">
         <DialogHeader className="items-center space-y-0">
           <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-[#d1fae5] border border-[#065f46]">
             <Check className="size-8 text-[#065f46]" strokeWidth={2.6} />
           </div>
-          <DialogTitle className="text-[19px] font-bold text-[#E6EBE6]">
+          <DialogTitle className="text-[19px] font-bold text-foreground">
             {title}
           </DialogTitle>
-          <DialogDescription className="text-[14px] leading-relaxed text-[#A8C4A0] pt-1.5">
+          <DialogDescription className="text-[14px] leading-relaxed text-accent-foreground pt-1.5">
             {description}
           </DialogDescription>
         </DialogHeader>
@@ -63,7 +63,7 @@ export function ReportSuccessDialog({
         <div className="mt-5 flex flex-col gap-2.5">
           <button
             onClick={onAction}
-            className="h-12 w-full inline-flex items-center justify-center rounded-[14px] bg-[#63B882] text-[#0E1510] text-[15px] font-bold hover:bg-[#52A06E] transition-colors"
+            className="h-12 w-full inline-flex items-center justify-center rounded-[14px] bg-primary text-primary-foreground text-[15px] font-bold hover:bg-[color:var(--primary-dark)] transition-colors"
           >
             {actionLabel}
           </button>

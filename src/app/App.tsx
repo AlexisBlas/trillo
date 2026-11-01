@@ -2,6 +2,7 @@ import { RouterProvider } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './contexts/AuthContext';
 import { LangProvider } from './contexts/LangContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { Toaster } from './components/ui/sonner';
 import { router } from './router';
 import { useIsMobile } from './hooks/useIsMobile';
@@ -25,20 +26,24 @@ export default function App() {
 
   if (!isMobile && !isAdminPath() && !isAppEmbed()) {
     return (
-      <LangProvider>
-        <LandingPage />
-      </LangProvider>
+      <ThemeProvider>
+        <LangProvider>
+          <LandingPage />
+        </LangProvider>
+      </ThemeProvider>
     );
   }
 
   return (
-    <LangProvider>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <RouterProvider router={router} />
-          <Toaster />
-        </AuthProvider>
-      </QueryClientProvider>
-    </LangProvider>
+    <ThemeProvider>
+      <LangProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <RouterProvider router={router} />
+            <Toaster />
+          </AuthProvider>
+        </QueryClientProvider>
+      </LangProvider>
+    </ThemeProvider>
   );
 }

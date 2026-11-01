@@ -1,6 +1,13 @@
 @custom-variant dark (&:is(.dark *));
+@custom-variant light (&:is(.light *));
 
-:root {
+/*
+  Palette inspired by the camping travel reference:
+  cream canvas, deep forest primary, sage secondary, terracotta highlight.
+  Default = dark (ThemeProvider also sets .dark on <html>).
+*/
+:root,
+.dark {
   color-scheme: dark;
 
   /* Typography */
@@ -10,111 +17,152 @@
   --font-weight-medium: 500;
   --font-weight-normal: 400;
 
-  /* Dark forest + mint — matched to the attached reference screens */
-  --background: #0e1510;
-  --foreground: #e6ebe6;
-  --card: #151c18;
-  --card-foreground: #e6ebe6;
-  --popover: #151c18;
-  --popover-foreground: #e6ebe6;
+  /* Dark forest night — cream inverted */
+  --background: #141c17;
+  --foreground: #f3f0e8;
+  --card: #1c2620;
+  --card-foreground: #f3f0e8;
+  --popover: #1c2620;
+  --popover-foreground: #f3f0e8;
 
-  --primary: #63b882;
-  --primary-foreground: #0e1510;
-  --primary-dark: #52a06e;
+  --primary: #8fa189;
+  --primary-foreground: #141c17;
+  --primary-dark: #7a8d74;
 
-  --secondary: #1a221c;
-  --secondary-foreground: #e6ebe6;
+  --secondary: #24302a;
+  --secondary-foreground: #f3f0e8;
 
-  --muted: #1a221c;
-  --muted-foreground: #9aa39c;
+  --muted: #24302a;
+  --muted-foreground: #a8b0a4;
 
-  --accent: #1e3a28;
-  --accent-foreground: #63b882;
+  --accent: #2d4739;
+  --accent-foreground: #d4e0d2;
 
-  --destructive: #C96B6B;
+  --highlight: #d97d45;
+  --highlight-foreground: #ffffff;
+
+  --destructive: #c96b6b;
   --destructive-foreground: #ffffff;
 
-  --border: #24302a;
-  --border-light: #24302a;
-  --input: #24302a;
-  --input-background: #151c18;
-  --switch-background: #2a3630;
+  --border: #2f3c34;
+  --border-light: #2f3c34;
+  --input: #2f3c34;
+  --input-background: #1c2620;
+  --switch-background: #3a4840;
 
-  --ring: #63b882;
+  --ring: #8fa189;
 
-  --status-green: #12352a;
-  --status-green-foreground: #63b882;
-  --status-blue: #132a3a;
-  --status-blue-foreground: #7dd3fc;
-  --status-yellow: #3a2e12;
-  --status-yellow-foreground: #C9A84A;
-  --status-red: #3a1616;
-  --status-red-foreground: #C97A7A;
+  --status-green: #1a2e22;
+  --status-green-foreground: #8fa189;
+  --status-blue: #1a2832;
+  --status-blue-foreground: #7db3d4;
+  --status-yellow: #2e2618;
+  --status-yellow-foreground: #d9b068;
+  --status-red: #2e1a1a;
+  --status-red-foreground: #d48888;
 
-  --icon-green: #1e3a28;
+  --icon-green: #2d4739;
   --icon-blue: #2563eb;
-  --icon-yellow: #8b6914;
+  --icon-yellow: #d97d45;
 
-  --text-primary: #e6ebe6;
-  --text-secondary: #9aa39c;
-  --text-tertiary: #8b958c;
+  --text-primary: #f3f0e8;
+  --text-secondary: #a8b0a4;
+  --text-tertiary: #8a9288;
+
+  --overlay: rgba(10, 14, 12, 0.5);
 
   --radius: 1rem;
   --radius-sm: 0.875rem;
   --radius-md: 1rem;
   --radius-lg: 1.5rem;
 
-  --sidebar: #0e1510;
-  --sidebar-foreground: #e6ebe6;
-  --sidebar-primary: #63b882;
-  --sidebar-primary-foreground: #0e1510;
-  --sidebar-accent: #1a221c;
-  --sidebar-accent-foreground: #63b882;
-  --sidebar-border: #24302a;
-  --sidebar-ring: #63b882;
+  --sidebar: #141c17;
+  --sidebar-foreground: #f3f0e8;
+  --sidebar-primary: #8fa189;
+  --sidebar-primary-foreground: #141c17;
+  --sidebar-accent: #24302a;
+  --sidebar-accent-foreground: #d4e0d2;
+  --sidebar-border: #2f3c34;
+  --sidebar-ring: #8fa189;
+
+  --chart-1: #8fa189;
+  --chart-2: #2d4739;
+  --chart-3: #d97d45;
+  --chart-4: #d9b068;
+  --chart-5: #d48888;
 }
 
-.dark {
-  --background: #0e1510;
-  --foreground: #e6ebe6;
-  --card: #151c18;
-  --card-foreground: #e6ebe6;
-  --popover: #151c18;
-  --popover-foreground: #e6ebe6;
-  --primary: #63b882;
-  --primary-foreground: #0e1510;
-  --secondary: #1a221c;
-  --secondary-foreground: #e6ebe6;
-  --muted: #1a221c;
-  --muted-foreground: #9aa39c;
-  --accent: #1e3a28;
-  --accent-foreground: #63b882;
-  --destructive: #C96B6B;
+.light {
+  color-scheme: light;
+
+  /* Warm cream canvas + deep forest + terracotta */
+  --background: #f9f7f2;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+
+  --primary: #2d4739;
+  --primary-foreground: #ffffff;
+  --primary-dark: #243a2e;
+
+  --secondary: #f2eee3;
+  --secondary-foreground: #1a1a1a;
+
+  --muted: #f2eee3;
+  --muted-foreground: #707070;
+
+  --accent: #e8efe6;
+  --accent-foreground: #2d4739;
+
+  --highlight: #d97d45;
+  --highlight-foreground: #ffffff;
+
+  --destructive: #c96b6b;
   --destructive-foreground: #ffffff;
-  --border: #24302a;
-  --input: #24302a;
-  --ring: #63b882;
-  --font-weight-medium: 500;
-  --font-weight-normal: 400;
-  --chart-1: #63b882;
-  --chart-2: #52a06e;
-  --chart-3: #a8c4a0;
-  --chart-4: #C9A84A;
-  --chart-5: #C97A7A;
-  --status-green: #12352a;
-  --status-green-foreground: #63b882;
-  --status-yellow: #3a2e12;
-  --status-yellow-foreground: #C9A84A;
-  --status-red: #3a1616;
-  --status-red-foreground: #C97A7A;
-  --sidebar: #0e1510;
-  --sidebar-foreground: #e6ebe6;
-  --sidebar-primary: #63b882;
-  --sidebar-primary-foreground: #0e1510;
-  --sidebar-accent: #1a221c;
-  --sidebar-accent-foreground: #63b882;
-  --sidebar-border: #24302a;
-  --sidebar-ring: #63b882;
+
+  --border: #e4dfd4;
+  --border-light: #e4dfd4;
+  --input: #e4dfd4;
+  --input-background: #ffffff;
+  --switch-background: #d9d3c6;
+
+  --ring: #2d4739;
+
+  --status-green: #e6efe8;
+  --status-green-foreground: #2d4739;
+  --status-blue: #e8f1f6;
+  --status-blue-foreground: #3a6d8c;
+  --status-yellow: #f7eedc;
+  --status-yellow-foreground: #9a6b1e;
+  --status-red: #f6e6e4;
+  --status-red-foreground: #a84a3a;
+
+  --icon-green: #e8efe6;
+  --icon-blue: #2563eb;
+  --icon-yellow: #d97d45;
+
+  --text-primary: #1a1a1a;
+  --text-secondary: #707070;
+  --text-tertiary: #8a8a8a;
+
+  --overlay: rgba(26, 26, 26, 0.32);
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #2d4739;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f2eee3;
+  --sidebar-accent-foreground: #2d4739;
+  --sidebar-border: #e4dfd4;
+  --sidebar-ring: #2d4739;
+
+  --chart-1: #2d4739;
+  --chart-2: #8fa189;
+  --chart-3: #d97d45;
+  --chart-4: #9a6b1e;
+  --chart-5: #a84a3a;
 }
 
 @theme inline {
@@ -126,6 +174,8 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-highlight: var(--highlight);
+  --color-highlight-foreground: var(--highlight-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -175,11 +225,6 @@
     @apply bg-background text-foreground;
     font-family: var(--font-family);
   }
-
-  /**
-  * Default typography styles for HTML elements (h1-h4, p, label, button, input).
-  * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
-  */
 
   html {
     font-size: var(--font-size);

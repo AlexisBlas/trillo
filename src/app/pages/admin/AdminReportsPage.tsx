@@ -45,19 +45,19 @@ function EditModal({ report, onClose }: { report: AdminReport; onClose: () => vo
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
       <div
-        className="bg-[#151C18] rounded-[20px] p-6 w-full max-w-md shadow-xl"
+        className="bg-card rounded-[20px] p-6 w-full max-w-md shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-[16px] font-bold text-[#E6EBE6]">Edit Report</h2>
-          <button onClick={onClose} className="size-7 flex items-center justify-center rounded-full hover:bg-[#24302A]">
-            <X className="size-4 text-[#8B958C]" />
+          <h2 className="text-[16px] font-bold text-foreground">Edit Report</h2>
+          <button onClick={onClose} className="size-7 flex items-center justify-center rounded-full hover:bg-muted">
+            <X className="size-4 text-muted-foreground" />
           </button>
         </div>
 
         {/* Status */}
         <div className="mb-4">
-          <label className="block text-[12px] font-bold text-[#9AA39C] mb-2">Status</label>
+          <label className="block text-[12px] font-bold text-muted-foreground mb-2">Status</label>
           <div className="flex gap-2">
             {(['green', 'yellow', 'red'] as const).map((s) => (
               <button
@@ -69,7 +69,7 @@ function EditModal({ report, onClose }: { report: AdminReport; onClose: () => vo
                     ? s === 'green' ? 'bg-green-600 text-white border-green-600'
                       : s === 'yellow' ? 'bg-yellow-500 text-white border-yellow-500'
                       : 'bg-red-500 text-white border-red-500'
-                    : 'bg-[#151C18] text-[#9AA39C] border-[#24302A] hover:border-[#63B882]'
+                    : 'bg-card text-muted-foreground border-border hover:border-primary'
                 )}
               >
                 {STATUS_LABELS[s]}
@@ -80,11 +80,11 @@ function EditModal({ report, onClose }: { report: AdminReport; onClose: () => vo
 
         {/* Move to trail */}
         <div className="mb-4">
-          <label className="block text-[12px] font-bold text-[#9AA39C] mb-1.5">Trail</label>
+          <label className="block text-[12px] font-bold text-muted-foreground mb-1.5">Trail</label>
           <select
             value={trailId}
             onChange={(e) => setTrailId(e.target.value)}
-            className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[13px] text-[#9AA39C] bg-[#151C18] focus:outline-none"
+            className="w-full border border-border rounded-[10px] px-3 h-10 text-[13px] text-muted-foreground bg-card focus:outline-none"
           >
             <option value="">Park overview / none</option>
             {(trails ?? []).map((t) => (
@@ -95,23 +95,23 @@ function EditModal({ report, onClose }: { report: AdminReport; onClose: () => vo
 
         {/* Notes */}
         <div className="mb-5">
-          <label className="block text-[12px] font-bold text-[#9AA39C] mb-1.5">Notes</label>
+          <label className="block text-[12px] font-bold text-muted-foreground mb-1.5">Notes</label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={3}
-            className="w-full border border-[#24302A] rounded-[10px] px-3 py-2.5 text-[13px] text-[#E6EBE6] resize-none focus:outline-none"
+            className="w-full border border-border rounded-[10px] px-3 py-2.5 text-[13px] text-foreground resize-none focus:outline-none"
           />
         </div>
 
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#24302A] text-[13px] font-bold text-[#9AA39C] hover:bg-[#24302A]">
+          <button onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-border text-[13px] font-bold text-muted-foreground hover:bg-muted">
             Cancel
           </button>
           <button
             onClick={handleSave}
             disabled={update.isPending}
-            className="flex-1 h-10 rounded-[10px] bg-[#63B882] text-[#0E1510] text-[13px] font-bold hover:bg-[#52A06E] disabled:opacity-50"
+            className="flex-1 h-10 rounded-[10px] bg-primary text-primary-foreground text-[13px] font-bold hover:bg-[color:var(--primary-dark)] disabled:opacity-50"
           >
             {update.isPending ? 'Saving…' : 'Save'}
           </button>
@@ -126,16 +126,16 @@ function DeleteAllModal({ count, onClose }: { count: number; onClose: () => void
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
-      <div className="bg-[#151C18] rounded-[20px] p-6 w-full max-w-sm shadow-xl" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-card rounded-[20px] p-6 w-full max-w-sm shadow-xl" onClick={(e) => e.stopPropagation()}>
         <div className="size-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
           <AlertTriangle className="size-6 text-red-500" />
         </div>
-        <h2 className="text-[16px] font-bold text-[#E6EBE6] text-center mb-2">Delete all reports</h2>
-        <p className="text-[13px] text-[#9AA39C] text-center">
+        <h2 className="text-[16px] font-bold text-foreground text-center mb-2">Delete all reports</h2>
+        <p className="text-[13px] text-muted-foreground text-center">
           Permanently delete <strong>{count}</strong> {count === 1 ? 'report' : 'reports'}? They will disappear from the map and this cannot be undone.
         </p>
         <div className="flex gap-2 mt-5">
-          <button onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#24302A] text-[13px] font-bold text-[#9AA39C] hover:bg-[#24302A]">
+          <button onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-border text-[13px] font-bold text-muted-foreground hover:bg-muted">
             Cancel
           </button>
           <button
@@ -164,16 +164,16 @@ function DeleteModal({ report, onClose }: { report: AdminReport; onClose: () => 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
-      <div className="bg-[#151C18] rounded-[20px] p-6 w-full max-w-sm shadow-xl" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-card rounded-[20px] p-6 w-full max-w-sm shadow-xl" onClick={(e) => e.stopPropagation()}>
         <div className="size-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
           <AlertTriangle className="size-6 text-red-500" />
         </div>
-        <h2 className="text-[16px] font-bold text-[#E6EBE6] text-center mb-2">Delete Report</h2>
-        <p className="text-[13px] text-[#9AA39C] text-center">
+        <h2 className="text-[16px] font-bold text-foreground text-center mb-2">Delete Report</h2>
+        <p className="text-[13px] text-muted-foreground text-center">
           Delete this <strong>{report.status}</strong> report on <strong>{report.trail_name}</strong>?
         </p>
         <div className="flex gap-2 mt-5">
-          <button onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#24302A] text-[13px] font-bold text-[#9AA39C] hover:bg-[#24302A]">
+          <button onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-border text-[13px] font-bold text-muted-foreground hover:bg-muted">
             Cancel
           </button>
           <button
@@ -228,8 +228,8 @@ export function AdminReportsPage() {
     <div className="p-8">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-[24px] font-bold text-[#E6EBE6]">Reports</h1>
-          <p className="text-[14px] text-[#8B958C] mt-1">{totalReports} total</p>
+          <h1 className="text-[24px] font-bold text-foreground">Reports</h1>
+          <p className="text-[14px] text-muted-foreground mt-1">{totalReports} total</p>
         </div>
         <div className="flex gap-2">
           <button
@@ -244,12 +244,12 @@ export function AdminReportsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search reports…"
-            className="border border-[#24302A] rounded-[10px] px-3 h-9 text-[13px] text-[#9AA39C] bg-[#151C18] focus:outline-none w-[200px]"
+            className="border border-border rounded-[10px] px-3 h-9 text-[13px] text-muted-foreground bg-card focus:outline-none w-[200px]"
           />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="border border-[#24302A] rounded-[10px] px-3 h-9 text-[13px] text-[#9AA39C] bg-[#151C18] focus:outline-none"
+            className="border border-border rounded-[10px] px-3 h-9 text-[13px] text-muted-foreground bg-card focus:outline-none"
           >
             <option value="">All statuses</option>
             <option value="green">Green</option>
@@ -259,37 +259,37 @@ export function AdminReportsPage() {
         </div>
       </div>
 
-      <div className="bg-[#151C18] rounded-[16px] border border-[#24302A] overflow-hidden">
-        <div className="grid grid-cols-[1fr_1fr_80px_120px_80px] px-5 py-3 border-b border-[#24302A] bg-[#1A221C]">
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C]">Trail</p>
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C]">User</p>
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C] text-center">Status</p>
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C] text-center">Date</p>
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C] text-right">Actions</p>
+      <div className="bg-card rounded-[16px] border border-border overflow-hidden">
+        <div className="grid grid-cols-[1fr_1fr_80px_120px_80px] px-5 py-3 border-b border-border bg-secondary">
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-muted-foreground">Trail</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-muted-foreground">User</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-muted-foreground text-center">Status</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-muted-foreground text-center">Date</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-muted-foreground text-right">Actions</p>
         </div>
 
-        {isLoading && <div className="px-5 py-12 text-center text-[13px] text-[#8B958C]">Loading…</div>}
+        {isLoading && <div className="px-5 py-12 text-center text-[13px] text-muted-foreground">Loading…</div>}
         {!isLoading && error && (
           <div className="px-5 py-12 text-center text-[13px] text-red-600">
             Failed to load reports{error instanceof Error ? `: ${error.message}` : '.'}
           </div>
         )}
         {!isLoading && !error && filtered.length === 0 && (
-          <div className="px-5 py-12 text-center text-[13px] text-[#8B958C]">No reports found.</div>
+          <div className="px-5 py-12 text-center text-[13px] text-muted-foreground">No reports found.</div>
         )}
 
         {pageItems.map((report, i) => (
           <div
             key={report.id}
-            className={cn('grid grid-cols-[1fr_1fr_80px_120px_80px] px-5 py-3 items-center', i < pageItems.length - 1 && 'border-b border-[#24302A]')}
+            className={cn('grid grid-cols-[1fr_1fr_80px_120px_80px] px-5 py-3 items-center', i < pageItems.length - 1 && 'border-b border-border')}
           >
             <div className="min-w-0 pr-3">
-              <p className="text-[13px] font-semibold text-[#E6EBE6] truncate">{report.trail_name}</p>
-              <p className="text-[11px] text-[#8B958C] truncate">
+              <p className="text-[13px] font-semibold text-foreground truncate">{report.trail_name}</p>
+              <p className="text-[11px] text-muted-foreground truncate">
                 {report.trail_id ? (report.trail_location ?? '—') : 'Park overview'}
               </p>
             </div>
-            <p className="text-[12px] text-[#8B958C] truncate pr-3">
+            <p className="text-[12px] text-muted-foreground truncate pr-3">
               {report.user_email ?? 'Anonymous'}
             </p>
             <div className="flex justify-center">
@@ -297,19 +297,19 @@ export function AdminReportsPage() {
                 {STATUS_LABELS[report.status]}
               </span>
             </div>
-            <p className="text-[12px] text-[#8B958C] text-center">
+            <p className="text-[12px] text-muted-foreground text-center">
               {format(new Date(report.created_at), 'MMM d, yyyy')}
             </p>
             <div className="flex justify-end gap-1.5">
               <button
                 onClick={() => setEditing(report)}
-                className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#24302A] text-[#8B958C] hover:text-[#63B882] transition-colors"
+                className="size-8 flex items-center justify-center rounded-[8px] hover:bg-muted text-muted-foreground hover:text-primary transition-colors"
               >
                 <Pencil className="size-3.5" />
               </button>
               <button
                 onClick={() => setDeleting(report)}
-                className="size-8 flex items-center justify-center rounded-[8px] hover:bg-red-50 text-[#8B958C] hover:text-red-500 transition-colors"
+                className="size-8 flex items-center justify-center rounded-[8px] hover:bg-red-50 text-muted-foreground hover:text-red-500 transition-colors"
               >
                 <Trash2 className="size-3.5" />
               </button>

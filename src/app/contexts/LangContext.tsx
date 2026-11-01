@@ -49,6 +49,9 @@ const translations = {
     email_label: 'Email',
     // Hamburger menu
     menu_language: 'Language',
+    menu_appearance: 'Appearance',
+    theme_light: 'Light',
+    theme_dark: 'Dark',
     menu_about: 'About',
     menu_version: 'Version',
     lang_en: 'English',
@@ -304,6 +307,9 @@ const translations = {
     email_label: 'Correo electrónico',
     // Hamburger menu
     menu_language: 'Idioma',
+    menu_appearance: 'Apariencia',
+    theme_light: 'Claro',
+    theme_dark: 'Oscuro',
     menu_about: 'Acerca de',
     menu_version: 'Versión',
     lang_en: 'English',

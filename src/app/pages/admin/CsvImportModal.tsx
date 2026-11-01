@@ -84,13 +84,13 @@ function ColumnSelect({
 }) {
   return (
     <div>
-      <label className="block text-[12px] font-bold text-[#9AA39C] mb-1">
+      <label className="block text-[12px] font-bold text-muted-foreground mb-1">
         {label} {required && <span className="text-red-400">*</span>}
       </label>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full border border-[#24302A] rounded-[10px] px-3 h-9 text-[13px] text-[#9AA39C] bg-[#151C18] focus:outline-none"
+        className="w-full border border-border rounded-[10px] px-3 h-9 text-[13px] text-muted-foreground bg-card focus:outline-none"
       >
         <option value="">— skip —</option>
         {headers.map((h) => (
@@ -202,17 +202,17 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
       <div
-        className="bg-[#151C18] rounded-[20px] w-full max-w-xl shadow-xl flex flex-col max-h-[90vh]"
+        className="bg-card rounded-[20px] w-full max-w-xl shadow-xl flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-[#24302A] shrink-0">
+        <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-border shrink-0">
           <div>
-            <h2 className="text-[16px] font-bold text-[#E6EBE6]">Import from CSV</h2>
-            <p className="text-[12px] text-[#8B958C] mt-0.5">{stepLabels[step]}</p>
+            <h2 className="text-[16px] font-bold text-foreground">Import from CSV</h2>
+            <p className="text-[12px] text-muted-foreground mt-0.5">{stepLabels[step]}</p>
           </div>
-          <button onClick={onClose} className="size-7 flex items-center justify-center rounded-full hover:bg-[#24302A]">
-            <X className="size-4 text-[#8B958C]" />
+          <button onClick={onClose} className="size-7 flex items-center justify-center rounded-full hover:bg-muted">
+            <X className="size-4 text-muted-foreground" />
           </button>
         </div>
 
@@ -229,23 +229,23 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
                 onClick={() => fileRef.current?.click()}
                 className={cn(
                   'border-2 border-dashed rounded-[16px] p-10 flex flex-col items-center gap-3 cursor-pointer transition-colors',
-                  dragOver ? 'border-[#63B882] bg-[#24302A]' : 'border-[#24302A] hover:border-[#63B882] hover:bg-[#1A221C]'
+                  dragOver ? 'border-primary bg-muted' : 'border-border hover:border-primary hover:bg-secondary'
                 )}
               >
-                <div className="size-12 rounded-full bg-[#24302A] flex items-center justify-center">
-                  <Upload className="size-5 text-[#63B882]" />
+                <div className="size-12 rounded-full bg-muted flex items-center justify-center">
+                  <Upload className="size-5 text-primary" />
                 </div>
                 <div className="text-center">
-                  <p className="text-[14px] font-bold text-[#E6EBE6]">Drop your CSV here</p>
-                  <p className="text-[12px] text-[#8B958C] mt-1">or click to browse</p>
+                  <p className="text-[14px] font-bold text-foreground">Drop your CSV here</p>
+                  <p className="text-[12px] text-muted-foreground mt-1">or click to browse</p>
                 </div>
                 <input ref={fileRef} type="file" accept=".csv,text/csv" className="hidden" onChange={onFileChange} />
               </div>
-              <div className="mt-5 bg-[#1A221C] rounded-[12px] border border-[#24302A] p-4">
-                <p className="text-[12px] font-bold text-[#9AA39C] mb-2 flex items-center gap-1.5">
+              <div className="mt-5 bg-secondary rounded-[12px] border border-border p-4">
+                <p className="text-[12px] font-bold text-muted-foreground mb-2 flex items-center gap-1.5">
                   <FileText className="size-3.5" /> Trailforks export tip
                 </p>
-                <p className="text-[12px] text-[#8B958C] leading-relaxed">
+                <p className="text-[12px] text-muted-foreground leading-relaxed">
                   On any Trailforks region page, scroll to the trail list and use the export button (CSV).
                   You'll get columns like <strong>Title</strong> and <strong>Region</strong> — Trillo will auto-map these.
                 </p>
@@ -256,7 +256,7 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
           {/* Step: map */}
           {step === 'map' && (
             <div>
-              <p className="text-[13px] text-[#8B958C] mb-4">
+              <p className="text-[13px] text-muted-foreground mb-4">
                 {rows.length} rows found. Map your CSV columns to Trillo trail fields.
               </p>
               <div className="grid grid-cols-2 gap-3">
@@ -264,7 +264,7 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
                 <ColumnSelect label="Park / Location" headers={headers} value={mapping.location} onChange={setMap('location')} />
                 <ColumnSelect label="QR Code" headers={headers} value={mapping.qr_code} onChange={setMap('qr_code')} />
               </div>
-              <p className="text-[11px] text-[#8B958C] mt-4">
+              <p className="text-[11px] text-muted-foreground mt-4">
                 {mappedRows.length} trails will be imported ({rows.length - mappedRows.length} rows skipped — missing name).
               </p>
             </div>
@@ -273,26 +273,26 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
           {/* Step: preview */}
           {step === 'preview' && (
             <div>
-              <p className="text-[13px] text-[#8B958C] mb-3">
+              <p className="text-[13px] text-muted-foreground mb-3">
                 Showing first {previewRows.length} of {mappedRows.length} trails. Existing trails with the same name will be skipped.
               </p>
-              <div className="rounded-[12px] border border-[#24302A] overflow-hidden">
-                <div className="grid grid-cols-[1fr_1fr] px-4 py-2.5 bg-[#1A221C] border-b border-[#24302A]">
-                  <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C]">Name</p>
-                  <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C]">Park</p>
+              <div className="rounded-[12px] border border-border overflow-hidden">
+                <div className="grid grid-cols-[1fr_1fr] px-4 py-2.5 bg-secondary border-b border-border">
+                  <p className="text-[11px] font-bold tracking-[1px] uppercase text-muted-foreground">Name</p>
+                  <p className="text-[11px] font-bold tracking-[1px] uppercase text-muted-foreground">Park</p>
                 </div>
                 {previewRows.map((r, i) => {
                   const row = mappedRows[i];
                   return (
-                    <div key={i} className={cn('grid grid-cols-[1fr_1fr] px-4 py-2.5', i < previewRows.length - 1 && 'border-b border-[#24302A]')}>
-                      <p className="text-[13px] font-medium text-[#E6EBE6] truncate pr-3">{row?.name || '—'}</p>
-                      <p className="text-[13px] text-[#8B958C] truncate">{row?.location || '—'}</p>
+                    <div key={i} className={cn('grid grid-cols-[1fr_1fr] px-4 py-2.5', i < previewRows.length - 1 && 'border-b border-border')}>
+                      <p className="text-[13px] font-medium text-foreground truncate pr-3">{row?.name || '—'}</p>
+                      <p className="text-[13px] text-muted-foreground truncate">{row?.location || '—'}</p>
                     </div>
                   );
                 })}
               </div>
               {mappedRows.length > 5 && (
-                <p className="text-[11px] text-[#8B958C] mt-2 text-center">…and {mappedRows.length - 5} more</p>
+                <p className="text-[11px] text-muted-foreground mt-2 text-center">…and {mappedRows.length - 5} more</p>
               )}
             </div>
           )}
@@ -305,11 +305,11 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
                   ? <AlertCircle className="size-7 text-amber-500" />
                   : <CheckCircle className="size-7 text-green-500" />}
               </div>
-              <p className="text-[18px] font-bold text-[#E6EBE6]">
+              <p className="text-[18px] font-bold text-foreground">
                 {result.inserted} trail{result.inserted !== 1 ? 's' : ''} imported
               </p>
               {result.skipped > 0 && (
-                <p className="text-[13px] text-[#8B958C] mt-1">{result.skipped} skipped (already exist)</p>
+                <p className="text-[13px] text-muted-foreground mt-1">{result.skipped} skipped (already exist)</p>
               )}
               {result.errors.length > 0 && (
                 <div className="mt-3 text-left bg-red-50 rounded-[10px] p-3">
@@ -323,16 +323,16 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Footer */}
-        <div className="px-6 pb-5 pt-4 border-t border-[#24302A] flex gap-2 shrink-0">
+        <div className="px-6 pb-5 pt-4 border-t border-border flex gap-2 shrink-0">
           {step === 'map' && (
             <>
-              <button onClick={() => setStep('upload')} className="flex-1 h-10 rounded-[10px] border border-[#24302A] text-[13px] font-bold text-[#9AA39C] hover:bg-[#24302A]">
+              <button onClick={() => setStep('upload')} className="flex-1 h-10 rounded-[10px] border border-border text-[13px] font-bold text-muted-foreground hover:bg-muted">
                 Back
               </button>
               <button
                 onClick={() => setStep('preview')}
                 disabled={!mapping.name}
-                className="flex-1 h-10 rounded-[10px] bg-[#63B882] text-[#0E1510] text-[13px] font-bold hover:bg-[#52A06E] disabled:opacity-40 flex items-center justify-center gap-1.5"
+                className="flex-1 h-10 rounded-[10px] bg-primary text-primary-foreground text-[13px] font-bold hover:bg-[color:var(--primary-dark)] disabled:opacity-40 flex items-center justify-center gap-1.5"
               >
                 Preview <ChevronRight className="size-4" />
               </button>
@@ -340,20 +340,20 @@ export function CsvImportModal({ onClose }: { onClose: () => void }) {
           )}
           {step === 'preview' && (
             <>
-              <button onClick={() => setStep('map')} className="flex-1 h-10 rounded-[10px] border border-[#24302A] text-[13px] font-bold text-[#9AA39C] hover:bg-[#24302A]">
+              <button onClick={() => setStep('map')} className="flex-1 h-10 rounded-[10px] border border-border text-[13px] font-bold text-muted-foreground hover:bg-muted">
                 Back
               </button>
               <button
                 onClick={handleImport}
                 disabled={importing}
-                className="flex-1 h-10 rounded-[10px] bg-[#63B882] text-[#0E1510] text-[13px] font-bold hover:bg-[#52A06E] disabled:opacity-50"
+                className="flex-1 h-10 rounded-[10px] bg-primary text-primary-foreground text-[13px] font-bold hover:bg-[color:var(--primary-dark)] disabled:opacity-50"
               >
                 {importing ? 'Importing…' : `Import ${mappedRows.length} trails`}
               </button>
             </>
           )}
           {step === 'result' && (
-            <button onClick={onClose} className="flex-1 h-10 rounded-[10px] bg-[#63B882] text-[#0E1510] text-[13px] font-bold hover:bg-[#52A06E]">
+            <button onClick={onClose} className="flex-1 h-10 rounded-[10px] bg-primary text-primary-foreground text-[13px] font-bold hover:bg-[color:var(--primary-dark)]">
               Done
             </button>
           )}

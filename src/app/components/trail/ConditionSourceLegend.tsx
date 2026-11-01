@@ -17,7 +17,7 @@ export function ConditionSourceLegend({ className }: ConditionSourceLegendProps)
   return (
     <div
       className={cn(
-        'flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] text-[#8B958C]',
+        'flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] text-muted-foreground',
         className
       )}
       role="note"
@@ -29,8 +29,8 @@ export function ConditionSourceLegend({ className }: ConditionSourceLegendProps)
             className="absolute inset-0 rounded-full"
             style={{ backgroundColor: sample }}
           />
-          <span className="absolute -bottom-0.5 -right-0.5 size-[10px] rounded-full bg-[#0E1510] flex items-center justify-center shadow-[0_0_0_1.5px_#0E1510]">
-            <User className="size-1.5 text-[#8B958C]" strokeWidth={3} />
+          <span className="absolute -bottom-0.5 -right-0.5 size-[10px] rounded-full bg-background flex items-center justify-center shadow-[0_0_0_1.5px_#0E1510]">
+            <User className="size-1.5 text-muted-foreground" strokeWidth={3} />
           </span>
         </span>
         <span>{t('condition_legend_reported')}</span>

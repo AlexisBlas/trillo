@@ -48,28 +48,28 @@ export function AddToHomeScreenPrompt() {
           role="dialog"
           aria-label={t('a2hs_aria')}
         >
-          <div className="relative bg-[#151C18] border-[1.5px] border-[#24302A] shadow-[0px_6px_20px_rgba(0,0,0,0.12)] p-4 pr-9 rounded-[32px]">
+          <div className="relative bg-card border-[1.5px] border-border shadow-[0px_6px_20px_rgba(0,0,0,0.12)] p-4 pr-9 rounded-[32px]">
             <button
               onClick={dismiss}
               aria-label="Dismiss"
-              className="absolute top-2.5 right-2.5 size-7 inline-flex items-center justify-center rounded-full text-[#8B958C] hover:bg-[#24302A] transition-colors"
+              className="absolute top-2.5 right-2.5 size-7 inline-flex items-center justify-center rounded-full text-muted-foreground hover:bg-muted transition-colors"
             >
               <X className="size-4" />
             </button>
 
             <div className="flex items-start gap-3">
-              <div className="shrink-0 size-10 rounded-[12px] bg-[#63B882] flex items-center justify-center">
+              <div className="shrink-0 size-10 rounded-[12px] bg-primary flex items-center justify-center">
                 <Bookmark className="size-5 text-white" />
               </div>
               <div className="min-w-0">
-                <h3 className="text-[14.5px] font-bold text-[#E6EBE6] leading-snug">
+                <h3 className="text-[14.5px] font-bold text-foreground leading-snug">
                   {t('a2hs_title')}
                 </h3>
-                <p className="text-[13px] text-[#A8C4A0] leading-[18px] mt-1">
+                <p className="text-[13px] text-accent-foreground leading-[18px] mt-1">
                   {isIOS ? (
                     <>
                       {t('a2hs_ios').replace('"Add to Home Screen."', '')}
-                      <Share className="inline size-3.5 -mt-0.5 text-[#63B882]" />{' '}
+                      <Share className="inline size-3.5 -mt-0.5 text-primary" />{' '}
                       <span className="font-bold">"Add to Home Screen."</span>
                     </>
                   ) : (
@@ -81,7 +81,7 @@ export function AddToHomeScreenPrompt() {
 
             <button
               onClick={dismiss}
-              className="mt-3 w-full h-10 inline-flex items-center justify-center gap-1.5 rounded-[12px] bg-[#63B882] text-[#0E1510] text-[13.5px] font-bold hover:bg-[#52A06E] transition-colors"
+              className="mt-3 w-full h-10 inline-flex items-center justify-center gap-1.5 rounded-[12px] bg-primary text-primary-foreground text-[13.5px] font-bold hover:bg-[color:var(--primary-dark)] transition-colors"
             >
               <Plus className="size-4" />
               {t('a2hs_got_it')}

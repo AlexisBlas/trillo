@@ -60,11 +60,11 @@ export function AdminTablePagination({
   return (
     <div
       className={cn(
-        'flex items-center justify-between gap-3 px-5 py-3 border-t border-[#24302A] bg-[#1A221C]',
+        'flex items-center justify-between gap-3 px-5 py-3 border-t border-border bg-secondary',
         className
       )}
     >
-      <p className="text-[12px] text-[#8B958C]">
+      <p className="text-[12px] text-muted-foreground">
         Showing {from}–{to} of {total}
       </p>
       <div className="flex items-center gap-1.5">
@@ -73,11 +73,11 @@ export function AdminTablePagination({
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1}
           aria-label="Previous page"
-          className="size-8 flex items-center justify-center rounded-[8px] border border-[#24302A] bg-[#151C18] text-[#9AA39C] hover:border-[#63B882] hover:text-[#63B882] disabled:opacity-40 disabled:hover:border-[#24302A] disabled:hover:text-[#9AA39C] transition-colors"
+          className="size-8 flex items-center justify-center rounded-[8px] border border-border bg-card text-muted-foreground hover:border-primary hover:text-primary disabled:opacity-40 disabled:hover:border-border disabled:hover:text-muted-foreground transition-colors"
         >
           <ChevronLeft className="size-4" />
         </button>
-        <span className="min-w-[72px] text-center text-[12px] font-bold text-[#9AA39C] tabular-nums">
+        <span className="min-w-[72px] text-center text-[12px] font-bold text-muted-foreground tabular-nums">
           {page} / {pageCount}
         </span>
         <button
@@ -85,7 +85,7 @@ export function AdminTablePagination({
           onClick={() => onPageChange(page + 1)}
           disabled={page >= pageCount}
           aria-label="Next page"
-          className="size-8 flex items-center justify-center rounded-[8px] border border-[#24302A] bg-[#151C18] text-[#9AA39C] hover:border-[#63B882] hover:text-[#63B882] disabled:opacity-40 disabled:hover:border-[#24302A] disabled:hover:text-[#9AA39C] transition-colors"
+          className="size-8 flex items-center justify-center rounded-[8px] border border-border bg-card text-muted-foreground hover:border-primary hover:text-primary disabled:opacity-40 disabled:hover:border-border disabled:hover:text-muted-foreground transition-colors"
         >
           <ChevronRight className="size-4" />
         </button>

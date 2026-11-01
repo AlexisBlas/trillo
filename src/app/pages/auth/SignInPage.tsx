@@ -38,20 +38,20 @@ export function SignInPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0E1510]">
+    <div className="min-h-screen bg-background">
       <div className="px-4 pt-3.5">
         <BackButton />
       </div>
 
       <div className="px-5 pt-8 pb-6">
-        <div className="size-12 rounded-full bg-[#1E3A28] flex items-center justify-center mb-4">
+        <div className="size-12 rounded-full bg-accent flex items-center justify-center mb-4">
           <Mountain className="size-6 text-white" />
         </div>
-        <h1 className="text-[24px] font-bold text-[#E6EBE6] leading-tight">Welcome back</h1>
-        <p className="text-[14px] text-[#A8C4A0] mt-1">
+        <h1 className="text-[24px] font-bold text-foreground leading-tight">Welcome back</h1>
+        <p className="text-[14px] text-accent-foreground mt-1">
           {t('signin_subtitle')}
         </p>
-        <p className="text-[14px] text-[#A8C4A0] mt-1">
+        <p className="text-[14px] text-accent-foreground mt-1">
           {t('auth_guest_note')}
         </p>
       </div>
@@ -66,14 +66,14 @@ export function SignInPage() {
         <AuthForm mode="signin" onSubmit={handleSubmit} isLoading={isLoading} />
 
         <div className="mt-4 text-center">
-          <Link to="/auth/forgot-password" className="text-[13px] text-[#A8C4A0] font-medium">
+          <Link to="/auth/forgot-password" className="text-[13px] text-accent-foreground font-medium">
             {t('forgot_password_link')}
           </Link>
         </div>
 
-        <p className="mt-4 text-center text-[13px] text-[#9AA39C]">
+        <p className="mt-4 text-center text-[13px] text-muted-foreground">
           {t('no_account')}{' '}
-          <Link to="/auth/signup" className="text-[#63B882] font-bold">
+          <Link to="/auth/signup" className="text-primary font-bold">
             {t('sign_up')}
           </Link>
         </p>

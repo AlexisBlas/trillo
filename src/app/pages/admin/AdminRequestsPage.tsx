@@ -64,8 +64,8 @@ export function AdminRequestsPage() {
     <div className="p-8">
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-[24px] font-bold text-[#E6EBE6] flex items-center gap-2.5">
-            <Bell className="size-5 text-[#63B882]" />
+          <h1 className="text-[24px] font-bold text-foreground flex items-center gap-2.5">
+            <Bell className="size-5 text-primary" />
             Requests
             {openCount > 0 && (
               <span className="text-[12px] font-bold bg-[#C96B6B] text-white px-2 py-0.5 rounded-full">
@@ -73,7 +73,7 @@ export function AdminRequestsPage() {
               </span>
             )}
           </h1>
-          <p className="text-[14px] text-[#8B958C] mt-1">
+          <p className="text-[14px] text-muted-foreground mt-1">
             Park and trail add requests from users
           </p>
         </div>
@@ -92,8 +92,8 @@ export function AdminRequestsPage() {
             className={cn(
               'h-9 px-3.5 rounded-[10px] text-[13px] font-bold border-[1.5px] transition-colors',
               filter === opt.value
-                ? 'bg-[#63B882] text-[#0E1510] border-[#63B882]'
-                : 'bg-[#151C18] text-[#9AA39C] border-[#24302A] hover:border-[#63B882]'
+                ? 'bg-primary text-primary-foreground border-primary'
+                : 'bg-card text-muted-foreground border-border hover:border-primary'
             )}
           >
             {opt.label}
@@ -104,12 +104,12 @@ export function AdminRequestsPage() {
       {isLoading ? (
         <div className="space-y-3">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-[88px] bg-[#151C18] rounded-[16px] border border-[#24302A] animate-pulse" />
+            <div key={i} className="h-[88px] bg-card rounded-[16px] border border-border animate-pulse" />
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-[#151C18] rounded-[16px] border border-[#24302A] p-10 text-center">
-          <p className="text-[14px] text-[#8B958C]">
+        <div className="bg-card rounded-[16px] border border-border p-10 text-center">
+          <p className="text-[14px] text-muted-foreground">
             {filter === 'open' ? 'No open requests.' : 'No requests in this filter.'}
           </p>
         </div>
@@ -118,7 +118,7 @@ export function AdminRequestsPage() {
           {pageItems.map((req) => (
             <div
               key={req.id}
-              className="bg-[#151C18] rounded-[16px] border border-[#24302A] p-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"
+              className="bg-card rounded-[16px] border border-border p-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
@@ -133,16 +133,16 @@ export function AdminRequestsPage() {
                     {req.kind}
                   </span>
                   {req.status !== 'open' && (
-                    <span className="text-[11px] font-bold tracking-[0.8px] uppercase text-[#8B958C]">
+                    <span className="text-[11px] font-bold tracking-[0.8px] uppercase text-muted-foreground">
                       {req.status}
                     </span>
                   )}
                 </div>
-                <p className="text-[16px] font-bold text-[#E6EBE6] mt-1.5">{req.name}</p>
+                <p className="text-[16px] font-bold text-foreground mt-1.5">{req.name}</p>
                 {req.details && (
-                  <p className="text-[13px] text-[#9AA39C] mt-1 leading-[19px]">{req.details}</p>
+                  <p className="text-[13px] text-muted-foreground mt-1 leading-[19px]">{req.details}</p>
                 )}
-                <p className="text-[12px] text-[#8B958C] mt-2">
+                <p className="text-[12px] text-muted-foreground mt-2">
                   {format(new Date(req.created_at), 'MMM d, yyyy · h:mm a')}
                   {req.user_email ? ` · ${req.user_email}` : ' · Guest'}
                 </p>
@@ -151,7 +151,7 @@ export function AdminRequestsPage() {
               <div className="flex items-center gap-2 shrink-0 flex-wrap">
                 <button
                   onClick={() => goAddFromRequest(req)}
-                  className="h-9 px-3 rounded-[10px] text-[12px] font-bold border-[1.5px] border-[#63B882] text-[#63B882] bg-[#151C18] flex items-center gap-1.5 hover:bg-[#24302A]"
+                  className="h-9 px-3 rounded-[10px] text-[12px] font-bold border-[1.5px] border-primary text-primary bg-card flex items-center gap-1.5 hover:bg-muted"
                 >
                   <Plus className="size-3.5" />
                   {req.kind === 'park' ? 'Add park' : 'Add trail'}
@@ -160,14 +160,14 @@ export function AdminRequestsPage() {
                   <>
                     <button
                       onClick={() => setStatus(req, 'done')}
-                      className="h-9 px-3 rounded-[10px] text-[12px] font-bold bg-[#63B882] text-[#0E1510] flex items-center gap-1.5"
+                      className="h-9 px-3 rounded-[10px] text-[12px] font-bold bg-primary text-primary-foreground flex items-center gap-1.5"
                     >
                       <Check className="size-3.5" />
                       Done
                     </button>
                     <button
                       onClick={() => setStatus(req, 'dismissed')}
-                      className="h-9 px-3 rounded-[10px] text-[12px] font-bold border-[1.5px] border-[#24302A] text-[#9AA39C] flex items-center gap-1.5"
+                      className="h-9 px-3 rounded-[10px] text-[12px] font-bold border-[1.5px] border-border text-muted-foreground flex items-center gap-1.5"
                     >
                       <X className="size-3.5" />
                       Dismiss
@@ -176,14 +176,14 @@ export function AdminRequestsPage() {
                 ) : (
                   <button
                     onClick={() => setStatus(req, 'open')}
-                    className="h-9 px-3 rounded-[10px] text-[12px] font-bold border-[1.5px] border-[#24302A] text-[#9AA39C]"
+                    className="h-9 px-3 rounded-[10px] text-[12px] font-bold border-[1.5px] border-border text-muted-foreground"
                   >
                     Reopen
                   </button>
                 )}
                 <button
                   onClick={() => handleDelete(req.id)}
-                  className="size-9 rounded-[10px] border-[1.5px] border-[#24302A] text-[#991b1b] flex items-center justify-center hover:bg-red-50"
+                  className="size-9 rounded-[10px] border-[1.5px] border-border text-[#991b1b] flex items-center justify-center hover:bg-red-50"
                   aria-label="Delete request"
                 >
                   <Trash2 className="size-3.5" />
@@ -199,7 +199,7 @@ export function AdminRequestsPage() {
             from={from}
             to={to}
             onPageChange={setPage}
-            className="rounded-[16px] border border-[#24302A] bg-[#151C18]"
+            className="rounded-[16px] border border-border bg-card"
           />
         </div>
       )}

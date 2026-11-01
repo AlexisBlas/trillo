@@ -48,22 +48,22 @@ export function ProfilePage() {
   const username = user?.email?.split('@')[0] || 'You';
 
   return (
-    <div className="min-h-screen bg-[#0E1510]">
+    <div className="min-h-screen bg-background">
       <div className="px-4 pt-3.5">
         <BackButton />
       </div>
 
       <div className="px-5 pt-6 pb-4">
-        <h1 className="text-[24px] font-bold text-[#E6EBE6] mb-5">{t('profile_page_title')}</h1>
+        <h1 className="text-[24px] font-bold text-foreground mb-5">{t('profile_page_title')}</h1>
 
-        <div className="bg-[#151C18] border-[1.5px] border-[#24302A] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] p-5 rounded-[32px]">
+        <div className="bg-card border-[1.5px] border-border shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] p-5 rounded-[32px]">
           <div className="flex items-center gap-3.5">
-            <div className="size-12 rounded-full bg-[#1E3A28] flex items-center justify-center shrink-0">
+            <div className="size-12 rounded-full bg-accent flex items-center justify-center shrink-0">
               <User className="size-6 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[16px] font-bold text-[#E6EBE6] truncate">{username}</p>
-              <div className="flex items-center gap-1.5 text-[12.5px] text-[#9AA39C] mt-0.5">
+              <p className="text-[16px] font-bold text-foreground truncate">{username}</p>
+              <div className="flex items-center gap-1.5 text-[12.5px] text-muted-foreground mt-0.5">
                 <Mail className="size-3.5" />
                 <span className="truncate">{user?.email}</span>
               </div>
@@ -72,7 +72,7 @@ export function ProfilePage() {
 
           <button
             onClick={handleSignOut}
-            className="mt-4 w-full h-[44px] bg-[#151C18] border-[1.5px] border-[#24302A] rounded-[12px] text-[#E6EBE6] text-[13px] font-bold tracking-[1.2px] flex items-center justify-center gap-2"
+            className="mt-4 w-full h-[44px] bg-card border-[1.5px] border-border rounded-[12px] text-foreground text-[13px] font-bold tracking-[1.2px] flex items-center justify-center gap-2"
           >
             <LogOut className="size-4" />
             {t('profile_sign_out').toUpperCase()}
@@ -81,7 +81,7 @@ export function ProfilePage() {
       </div>
 
       <div className="px-5 pt-2 pb-6">
-        <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#9AA39C] mb-3">
+        <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-muted-foreground mb-3">
           {t('profile_your_reports')}
         </h2>
 
@@ -94,17 +94,17 @@ export function ProfilePage() {
         )}
 
         {!isLoading && reports.length === 0 && (
-          <div className="bg-[#151C18] rounded-[16px] border-[1.5px] border-[#24302A] shadow-sm p-8 text-center">
-            <div className="size-12 rounded-full bg-[#24302A] flex items-center justify-center mx-auto mb-4">
-              <FileText className="size-6 text-[#9AA39C]" />
+          <div className="bg-card rounded-[16px] border-[1.5px] border-border shadow-sm p-8 text-center">
+            <div className="size-12 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+              <FileText className="size-6 text-muted-foreground" />
             </div>
-            <h3 className="text-[15.5px] font-bold text-[#E6EBE6] mb-2">{t('reports_none_yet')}</h3>
-            <p className="text-[13px] text-[#9AA39C] mb-5">
+            <h3 className="text-[15.5px] font-bold text-foreground mb-2">{t('reports_none_yet')}</h3>
+            <p className="text-[13px] text-muted-foreground mb-5">
               {t('profile_no_reports_body')}
             </p>
             <button
               onClick={() => navigate('/search')}
-              className="h-[44px] px-5 bg-[#63B882] rounded-[12px] text-[#0E1510] text-[13px] font-bold tracking-[1.2px]"
+              className="h-[44px] px-5 bg-primary rounded-[12px] text-primary-foreground text-[13px] font-bold tracking-[1.2px]"
             >
               {t('profile_find_trail')}
             </button>
@@ -126,7 +126,7 @@ export function ProfilePage() {
               return (
                 <div
                   key={report.id}
-                  className="bg-[#151C18] border-[1.5px] border-[#24302A] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] p-4 rounded-[32px]"
+                  className="bg-card border-[1.5px] border-border shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] p-4 rounded-[32px]"
                 >
                   <div className="flex items-start gap-2">
                     <button
@@ -136,19 +136,19 @@ export function ProfilePage() {
                       className="flex-1 min-w-0 text-left hover:opacity-90 transition-opacity disabled:opacity-50"
                     >
                       <div className="flex items-center justify-between gap-3 mb-1.5">
-                        <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#E6EBE6] truncate flex items-center gap-2">
-                          <MapPin className="size-4 text-[#63B882] shrink-0" />
+                        <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-foreground truncate flex items-center gap-2">
+                          <MapPin className="size-4 text-primary shrink-0" />
                           {displayTitle}
                         </h3>
                         <StatusBadge status={report.status} />
                       </div>
                       {notes ? (
-                        <p className="text-[13px] text-[#9AA39C] leading-[19px] line-clamp-2 mb-1.5">
+                        <p className="text-[13px] text-muted-foreground leading-[19px] line-clamp-2 mb-1.5">
                           {notes}
                         </p>
                       ) : null}
                       {createdLabel ? (
-                        <div className="flex items-center gap-1.5 text-[12px] text-[#8B958C]">
+                        <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
                           <Clock className="size-3.5" />
                           <span>{createdLabel}</span>
                         </div>
@@ -161,7 +161,7 @@ export function ProfilePage() {
                         text={t('share_report_text').replace('{name}', displayTitle)}
                         status={report.status}
                         statusLabel={t(statusShareLabel(report.status))}
-                        className="shadow-none border-[1.5px] border-[#24302A] bg-[#151C18]"
+                        className="shadow-none border-[1.5px] border-border bg-card"
                       />
                     )}
                   </div>

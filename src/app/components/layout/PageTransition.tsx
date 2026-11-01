@@ -68,7 +68,7 @@ export function PageTransition({ children, kind }: PageTransitionProps) {
         reduceMotion ? instant : isTab ? tabTransition : stackTransition
       }
       className={cn(
-        'absolute inset-0 w-full overflow-x-hidden overflow-y-auto overscroll-y-contain bg-[#0E1510]',
+        'absolute inset-0 w-full overflow-x-hidden overflow-y-auto overscroll-y-contain bg-background',
         // Push/tab: incoming on top. Pop: incoming underneath so the
         // outgoing screen can slide off above it.
         kind === 'pop' ? 'z-[1]' : 'z-[2]'

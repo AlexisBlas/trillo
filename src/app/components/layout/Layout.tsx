@@ -12,7 +12,7 @@ export function Layout() {
   const { pathname, kind } = useNavKind();
 
   return (
-    <div className="min-h-dvh bg-[#0E1510] overflow-x-hidden">
+    <div className="min-h-dvh bg-background overflow-x-hidden">
       <PreviewBridge />
       <ScrollToTop />
       <AnalyticsPageViews />

@@ -12,7 +12,7 @@ export function NewParkBadge({ className }: NewParkBadgeProps) {
     <span
       className={cn(
         'inline-flex items-center h-[15px] px-1.5 rounded-full',
-        'bg-[#C08640] text-white text-[9px] font-bold tracking-[0.5px] uppercase leading-none shrink-0',
+        'bg-highlight text-white text-[9px] font-bold tracking-[0.5px] uppercase leading-none shrink-0',
         className
       )}
     >

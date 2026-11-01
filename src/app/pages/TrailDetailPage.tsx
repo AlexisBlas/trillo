@@ -33,9 +33,9 @@ const STATUS_LABEL: Record<'green' | 'yellow' | 'red', TranslationKey> = {
 };
 
 const STATUS_TEXT: Record<'green' | 'yellow' | 'red', string> = {
-  green: '#63B882',
-  yellow: '#C9A84A',
-  red: '#C97A7A',
+  green: 'var(--primary)',
+  yellow: 'var(--highlight)',
+  red: 'var(--destructive)',
 };
 
 export function TrailDetailPage() {
@@ -56,7 +56,7 @@ export function TrailDetailPage() {
           <AlertDescription>{t('trail_not_found')}</AlertDescription>
         </Alert>
         <button
-          className="mt-4 text-[#63B882] font-bold text-[13px]"
+          className="mt-4 text-primary font-bold text-[13px]"
           onClick={() => navigate('/search')}
         >
           {t('trail_back_to_search')}
@@ -82,7 +82,7 @@ export function TrailDetailPage() {
           <AlertDescription>{t('trail_not_found')}</AlertDescription>
         </Alert>
         <button
-          className="mt-4 text-[#63B882] font-bold text-[13px]"
+          className="mt-4 text-primary font-bold text-[13px]"
           onClick={() => navigate('/search')}
         >
           {t('trail_back_to_search')}
@@ -111,11 +111,11 @@ export function TrailDetailPage() {
     : trail.name;
 
   return (
-    <div className="min-h-screen bg-[#0E1510]">
+    <div className="min-h-screen bg-background">
       {/* Header: back + centered park name + share */}
       <div className="relative px-4 pt-3.5 h-[52px] flex items-center justify-between">
         <BackButton />
-        <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-[#E6EBE6] truncate max-w-[55%] text-center">
+        <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-foreground truncate max-w-[55%] text-center">
           {headerTitle}
         </h1>
         <ShareButton
@@ -140,23 +140,23 @@ export function TrailDetailPage() {
 
       {/* Trail info card */}
       <div className="px-4 pt-5">
-        <div className="bg-[#151C18] border-[1.5px] border-[#24302A] shadow-[0px_4px_10px_rgba(0,0,0,0.1)] p-5 rounded-[32px]">
+        <div className="bg-card border-[1.5px] border-border shadow-[0px_4px_10px_rgba(0,0,0,0.1)] p-5 rounded-[32px]">
           <div className="flex items-center gap-3.5">
-            <div className="bg-[#1E3A28] rounded-full size-12 flex items-center justify-center shrink-0">
+            <div className="bg-accent rounded-full size-12 flex items-center justify-center shrink-0">
               <Mountain className="size-6 text-white opacity-85" />
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="text-[18px] font-bold tracking-[-0.3px] text-[#E6EBE6]">
+              <h2 className="text-[18px] font-bold tracking-[-0.3px] text-foreground">
                 {trailDisplayName}
               </h2>
-              <p className="text-[13.5px] text-[#9AA39C]">
+              <p className="text-[13.5px] text-muted-foreground">
                 {trail.location || t('trail_singular')}
               </p>
             </div>
           </div>
 
           {statusSource === 'estimate' && estimatedStatus && (
-            <div className="mt-4 flex items-center gap-3 rounded-[16px] border-[1.5px] border-[#24302A] bg-[#151C18] px-3.5 py-3">
+            <div className="mt-4 flex items-center gap-3 rounded-[16px] border-[1.5px] border-border bg-card px-3.5 py-3">
               <StatusCircle
                 status={estimatedStatus}
                 reported={false}
@@ -169,7 +169,7 @@ export function TrailDetailPage() {
                 >
                   {t(STATUS_LABEL[estimatedStatus])}
                 </p>
-                <p className="text-[12px] text-[#8B958C] mt-1">
+                <p className="text-[12px] text-muted-foreground mt-1">
                   {rainAdjusted
                     ? t('condition_rain_adjusted_hint')
                     : t('condition_estimated_from_rain')}
@@ -180,7 +180,7 @@ export function TrailDetailPage() {
 
           <button
             onClick={() => navigate(`/trails/${trail.id}/report`)}
-            className="mt-4 w-full h-[53px] bg-[#63B882] rounded-[14px] text-[#0E1510] text-[13px] font-bold tracking-[1.5px]"
+            className="mt-4 w-full h-[53px] bg-primary rounded-[14px] text-primary-foreground text-[13px] font-bold tracking-[1.5px]"
           >
             {t('trail_report_conditions')}
           </button>
@@ -190,13 +190,13 @@ export function TrailDetailPage() {
       {/* Condition Summary */}
       {(cleanNotes(latestReport?.notes) || (latestReport && getCriticalHazards(latestReport.conditions).length > 0)) && (
         <div className="px-4 pt-5">
-          <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#9AA39C] mb-2">
+          <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-muted-foreground mb-2">
             {t('trail_condition_summary')}
           </h2>
-          <div className="bg-[#151C18] border-[1.5px] border-[#24302A] p-4 rounded-[32px] space-y-3">
+          <div className="bg-card border-[1.5px] border-border p-4 rounded-[32px] space-y-3">
             <HazardNotice conditions={latestReport?.conditions} trailName={trailDisplayName} />
             {cleanNotes(latestReport?.notes) && (
-              <p className="text-[14px] leading-[22.4px] text-[#9AA39C]">
+              <p className="text-[14px] leading-[22.4px] text-muted-foreground">
                 {cleanNotes(latestReport?.notes)}
               </p>
             )}
@@ -207,15 +207,15 @@ export function TrailDetailPage() {
       {/* Recent Reports */}
       <div className="px-4 pt-5 pb-6">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-[#9AA39C]">
+          <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-muted-foreground">
             {t('trail_recent_reports')}
           </h2>
-          <button className="text-[13px] font-bold text-[#63B882]">{t('home_see_all')}</button>
+          <button className="text-[13px] font-bold text-primary">{t('home_see_all')}</button>
         </div>
 
         {visibleReports.length === 0 && (
-          <div className="bg-[#151C18] rounded-[14px] border-[1.5px] border-[#24302A] p-6 text-center">
-            <p className="text-[13px] text-[#9AA39C]">{t('trail_no_reports')}</p>
+          <div className="bg-card rounded-[14px] border-[1.5px] border-border p-6 text-center">
+            <p className="text-[13px] text-muted-foreground">{t('trail_no_reports')}</p>
           </div>
         )}
 
@@ -225,17 +225,17 @@ export function TrailDetailPage() {
             return (
               <div
                 key={report.id}
-                className="bg-[#151C18] border-[1.5px] border-[#24302A] p-4 rounded-[32px]"
+                className="bg-card border-[1.5px] border-border p-4 rounded-[32px]"
               >
                 <div className="flex items-center gap-2.5">
-                  <div className="bg-[#63B882] rounded-full size-[34px] flex items-center justify-center shrink-0">
+                  <div className="bg-primary rounded-full size-[34px] flex items-center justify-center shrink-0">
                     <span className="text-[12px] font-bold text-white">{initials}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-bold text-[#E6EBE6]">
+                    <p className="text-[14px] font-bold text-foreground">
                       {t('anonymous')}
                     </p>
-                    <p className="text-[12px] text-[#8B958C]">
+                    <p className="text-[12px] text-muted-foreground">
                       {formatRelativeTime(report.created_at, lang)}
                       {getOverallRating(report.conditions) && ' · '}
                       <OverallRatingLabel conditions={report.conditions} />
@@ -253,7 +253,7 @@ export function TrailDetailPage() {
                     conditions={report.conditions}
                     hazardTrailName={trailDisplayName}
                     updatedValue={formatRelativeTime(report.created_at, lang)}
-                    className="shadow-none border-[1.5px] border-[#24302A] bg-[#151C18]"
+                    className="shadow-none border-[1.5px] border-border bg-card"
                   />
                 </div>
                 <HazardNotice
@@ -262,7 +262,7 @@ export function TrailDetailPage() {
                   className="mt-2.5"
                 />
                 {cleanNotes(report.notes) && (
-                  <p className="text-[14px] leading-[21px] text-[#9AA39C] mt-2.5">
+                  <p className="text-[14px] leading-[21px] text-muted-foreground mt-2.5">
                     {cleanNotes(report.notes)}
                   </p>
                 )}

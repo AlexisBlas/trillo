@@ -43,7 +43,7 @@ function ParkSetupIcon({ park }: { park: AdminPark }) {
     <span
       title={label}
       aria-label={label}
-      className={cn('inline-flex shrink-0 mr-2', ready ? 'text-[#63B882]' : 'text-amber-400')}
+      className={cn('inline-flex shrink-0 mr-2', ready ? 'text-primary' : 'text-amber-400')}
     >
       <Icon className="size-3.5" aria-hidden />
     </span>
@@ -60,7 +60,7 @@ function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange: (
       disabled={disabled}
       className={cn(
         'relative inline-flex h-5 w-9 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none disabled:opacity-40',
-        checked ? 'bg-[#63B882]' : 'bg-[#d1d5db]'
+        checked ? 'bg-primary' : 'bg-[#d1d5db]'
       )}
     >
       <span
@@ -93,31 +93,31 @@ function RenameModal({ park, onClose }: { park: AdminPark; onClose: () => void }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
       <form
-        className="bg-[#151C18] rounded-[20px] p-6 w-full max-w-sm shadow-xl"
+        className="bg-card rounded-[20px] p-6 w-full max-w-sm shadow-xl"
         onClick={(e) => e.stopPropagation()}
         onSubmit={handleSubmit}
       >
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-[16px] font-bold text-[#E6EBE6]">Rename Park</h2>
-          <button type="button" onClick={onClose} className="size-7 flex items-center justify-center rounded-full hover:bg-[#24302A]">
-            <X className="size-4 text-[#8B958C]" />
+          <h2 className="text-[16px] font-bold text-foreground">Rename Park</h2>
+          <button type="button" onClick={onClose} className="size-7 flex items-center justify-center rounded-full hover:bg-muted">
+            <X className="size-4 text-muted-foreground" />
           </button>
         </div>
-        <label className="block text-[12px] font-bold text-[#9AA39C] mb-1.5">Park name</label>
+        <label className="block text-[12px] font-bold text-muted-foreground mb-1.5">Park name</label>
         <input
           autoFocus
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full border border-[#24302A] rounded-[10px] px-3 h-10 text-[14px] text-[#E6EBE6] focus:outline-none focus:ring-2 focus:ring-[#63B882]/30"
+          className="w-full border border-border rounded-[10px] px-3 h-10 text-[14px] text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
-        <p className="text-[11px] text-[#8B958C] mt-1.5">
+        <p className="text-[11px] text-muted-foreground mt-1.5">
           Renames across all {park.trailCount} trail{park.trailCount !== 1 ? 's' : ''}.
         </p>
         <div className="flex gap-2 mt-5">
-          <button type="button" onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#24302A] text-[13px] font-bold text-[#9AA39C] hover:bg-[#24302A]">
+          <button type="button" onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-border text-[13px] font-bold text-muted-foreground hover:bg-muted">
             Cancel
           </button>
-          <button type="submit" disabled={rename.isPending} className="flex-1 h-10 rounded-[10px] bg-[#63B882] text-[#0E1510] text-[13px] font-bold hover:bg-[#52A06E] disabled:opacity-50">
+          <button type="submit" disabled={rename.isPending} className="flex-1 h-10 rounded-[10px] bg-primary text-primary-foreground text-[13px] font-bold hover:bg-[color:var(--primary-dark)] disabled:opacity-50">
             {rename.isPending ? 'Saving…' : 'Rename'}
           </button>
         </div>
@@ -141,17 +141,17 @@ function DeleteModal({ park, onClose }: { park: AdminPark; onClose: () => void }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
-      <div className="bg-[#151C18] rounded-[20px] p-6 w-full max-w-sm shadow-xl" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-card rounded-[20px] p-6 w-full max-w-sm shadow-xl" onClick={(e) => e.stopPropagation()}>
         <div className="size-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
           <AlertTriangle className="size-6 text-red-500" />
         </div>
-        <h2 className="text-[16px] font-bold text-[#E6EBE6] text-center mb-2">Delete Park</h2>
-        <p className="text-[13px] text-[#9AA39C] text-center leading-relaxed">
+        <h2 className="text-[16px] font-bold text-foreground text-center mb-2">Delete Park</h2>
+        <p className="text-[13px] text-muted-foreground text-center leading-relaxed">
           Permanently delete <strong>{park.name}</strong> and all{' '}
           <strong>{park.trailCount} trail{park.trailCount !== 1 ? 's' : ''}</strong>, including all reports?
         </p>
         <div className="flex gap-2 mt-5">
-          <button onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-[#24302A] text-[13px] font-bold text-[#9AA39C] hover:bg-[#24302A]">
+          <button onClick={onClose} className="flex-1 h-10 rounded-[10px] border border-border text-[13px] font-bold text-muted-foreground hover:bg-muted">
             Cancel
           </button>
           <button onClick={handleDelete} disabled={deletePark.isPending} className="flex-1 h-10 rounded-[10px] bg-red-500 text-white text-[13px] font-bold hover:bg-red-600 disabled:opacity-50">
@@ -218,8 +218,8 @@ export function AdminParksPage() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-[24px] font-bold text-[#E6EBE6]">Parks</h1>
-          <p className="text-[14px] text-[#8B958C] mt-1">
+          <h1 className="text-[24px] font-bold text-foreground">Parks</h1>
+          <p className="text-[14px] text-muted-foreground mt-1">
             {isLoading || !(parks ?? []).length
               ? 'Toggle visibility to show or hide parks from the app'
               : missingLocation === 0 && missingDirections === 0
@@ -235,7 +235,7 @@ export function AdminParksPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => navigate('/admin/parks/new')}
-            className="flex items-center gap-1.5 h-9 px-4 rounded-[10px] bg-[#63B882] text-[#0E1510] text-[13px] font-bold hover:bg-[#52A06E] transition-colors"
+            className="flex items-center gap-1.5 h-9 px-4 rounded-[10px] bg-primary text-primary-foreground text-[13px] font-bold hover:bg-[color:var(--primary-dark)] transition-colors"
           >
             <Plus className="size-3.5" />
             New Park
@@ -248,7 +248,7 @@ export function AdminParksPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search parks…"
-            className="border border-[#24302A] rounded-[10px] px-3 h-9 text-[13px] text-[#9AA39C] bg-[#151C18] focus:outline-none w-[200px]"
+            className="border border-border rounded-[10px] px-3 h-9 text-[13px] text-muted-foreground bg-card focus:outline-none w-[200px]"
           />
           <button
             type="button"
@@ -256,8 +256,8 @@ export function AdminParksPage() {
             className={cn(
               'flex items-center gap-2 h-9 px-4 rounded-[10px] text-[13px] font-bold border transition-colors',
               missingOnly
-                ? 'bg-amber-400 text-[#0E1510] border-amber-400'
-                : 'bg-[#151C18] text-[#9AA39C] border-[#24302A] hover:border-amber-400 hover:text-amber-300'
+                ? 'bg-amber-400 text-primary-foreground border-amber-400'
+                : 'bg-card text-muted-foreground border-border hover:border-amber-400 hover:text-amber-300'
             )}
           >
             Missing info{missingInfo > 0 ? ` ${missingInfo}` : ''}
@@ -268,8 +268,8 @@ export function AdminParksPage() {
             className={cn(
               'flex items-center gap-2 h-9 px-4 rounded-[10px] text-[13px] font-bold border transition-colors disabled:opacity-50',
               allHidden
-                ? 'bg-[#63B882] text-[#0E1510] border-[#63B882] hover:bg-[#52A06E]'
-                : 'bg-[#151C18] text-[#9AA39C] border-[#24302A] hover:border-[#63B882] hover:text-[#63B882]'
+                ? 'bg-primary text-primary-foreground border-primary hover:bg-[color:var(--primary-dark)]'
+                : 'bg-card text-muted-foreground border-border hover:border-primary hover:text-primary'
             )}
           >
             {allHidden ? <Eye className="size-3.5" /> : <EyeOff className="size-3.5" />}
@@ -278,22 +278,22 @@ export function AdminParksPage() {
         </div>
       )}
 
-      <div className="bg-[#151C18] rounded-[16px] border border-[#24302A] overflow-hidden">
-        <div className="grid grid-cols-[minmax(150px,1.1fr)_110px_minmax(200px,1.5fr)_70px_90px_110px] px-5 py-3 border-b border-[#24302A] bg-[#1A221C]">
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C]">Park Name</p>
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C]">Region</p>
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C] pr-4">Description</p>
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C] text-right">Trails</p>
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C] text-center">Visible</p>
-          <p className="text-[11px] font-bold tracking-[1px] uppercase text-[#8B958C] text-right">Actions</p>
+      <div className="bg-card rounded-[16px] border border-border overflow-hidden">
+        <div className="grid grid-cols-[minmax(150px,1.1fr)_110px_minmax(200px,1.5fr)_70px_90px_110px] px-5 py-3 border-b border-border bg-secondary">
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-muted-foreground">Park Name</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-muted-foreground">Region</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-muted-foreground pr-4">Description</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-muted-foreground text-right">Trails</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-muted-foreground text-center">Visible</p>
+          <p className="text-[11px] font-bold tracking-[1px] uppercase text-muted-foreground text-right">Actions</p>
         </div>
 
         {isLoading && (
-          <div className="px-5 py-12 text-center text-[13px] text-[#8B958C]">Loading…</div>
+          <div className="px-5 py-12 text-center text-[13px] text-muted-foreground">Loading…</div>
         )}
 
         {!isLoading && filtered.length === 0 && (
-          <div className="px-5 py-12 text-center text-[13px] text-[#8B958C]">
+          <div className="px-5 py-12 text-center text-[13px] text-muted-foreground">
             {search
               ? `No parks matching "${search}"`
               : missingOnly
@@ -307,39 +307,39 @@ export function AdminParksPage() {
             key={park.name}
             className={cn(
               'grid grid-cols-[minmax(150px,1.1fr)_110px_minmax(200px,1.5fr)_70px_90px_110px] px-5 py-3.5 items-center transition-opacity',
-              i !== pageItems.length - 1 ? 'border-b border-[#24302A]' : '',
+              i !== pageItems.length - 1 ? 'border-b border-border' : '',
               park.isHidden ? 'opacity-50' : ''
             )}
           >
             <div className="flex items-center gap-2 min-w-0 pr-4">
-              {park.isHidden && <EyeOff className="size-3.5 text-[#8B958C] shrink-0" />}
+              {park.isHidden && <EyeOff className="size-3.5 text-muted-foreground shrink-0" />}
               <ParkSetupIcon park={park} />
               <div className="min-w-0">
-                <p className="text-[14px] font-semibold text-[#E6EBE6] truncate">{park.name}</p>
-                {park.city && <p className="text-[12px] text-[#8B958C] truncate">{park.city}</p>}
+                <p className="text-[14px] font-semibold text-foreground truncate">{park.name}</p>
+                {park.city && <p className="text-[12px] text-muted-foreground truncate">{park.city}</p>}
               </div>
             </div>
-            <p className="text-[13px] text-[#9AA39C] truncate pr-3">
+            <p className="text-[13px] text-muted-foreground truncate pr-3">
               {parkRegionLabel(park)}
             </p>
             <div className="min-w-0 pr-4">
               {park.description ? (
-                <p className="text-[13px] text-[#9AA39C] line-clamp-2" title={park.description}>
+                <p className="text-[13px] text-muted-foreground line-clamp-2" title={park.description}>
                   {park.description}
                 </p>
               ) : (
-                <p className="text-[13px] text-[#8B958C]">—</p>
+                <p className="text-[13px] text-muted-foreground">—</p>
               )}
               {park.description_es ? (
                 <p
-                  className="text-[11px] text-[#8B958C] mt-0.5 line-clamp-1"
+                  className="text-[11px] text-muted-foreground mt-0.5 line-clamp-1"
                   title={park.description_es}
                 >
                   ES: {park.description_es}
                 </p>
               ) : null}
             </div>
-            <p className="text-[13px] text-[#8B958C] text-right">{park.trailCount}</p>
+            <p className="text-[13px] text-muted-foreground text-right">{park.trailCount}</p>
             <div className="flex justify-center">
               <Toggle
                 checked={!park.isHidden}
@@ -350,14 +350,14 @@ export function AdminParksPage() {
             <div className="flex justify-end gap-1.5">
               <button
                 onClick={() => navigate(`/admin/parks/${encodeURIComponent(park.name)}/edit`)}
-                className="size-8 flex items-center justify-center rounded-[8px] hover:bg-[#24302A] text-[#8B958C] hover:text-[#63B882] transition-colors"
+                className="size-8 flex items-center justify-center rounded-[8px] hover:bg-muted text-muted-foreground hover:text-primary transition-colors"
                 title="Edit"
               >
                 <Pencil className="size-3.5" />
               </button>
               <button
                 onClick={() => setDeleting(park)}
-                className="size-8 flex items-center justify-center rounded-[8px] hover:bg-red-50 text-[#8B958C] hover:text-red-500 transition-colors"
+                className="size-8 flex items-center justify-center rounded-[8px] hover:bg-red-50 text-muted-foreground hover:text-red-500 transition-colors"
                 title="Delete"
               >
                 <Trash2 className="size-3.5" />

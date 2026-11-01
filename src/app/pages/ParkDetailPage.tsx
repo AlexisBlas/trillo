@@ -45,9 +45,9 @@ const STATUS_LABEL: Record<TrailStatus, TranslationKey> = {
 };
 
 const STATUS_TEXT: Record<TrailStatus, string> = {
-  green: '#63B882',
-  yellow: '#C9A84A',
-  red: '#C97A7A',
+  green: 'var(--primary)',
+  yellow: 'var(--highlight)',
+  red: 'var(--destructive)',
 };
 
 export function ParkDetailPage() {
@@ -210,10 +210,10 @@ export function ParkDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0E1510]">
-      <div className="sticky top-0 z-40 bg-[#0E1510]/95 backdrop-blur-sm px-4 pt-3.5 h-[52px] flex items-center justify-between">
+    <div className="min-h-screen bg-background">
+      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm px-4 pt-3.5 h-[52px] flex items-center justify-between">
         <BackButton />
-        <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-[#E6EBE6] truncate max-w-[55%] text-center">
+        <h1 className="absolute left-1/2 -translate-x-1/2 text-[16px] font-bold text-foreground truncate max-w-[55%] text-center">
           {decoded}
         </h1>
         <ShareButton
@@ -247,7 +247,7 @@ export function ParkDetailPage() {
       </div>
 
       <div className="px-5 pt-6 pb-4">
-        <p className="text-[12px] font-medium text-[#8B958C] tracking-[0.2px]">
+        <p className="text-[12px] font-medium text-muted-foreground tracking-[0.2px]">
           {[parkMeta?.city, parkTrails.length
             ? `${parkTrails.length} ${parkTrails.length === 1 ? t('trail_singular') : t('trail_plural')}`
             : null]
@@ -256,7 +256,7 @@ export function ParkDetailPage() {
         </p>
         <div className="mt-1 flex items-start justify-between gap-3">
           <div className="min-w-0 flex items-start gap-2">
-            <h2 className="text-[28px] font-bold text-[#E6EBE6] leading-[32px] tracking-[-0.6px] text-balance min-w-0">
+            <h2 className="text-[28px] font-bold text-foreground leading-[32px] tracking-[-0.6px] text-balance min-w-0">
               {decoded}
             </h2>
             {isParkNew(parkMeta?.created_at) && (
@@ -270,7 +270,7 @@ export function ParkDetailPage() {
           <div className="mt-3 max-w-[36rem]">
             <p
               ref={descRef}
-              className={`text-[15px] leading-[23px] text-[#8B958C] text-pretty ${
+              className={`text-[15px] leading-[23px] text-muted-foreground text-pretty ${
                 descExpanded ? '' : 'line-clamp-2'
               }`}
             >
@@ -280,7 +280,7 @@ export function ParkDetailPage() {
               <button
                 type="button"
                 onClick={() => setDescExpanded((v) => !v)}
-                className="mt-1.5 text-[13px] font-bold text-[#63B882] hover:text-[#52A06E] transition-colors"
+                className="mt-1.5 text-[13px] font-bold text-primary hover:text-[#52A06E] transition-colors"
               >
                 {descExpanded ? t('park_show_less') : t('park_show_more')}
               </button>
@@ -290,7 +290,7 @@ export function ParkDetailPage() {
 
         {/* Conditions: large status | update · notes below */}
         <section
-          className="mt-4 bg-[#151C18] rounded-[24px] border border-[#24302A] overflow-hidden"
+          className="mt-4 bg-card rounded-[24px] border border-border overflow-hidden"
           aria-label={t('park_current_conditions')}
         >
           <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-0 px-5 pt-5 pb-5">
@@ -306,25 +306,25 @@ export function ParkDetailPage() {
                 />
                 <p
                   className="text-[clamp(1.75rem,8.2vw,2.75rem)] font-bold tracking-[-1.2px] leading-none whitespace-nowrap"
-                  style={{ color: statusText ?? '#E6EBE6' }}
+                  style={{ color: statusText ?? 'var(--foreground)' }}
                 >
                   {effectiveStatus ? t(STATUS_LABEL[effectiveStatus]) : '—'}
                 </p>
               </div>
               <OverallRatingLabel
                 conditions={reportSummary?.conditions}
-                className="block mt-2.5 text-[13px] text-[#9AA39C]"
+                className="block mt-2.5 text-[13px] text-muted-foreground"
               />
               <ConditionSourceLegend className="mt-3" />
             </div>
 
-            <div className="pl-4 border-l border-[#24302A] flex flex-col justify-center shrink-0 max-w-[38%]">
+            <div className="pl-4 border-l border-border flex flex-col justify-center shrink-0 max-w-[38%]">
               {updateMeta ? (
                 <div>
                   <p className="text-[13px] font-normal text-[#6b7280] leading-none">
                     {updateMeta.label}
                   </p>
-                  <p className="mt-1.5 text-[18px] sm:text-[20px] font-bold tracking-[-0.4px] text-[#E6EBE6] leading-none tabular-nums whitespace-nowrap">
+                  <p className="mt-1.5 text-[18px] sm:text-[20px] font-bold tracking-[-0.4px] text-foreground leading-none tabular-nums whitespace-nowrap">
                     {updateMeta.value}
                   </p>
                 </div>
@@ -345,8 +345,8 @@ export function ParkDetailPage() {
           ) : null}
 
           {summaryNotes ? (
-            <div className="mx-4 mb-4 rounded-[16px] border-[1.5px] border-[#24302A] bg-[#151C18] px-4 py-3.5">
-              <p className="text-[14px] leading-[21px] text-[#9AA39C] text-pretty">
+            <div className="mx-4 mb-4 rounded-[16px] border-[1.5px] border-border bg-card px-4 py-3.5">
+              <p className="text-[14px] leading-[21px] text-muted-foreground text-pretty">
                 {summaryNotes}
               </p>
             </div>
@@ -357,7 +357,7 @@ export function ParkDetailPage() {
           <button
             onClick={handleReport}
             disabled={parkTrails.length === 0}
-            className="w-full h-[52px] bg-[#63B882] rounded-[14px] text-[#0E1510] text-[13px] font-bold tracking-[1.5px] disabled:opacity-60 active:scale-[0.99] transition-transform"
+            className="w-full h-[52px] bg-primary rounded-[14px] text-primary-foreground text-[13px] font-bold tracking-[1.5px] disabled:opacity-60 active:scale-[0.99] transition-transform"
           >
             {t('park_report_btn')}
           </button>
@@ -367,9 +367,9 @@ export function ParkDetailPage() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t('park_directions_aria').replace('{name}', decoded)}
-              className="w-full h-[52px] inline-flex items-center justify-center gap-2 rounded-[14px] border border-[#24302A] bg-[#151C18] text-[#E6EBE6] text-[13px] font-bold tracking-[1.5px] hover:border-[#63B882]/50 active:scale-[0.99] transition-[transform,border-color]"
+              className="w-full h-[52px] inline-flex items-center justify-center gap-2 rounded-[14px] border border-border bg-card text-foreground text-[13px] font-bold tracking-[1.5px] hover:border-primary/50 active:scale-[0.99] transition-[transform,border-color]"
             >
-              <Navigation className="size-4 text-[#63B882]" strokeWidth={2.5} aria-hidden />
+              <Navigation className="size-4 text-primary" strokeWidth={2.5} aria-hidden />
               {t('park_directions_btn')}
             </a>
           )}
@@ -392,42 +392,42 @@ export function ParkDetailPage() {
         )}
 
         {!isLoading && parkTrails.length === 0 && (
-          <div className="bg-[#151C18] rounded-[20px] border border-[#24302A] p-8 text-center">
-            <div className="size-12 rounded-full bg-[#24302A] flex items-center justify-center mx-auto mb-4">
-              <Mountain className="size-6 text-[#9AA39C]" />
+          <div className="bg-card rounded-[20px] border border-border p-8 text-center">
+            <div className="size-12 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+              <Mountain className="size-6 text-muted-foreground" />
             </div>
-            <h3 className="text-[15.5px] font-bold text-[#E6EBE6] mb-2">{t('park_no_trails')}</h3>
-            <p className="text-[13px] text-[#9AA39C]">{t('park_no_trails_body')}</p>
+            <h3 className="text-[15.5px] font-bold text-foreground mb-2">{t('park_no_trails')}</h3>
+            <p className="text-[13px] text-muted-foreground">{t('park_no_trails_body')}</p>
           </div>
         )}
 
         {!isLoading && sortedTrails.length > 0 && (
-          <div className="bg-[#151C18] rounded-[20px] border border-[#24302A] overflow-hidden">
+          <div className="bg-card rounded-[20px] border border-border overflow-hidden">
             <button
               type="button"
               onClick={() => setTrailsOpen((v) => !v)}
               aria-expanded={trailsOpen}
-              className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left active:bg-[#1A221C] transition-colors"
+              className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left active:bg-secondary transition-colors"
             >
               <div className="min-w-0">
-                <p className="text-[15px] font-bold tracking-[-0.2px] text-[#E6EBE6]">
+                <p className="text-[15px] font-bold tracking-[-0.2px] text-foreground">
                   {t('park_trails_by_condition')}
                 </p>
-                <p className="text-[12px] text-[#8B958C] mt-0.5">
+                <p className="text-[12px] text-muted-foreground mt-0.5">
                   {sortedTrails.length}{' '}
                   {sortedTrails.length === 1 ? t('trail_singular') : t('trail_plural')}
                 </p>
               </div>
               <ChevronDown
                 className={cn(
-                  'size-5 text-[#8B958C] shrink-0 transition-transform duration-200',
+                  'size-5 text-muted-foreground shrink-0 transition-transform duration-200',
                   trailsOpen && 'rotate-180'
                 )}
               />
             </button>
 
             {trailsOpen && (
-              <div className="flex flex-col gap-2 px-3 pb-3 border-t border-[#24302A] pt-3">
+              <div className="flex flex-col gap-2 px-3 pb-3 border-t border-border pt-3">
                 {sortedTrails.map((trail) => {
                   const displayName = trail.name.includes(' - ')
                     ? trail.name.split(' - ').slice(1).join(' - ')
@@ -445,7 +445,7 @@ export function ParkDetailPage() {
                       key={trail.id}
                       type="button"
                       onClick={() => navigate(`/trails/${trail.id}`)}
-                      className="bg-[#1A221C] border border-[#24302A] hover:border-[#63B882]/40 transition-colors pl-3.5 pr-3.5 py-3 flex items-center gap-3 text-left rounded-[16px] active:scale-[0.99] overflow-visible"
+                      className="bg-secondary border border-border hover:border-primary/40 transition-colors pl-3.5 pr-3.5 py-3 flex items-center gap-3 text-left rounded-[16px] active:scale-[0.99] overflow-visible"
                     >
                       <StatusWithHazards
                         status={status}
@@ -453,11 +453,11 @@ export function ParkDetailPage() {
                         conditions={hazardTags}
                       />
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-[15px] font-bold tracking-[-0.2px] text-[#E6EBE6] truncate">
+                        <h3 className="text-[15px] font-bold tracking-[-0.2px] text-foreground truncate">
                           {displayName}
                         </h3>
                         {trailSource === 'estimate' && (
-                          <p className="text-[11px] text-[#8B958C] mt-0.5">
+                          <p className="text-[11px] text-muted-foreground mt-0.5">
                             {trailRainAdjusted
                               ? t('condition_rain_adjusted')
                               : t('condition_estimated')}

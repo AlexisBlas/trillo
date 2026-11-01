@@ -21,27 +21,27 @@ export function TrailCard({ report }: TrailCardProps) {
 
   const badge = (() => {
     switch (status) {
-      case 'green': return { label: t('reports_filter_good'), text: '#63B882' };
-      case 'yellow': return { label: t('reports_filter_caution'), text: '#C9A84A' };
-      case 'red': return { label: t('reports_filter_closed'), text: '#C97A7A' };
-      default: return { label: t('reports_filter_good'), text: '#63B882' };
+      case 'green': return { label: t('reports_filter_good'), text: 'var(--primary)' };
+      case 'yellow': return { label: t('reports_filter_caution'), text: 'var(--highlight)' };
+      case 'red': return { label: t('reports_filter_closed'), text: 'var(--destructive)' };
+      default: return { label: t('reports_filter_good'), text: 'var(--primary)' };
     }
   })();
 
   return (
     <Link to={`/trails/${trails.id}`}>
-      <div className="bg-[#151C18] rounded-[16px] border-[1.5px] border-[#24302A] shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-[#63B882] transition-colors">
+      <div className="bg-card rounded-[16px] border-[1.5px] border-border shadow-[0px_1px_1.5px_rgba(0,0,0,0.04)] hover:border-primary transition-colors">
         <div className="p-[15.5px] flex items-center gap-3.5">
           <StatusWithHazards status={status} reported conditions={conditions} />
 
           <div className="flex-1 min-w-0">
-            <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-[#E6EBE6] truncate mb-0.5">
+            <h3 className="text-[15.5px] font-bold tracking-[-0.2px] text-foreground truncate mb-0.5">
               {trails.name}
             </h3>
-            <p className="text-[13px] text-[#9AA39C] truncate mb-0.5">
+            <p className="text-[13px] text-muted-foreground truncate mb-0.5">
               {trails.location || 'Trail location'}
             </p>
-            <p className="text-[12px] text-[#8B958C]">
+            <p className="text-[12px] text-muted-foreground">
               {formatUpdatedAgo(created_at, lang)}
             </p>
           </div>
@@ -51,7 +51,7 @@ export function TrailCard({ report }: TrailCardProps) {
               {badge.label}
             </span>
             {surfaceCondition && surfaceLabelMap[surfaceCondition] && (
-              <span className="text-[10px] font-bold tracking-[0.5px] text-[#8B958C]">
+              <span className="text-[10px] font-bold tracking-[0.5px] text-muted-foreground">
                 {surfaceLabelMap[surfaceCondition]}
               </span>
             )}
