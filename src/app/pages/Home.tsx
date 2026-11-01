@@ -162,7 +162,18 @@ export function Home() {
           src={theme === 'light' ? '/home-hero-light.png' : '/home-hero-dark.png'}
           alt=""
           aria-hidden
-          className="absolute inset-0 size-full object-cover object-[center_42%] select-none pointer-events-none [mask-image:linear-gradient(to_bottom,black_72%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_72%,transparent_100%)]"
+          className="absolute inset-0 size-full scale-110 object-cover object-[center_42%] blur-[6px] select-none pointer-events-none [mask-image:linear-gradient(to_bottom,black_72%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_72%,transparent_100%)]"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-[0.32] mix-blend-overlay pointer-events-none"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(
+              "<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(#g)'/></svg>"
+            )}")`,
+            backgroundRepeat: 'repeat',
+            backgroundSize: '160px 160px',
+          }}
         />
         <div
           aria-hidden
