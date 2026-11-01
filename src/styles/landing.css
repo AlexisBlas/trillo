@@ -373,7 +373,7 @@ html.film-failed .landing-stage {
   --device-w: 390px;
   --device-h: 844px;
   --device-bezel-x: 8px;
-  --device-bezel-y: 20px;
+  --device-bezel-y: 8px;
   --nav-gap: 7rem;
   --floor-gap: 3rem;
   --dock-gap: 2.5rem;
@@ -405,7 +405,7 @@ html.film-failed .landing-stage {
 .landing-device__shell {
   box-sizing: border-box;
   height: calc(100% - 1.7rem);
-  aspect-ratio: 406 / 884;
+  aspect-ratio: 406 / 860;
   width: auto;
   flex: 0 0 auto;
   position: relative;
