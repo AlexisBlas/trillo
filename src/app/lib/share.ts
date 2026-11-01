@@ -37,9 +37,9 @@ export function shareUrlFor(path: string): string {
 }
 
 const STATUS_DOT: Record<ShareStatus, string> = {
-  green: '#4A9E68',
-  yellow: '#f59e0b',
-  red: '#C96B6B',
+  green: '#2FCA6A',
+  yellow: '#E5B820',
+  red: '#E85A5A',
 };
 
 const STATUS_TEXT: Record<ShareStatus, string> = {
