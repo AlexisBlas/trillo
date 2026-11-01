@@ -162,7 +162,7 @@ export function Home() {
           src={theme === 'light' ? '/home-hero-light.png' : '/home-hero-dark.png'}
           alt=""
           aria-hidden
-          className="absolute inset-0 size-full scale-110 object-cover object-[center_42%] blur-[6px] select-none pointer-events-none [mask-image:linear-gradient(to_bottom,black_72%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_72%,transparent_100%)]"
+          className="absolute inset-0 size-full scale-110 object-cover object-[center_42%] blur-[4px] select-none pointer-events-none [mask-image:linear-gradient(to_bottom,black_72%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_72%,transparent_100%)]"
         />
         <div
           aria-hidden
