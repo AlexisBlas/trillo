@@ -43,7 +43,7 @@ const STATUS_DOT: Record<ShareStatus, string> = {
 };
 
 const STATUS_TEXT: Record<ShareStatus, string> = {
-  green: '#63B882',
+  green: '#2FCA6A',
   yellow: '#C9A84A',
   red: '#C97A7A',
 };
@@ -214,7 +214,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     ctx.fill();
 
     // Brand
-    ctx.fillStyle = '#63B882';
+    ctx.fillStyle = '#2FCA6A';
     ctx.font = '700 40px system-ui, -apple-system, sans-serif';
     const brand = 'TRILLO';
     let brandX = 80;
@@ -224,7 +224,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     }
 
     // Park / trail title above the card
-    ctx.fillStyle = '#63B882';
+    ctx.fillStyle = '#2FCA6A';
     ctx.font = '800 64px system-ui, -apple-system, sans-serif';
     const titleLines = wrapLines(ctx, payload.title, width - 160, 2);
     let titleY = TOP_SAFE + 88;
@@ -391,7 +391,7 @@ export async function createStoryImageFile(payload: SharePayload): Promise<File 
     }
 
     // Footer — above Stories bottom tray
-    ctx.fillStyle = '#63B882';
+    ctx.fillStyle = '#2FCA6A';
     ctx.font = '700 30px system-ui, -apple-system, sans-serif';
     ctx.fillText('eltrillo.app', 80, height - BOTTOM_SAFE + 40);
     ctx.fillStyle = '#8B958C';

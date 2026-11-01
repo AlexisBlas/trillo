@@ -17,7 +17,7 @@
   --font-weight-medium: 500;
   --font-weight-normal: 400;
 
-  /* Dark forest night — cream inverted */
+  /* Dark forest night — cream inverted, mint primary */
   --background: #141c17;
   --foreground: #f3f0e8;
   --card: #1c2620;
@@ -25,9 +25,9 @@
   --popover: #1c2620;
   --popover-foreground: #f3f0e8;
 
-  --primary: #8fa189;
+  --primary: #2FCA6A;
   --primary-foreground: #141c17;
-  --primary-dark: #7a8d74;
+  --primary-dark: #28B35C;
 
   --secondary: #24302a;
   --secondary-foreground: #f3f0e8;
@@ -36,7 +36,7 @@
   --muted-foreground: #a8b0a4;
 
   --accent: #2d4739;
-  --accent-foreground: #d4e0d2;
+  --accent-foreground: #2FCA6A;
 
   --highlight: #d97d45;
   --highlight-foreground: #ffffff;
@@ -50,10 +50,10 @@
   --input-background: #1c2620;
   --switch-background: #3a4840;
 
-  --ring: #8fa189;
+  --ring: #2FCA6A;
 
   --status-green: #1a2e22;
-  --status-green-foreground: #8fa189;
+  --status-green-foreground: #2FCA6A;
   --status-blue: #1a2832;
   --status-blue-foreground: #7db3d4;
   --status-yellow: #2e2618;
@@ -78,14 +78,14 @@
 
   --sidebar: #141c17;
   --sidebar-foreground: #f3f0e8;
-  --sidebar-primary: #8fa189;
+  --sidebar-primary: #2FCA6A;
   --sidebar-primary-foreground: #141c17;
   --sidebar-accent: #24302a;
-  --sidebar-accent-foreground: #d4e0d2;
+  --sidebar-accent-foreground: #2FCA6A;
   --sidebar-border: #2f3c34;
-  --sidebar-ring: #8fa189;
+  --sidebar-ring: #2FCA6A;
 
-  --chart-1: #8fa189;
+  --chart-1: #2FCA6A;
   --chart-2: #2d4739;
   --chart-3: #d97d45;
   --chart-4: #d9b068;
