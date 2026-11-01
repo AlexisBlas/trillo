@@ -172,7 +172,7 @@ export function Home() {
               'linear-gradient(180deg, color-mix(in srgb, var(--background) 6%, transparent) 0%, color-mix(in srgb, var(--background) 18%, transparent) 55%, color-mix(in srgb, var(--background) 70%, transparent) 88%, var(--background) 100%)',
           }}
         />
-        <div className="relative z-10 flex min-h-[220px] flex-col justify-end px-5 pb-6 pt-14 text-left">
+        <div className="relative z-10 flex min-h-[195px] flex-col justify-end px-5 pb-6 pt-10 text-left">
           <p className="text-[13px] text-muted-foreground mb-1">
             {getGreeting()}
           </p>
