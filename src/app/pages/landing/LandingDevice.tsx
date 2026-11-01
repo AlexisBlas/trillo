@@ -6,6 +6,21 @@ const PARK_REPORT = `${PARK_STATUS}/report`;
 
 const CHAPTER_PATHS = ['/', '/', PARK_STATUS, PARK_REPORT, PARK_STATUS, '/reports'] as const;
 
+function cssPx(el: HTMLElement, value: string) {
+  const raw = value.trim();
+  if (!raw) return 0;
+  if (raw.endsWith('px')) return parseFloat(raw);
+  if (raw.endsWith('rem')) {
+    return parseFloat(raw) * parseFloat(getComputedStyle(document.documentElement).fontSize);
+  }
+  const probe = document.createElement('div');
+  probe.style.width = raw;
+  el.appendChild(probe);
+  const px = probe.offsetWidth;
+  probe.remove();
+  return px;
+}
+
 function pathForChapter(chapter: number) {
   const i = Math.min(Math.max(chapter, 0), CHAPTER_PATHS.length - 1);
   return CHAPTER_PATHS[i];
@@ -24,6 +39,7 @@ export function LandingDevice({
 }) {
   const frameRef = useRef<HTMLIFrameElement>(null);
   const shellRef = useRef<HTMLDivElement>(null);
+  const screenRef = useRef<HTMLDivElement>(null);
   const deviceRef = useRef<HTMLElement>(null);
   const readyRef = useRef(false);
   const pathRef = useRef(pathForChapter(chapter));
@@ -31,21 +47,6 @@ export function LandingDevice({
   const noteVisible = chapter > 0;
 
   useEffect(() => {
-    const cssPx = (el: HTMLElement, value: string) => {
-      const raw = value.trim();
-      if (!raw) return 0;
-      if (raw.endsWith('px')) return parseFloat(raw);
-      if (raw.endsWith('rem')) {
-        return parseFloat(raw) * parseFloat(getComputedStyle(document.documentElement).fontSize);
-      }
-      const probe = document.createElement('div');
-      probe.style.width = raw;
-      el.appendChild(probe);
-      const px = probe.offsetWidth;
-      probe.remove();
-      return px;
-    };
-
     const read = () => {
       const host = deviceRef.current;
       const footer = document.getElementById('footer');
@@ -82,26 +83,32 @@ export function LandingDevice({
 
   useEffect(() => {
     const shell = shellRef.current;
+    const screen = screenRef.current;
     const frame = frameRef.current;
     const host = deviceRef.current;
-    if (!shell || !frame || !host) return;
+    if (!shell || !screen || !frame || !host) return;
 
     const fit = () => {
-      const h = shell.clientHeight;
+      const h = screen.clientHeight;
       if (h <= 1) return;
-      const w = h * (390 / 844) + 16;
-      shell.style.width = `${w}px`;
-      // Scale to height so the whole 390×844 screen (incl. bottom nav) fits;
-      // the extra 16px of width becomes an even bezel.
       const scale = h / 844;
-      frame.style.transform = `translateX(${(w - 390 * scale) / 2}px) scale(${scale})`;
+      const innerW = 390 * scale;
+      const padX =
+        parseFloat(getComputedStyle(shell).paddingLeft) +
+        parseFloat(getComputedStyle(shell).paddingRight);
+      shell.style.width = `${innerW + padX}px`;
+      frame.style.transform = `scale(${scale})`;
     };
 
-    fit();
     const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(fit) : null;
     ro?.observe(host);
+    ro?.observe(shell);
+    ro?.observe(screen);
+    fit();
+    const raf = requestAnimationFrame(fit);
     window.addEventListener('resize', fit);
     return () => {
+      cancelAnimationFrame(raf);
       ro?.disconnect();
       window.removeEventListener('resize', fit);
     };
@@ -131,18 +138,20 @@ export function LandingDevice({
         aria-hidden={!visible}
       >
         <div ref={shellRef} className="landing-device__shell">
-          <iframe
-            ref={frameRef}
-            className="landing-device__frame"
-            title="Trillo app"
-            src="/?embed=1"
-            tabIndex={-1}
-            onLoad={() => {
-              readyRef.current = true;
-              sendPath(pathRef.current);
-            }}
-          />
-          <span className="landing-device__shield" aria-hidden />
+          <div ref={screenRef} className="landing-device__screen">
+            <iframe
+              ref={frameRef}
+              className="landing-device__frame"
+              title="Trillo app"
+              src="/?embed=1"
+              tabIndex={-1}
+              onLoad={() => {
+                readyRef.current = true;
+                sendPath(pathRef.current);
+              }}
+            />
+            <span className="landing-device__shield" aria-hidden />
+          </div>
         </div>
         <p className="landing-device__cap">{caption}</p>
       </aside>

@@ -372,6 +372,8 @@ html.film-failed .landing-stage {
 .landing-device {
   --device-w: 390px;
   --device-h: 844px;
+  --device-bezel-x: 8px;
+  --device-bezel-y: 20px;
   --nav-gap: 7rem;
   --floor-gap: 3rem;
   --dock-gap: 2.5rem;
@@ -401,17 +403,30 @@ html.film-failed .landing-stage {
 }
 
 .landing-device__shell {
+  box-sizing: border-box;
   height: calc(100% - 1.7rem);
-  aspect-ratio: 406 / 844;
+  aspect-ratio: 406 / 884;
   width: auto;
   flex: 0 0 auto;
   position: relative;
+  display: flex;
+  padding: var(--device-bezel-y) var(--device-bezel-x);
   border-radius: 32px;
   background: #0e1510;
   box-shadow:
     inset 0 0 0 1px rgba(245, 240, 232, 0.22),
     0 24px 60px rgba(8, 12, 8, 0.45);
+}
+
+.landing-device__screen {
+  position: relative;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
   overflow: hidden;
+  border-radius: 20px;
+  background: #141c17;
+  box-shadow: 0 0 0 1px rgba(245, 240, 232, 0.16);
 }
 
 .landing-device__cap {
@@ -433,8 +448,7 @@ html.film-failed .landing-stage {
   width: var(--device-w);
   height: var(--device-h);
   border: 0;
-  border-radius: 32px;
-  background: #0e1510;
+  background: #141c17;
   transform-origin: top left;
   pointer-events: none;
 }
