@@ -44,8 +44,8 @@ const STATUS_DOT: Record<ShareStatus, string> = {
 
 const STATUS_TEXT: Record<ShareStatus, string> = {
   green: '#2FCA6A',
-  yellow: '#C9A84A',
-  red: '#C97A7A',
+  yellow: '#E5B820',
+  red: '#E85A5A',
 };
 
 function wrapLines(

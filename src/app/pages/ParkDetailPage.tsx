@@ -11,7 +11,7 @@ import { shareUrlFor } from '../lib/share';
 import { useTrails } from '../hooks/useTrails';
 import { useParkReports } from '../hooks/useParkReports';
 import { useParkDirections, useParkMeta } from '../hooks/useHiddenParks';
-import { StatusCircle } from '../components/trail/StatusCircle';
+import { StatusCircle, STATUS_DOT } from '../components/trail/StatusCircle';
 import { StatusWithHazards } from '../components/trail/StatusWithHazards';
 import { ConditionSourceLegend } from '../components/trail/ConditionSourceLegend';
 import { OverallRatingLabel } from '../components/trail/OverallRatingLabel';
@@ -45,9 +45,9 @@ const STATUS_LABEL: Record<TrailStatus, TranslationKey> = {
 };
 
 const STATUS_TEXT: Record<TrailStatus, string> = {
-  green: 'var(--primary)',
-  yellow: 'var(--highlight)',
-  red: 'var(--destructive)',
+  green: STATUS_DOT.green,
+  yellow: STATUS_DOT.yellow,
+  red: STATUS_DOT.red,
 };
 
 export function ParkDetailPage() {
@@ -280,7 +280,7 @@ export function ParkDetailPage() {
               <button
                 type="button"
                 onClick={() => setDescExpanded((v) => !v)}
-                className="mt-1.5 text-[13px] font-bold text-primary hover:text-[#52A06E] transition-colors"
+                className="mt-1.5 text-[13px] font-bold text-primary hover:text-[color:var(--primary-dark)] transition-colors"
               >
                 {descExpanded ? t('park_show_less') : t('park_show_more')}
               </button>
@@ -295,7 +295,7 @@ export function ParkDetailPage() {
         >
           <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-0 px-5 pt-5 pb-5">
             <div className="pr-4 min-w-0">
-              <p className="text-[13px] text-[#6b7280] leading-none">
+              <p className="text-[13px] text-muted-foreground leading-none">
                 {t('park_current_conditions')}
               </p>
               <div className="mt-3 flex items-center gap-2.5 min-w-0">
@@ -321,7 +321,7 @@ export function ParkDetailPage() {
             <div className="pl-4 border-l border-border flex flex-col justify-center shrink-0 max-w-[38%]">
               {updateMeta ? (
                 <div>
-                  <p className="text-[13px] font-normal text-[#6b7280] leading-none">
+                  <p className="text-[13px] font-normal text-muted-foreground leading-none">
                     {updateMeta.label}
                   </p>
                   <p className="mt-1.5 text-[18px] sm:text-[20px] font-bold tracking-[-0.4px] text-foreground leading-none tabular-nums whitespace-nowrap">
@@ -329,7 +329,7 @@ export function ParkDetailPage() {
                   </p>
                 </div>
               ) : (
-                <p className="text-[13px] font-normal text-[#6b7280] leading-snug max-w-[7.5rem]">
+                <p className="text-[13px] font-normal text-muted-foreground leading-snug max-w-[7.5rem]">
                   {t('park_report_to_update')}
                 </p>
               )}
@@ -466,11 +466,11 @@ export function ParkDetailPage() {
                       </div>
                       <span
                         className="shrink-0 text-[12px] font-bold"
-                        style={{ color: status ? STATUS_TEXT[status] : '#8B958C' }}
+                        style={{ color: status ? STATUS_TEXT[status] : 'var(--text-tertiary)' }}
                       >
                         {statusWord(status)}
                       </span>
-                      <ChevronRight className="size-4 text-[#c4c0b6] shrink-0" />
+                      <ChevronRight className="size-4 text-muted-foreground shrink-0" />
                     </button>
                   );
                 })}

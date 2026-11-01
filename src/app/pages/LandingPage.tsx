@@ -234,7 +234,7 @@ export function LandingPage() {
               <Reveal as="ul" index={1} className="readout">
                 <li>
                   <b>
-                    <i style={{ background: '#63B882' }} aria-hidden />
+                    <i style={{ background: '#2FCA6A' }} aria-hidden />
                     {copy.statusDry}
                   </b>
                   <span>{copy.statusDryHint}</span>

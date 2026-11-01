@@ -157,7 +157,7 @@ export function Home() {
 
       <section className="px-5 pt-5 pb-3 text-left">
         <p className="text-[13px] text-muted-foreground mb-1">{getGreeting()}</p>
-        <h1 className="text-[28px] leading-[30px] font-bold tracking-[-1.4px] text-foreground mb-1.5">
+        <h1 className="text-[36px] leading-[1.1] font-bold text-foreground mb-1.5">
           {t('home_headline').split('\n').map((line, i) => (
             <span key={i}>
               {line}

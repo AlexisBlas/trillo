@@ -5,7 +5,7 @@ import { Alert, AlertDescription } from '../components/ui/alert';
 import { BackButton } from '../components/layout/BackButton';
 import { ShareButton } from '../components/layout/ShareButton';
 import { StatusBadge } from '../components/trail/StatusBadge';
-import { StatusCircle } from '../components/trail/StatusCircle';
+import { StatusCircle, STATUS_DOT } from '../components/trail/StatusCircle';
 import { HazardNotice } from '../components/trail/HazardNotice';
 import { OverallRatingLabel } from '../components/trail/OverallRatingLabel';
 import { getCriticalHazards } from '../lib/hazards';
@@ -33,9 +33,9 @@ const STATUS_LABEL: Record<'green' | 'yellow' | 'red', TranslationKey> = {
 };
 
 const STATUS_TEXT: Record<'green' | 'yellow' | 'red', string> = {
-  green: 'var(--primary)',
-  yellow: 'var(--highlight)',
-  red: 'var(--destructive)',
+  green: STATUS_DOT.green,
+  yellow: STATUS_DOT.yellow,
+  red: STATUS_DOT.red,
 };
 
 export function TrailDetailPage() {
