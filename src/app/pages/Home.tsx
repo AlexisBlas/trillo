@@ -6,6 +6,7 @@ import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert';
 import { Button } from '../components/ui/button';
 import { SuggestPlaceDialog } from '../components/home/SuggestPlaceDialog';
+import { HomeHeroArt } from '../components/home/HomeHeroArt';
 import { useTrails } from '../hooks/useTrails';
 import type { TrailWithCity } from '../hooks/useTrails';
 import { useTrailReports } from '../hooks/useTrailReports';
@@ -158,12 +159,7 @@ export function Home() {
       <TopNav />
 
       <section className="relative isolate overflow-hidden">
-        <img
-          src={theme === 'light' ? '/home-hero-light.png' : '/home-hero-dark.png'}
-          alt=""
-          aria-hidden
-          className="absolute inset-0 size-full scale-110 object-cover object-[center_42%] blur-[4px] select-none pointer-events-none [mask-image:linear-gradient(to_bottom,black_72%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_72%,transparent_100%)]"
-        />
+        <HomeHeroArt theme={theme} />
         <div
           aria-hidden
           className="absolute inset-0 opacity-[0.32] mix-blend-overlay pointer-events-none"
@@ -183,7 +179,7 @@ export function Home() {
               'linear-gradient(180deg, color-mix(in srgb, var(--background) 6%, transparent) 0%, color-mix(in srgb, var(--background) 18%, transparent) 55%, color-mix(in srgb, var(--background) 70%, transparent) 88%, var(--background) 100%)',
           }}
         />
-        <div className="relative z-10 flex min-h-[195px] flex-col justify-end px-5 pb-6 pt-10 text-left">
+        <div className="relative z-10 flex min-h-[213px] flex-col justify-end px-5 pb-6 pt-14 text-left">
           <p className="text-[13px] text-muted-foreground mb-1">
             {getGreeting()}
           </p>
