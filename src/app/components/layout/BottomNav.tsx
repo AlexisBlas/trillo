@@ -37,7 +37,7 @@ export function BottomNav() {
                 />
                 <p
                   className={cn(
-                    'absolute left-1/2 -translate-x-1/2 top-[35px] text-[10.5px] text-center whitespace-nowrap',
+                    'absolute left-1/2 -translate-x-1/2 top-[35px] text-[12px] text-center whitespace-nowrap',
                     isActive
                       ? 'font-bold text-primary'
                       : 'font-medium text-muted-foreground'

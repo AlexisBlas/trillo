@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { Smile, Meh, Frown, Sun, Droplet, Check } from 'lucide-react';
 import { ReportFormData, OVERALL_OPTIONS, SURFACE_OPTIONS, HAZARD_OPTIONS } from '../../lib/schemas';
 import { cn } from '../ui/utils';
@@ -69,13 +69,20 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
   const [surface, setSurface] = useState<string>('dry');
   const [hazards, setHazards] = useState<string[]>([]);
   const [notes, setNotes] = useState('');
+  const [overallAnnounce, setOverallAnnounce] = useState('');
 
   const overallLabelId = useId();
   const surfaceLabelId = useId();
   const hazardsLabelId = useId();
+  const hazardsHintId = useId();
   const wetHintId = useId();
+  const overallLiveId = useId();
+  const notesLabelId = useId();
+  const notesCounterId = useId();
+  const notesFieldId = useId();
   const overallRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const surfaceRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const announceClearRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isOverallAllowed = (value: string) =>
     surface === 'dry' || WET_SURFACE_OVERALL.includes(value);
@@ -84,10 +91,23 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
   const surfaceValues = SURFACE_OPTIONS.map((o) => o.value);
   const wetSurface = surface !== 'dry';
 
+  useEffect(() => {
+    return () => {
+      if (announceClearRef.current) clearTimeout(announceClearRef.current);
+    };
+  }, []);
+
+  const announceOverallChange = () => {
+    setOverallAnnounce(t('form_overall_auto_fair'));
+    if (announceClearRef.current) clearTimeout(announceClearRef.current);
+    announceClearRef.current = setTimeout(() => setOverallAnnounce(''), 4000);
+  };
+
   const selectSurface = (value: string) => {
     setSurface(value);
     if (value !== 'dry' && !WET_SURFACE_OVERALL.includes(overall)) {
       setOverall('fair');
+      announceOverallChange();
     }
   };
 
@@ -113,20 +133,76 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
     });
   };
 
+  const sectionLabelClass =
+    'text-[12px] font-bold tracking-[1.2px] uppercase text-muted-foreground';
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6 pb-24">
+      {/* Trail Surface first so wet/muddy rules are clear before Overall */}
+      <section>
+        <h2 id={surfaceLabelId} className={cn(sectionLabelClass, 'mb-3')}>
+          {t('form_surface_label')}
+        </h2>
+        <div
+          role="radiogroup"
+          aria-labelledby={surfaceLabelId}
+          className="grid grid-cols-3 gap-2"
+        >
+          {SURFACE_OPTIONS.map((opt) => {
+            const Icon = surfaceIcons[opt.value];
+            const active = surface === opt.value;
+            return (
+              <button
+                key={opt.value}
+                ref={(el) => {
+                  surfaceRefs.current[opt.value] = el;
+                }}
+                type="button"
+                role="radio"
+                aria-checked={active}
+                tabIndex={active ? 0 : -1}
+                onClick={() => selectSurface(opt.value)}
+                onKeyDown={(e) => {
+                  const next = moveRadioSelection(surfaceValues, surface, e.key);
+                  if (!next) return;
+                  e.preventDefault();
+                  selectSurface(next);
+                  requestAnimationFrame(() => surfaceRefs.current[next]?.focus());
+                }}
+                className={cn(
+                  'h-[78px] border-[1.5px] flex flex-col items-center justify-center gap-1 transition-colors rounded-[20px]',
+                  active
+                    ? 'text-primary-foreground'
+                    : 'bg-card border-border text-foreground'
+                )}
+                style={
+                  active
+                    ? {
+                        backgroundColor: STATUS_DOT[opt.status],
+                        borderColor: STATUS_DOT[opt.status],
+                      }
+                    : undefined
+                }
+              >
+                <Icon className="size-5" />
+                <span className="text-[11px] font-bold">{t(surfaceKeyMap[opt.value])}</span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
       {/* Overall Condition */}
       <section>
-        <h2
-          id={overallLabelId}
-          className="text-[11px] font-bold tracking-[1.2px] uppercase text-muted-foreground mb-3"
-        >
+        <h2 id={overallLabelId} className={cn(sectionLabelClass, 'mb-3')}>
           {t('form_condition_label')}
         </h2>
         <div
           role="radiogroup"
           aria-labelledby={overallLabelId}
-          aria-describedby={wetSurface ? wetHintId : undefined}
+          aria-describedby={
+            wetSurface ? `${wetHintId} ${overallLiveId}` : overallLiveId
+          }
           className="grid grid-cols-4 gap-2"
         >
           {OVERALL_OPTIONS.map((opt) => {
@@ -167,91 +243,44 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
             );
           })}
         </div>
-        {wetSurface && (
+        {/* Reserved height so showing the wet hint doesn't shift taps below */}
+        <div className="mt-2 min-h-[36px]">
           <p
             id={wetHintId}
-            role="status"
-            aria-live="polite"
-            className="mt-2 text-[12px] text-muted-foreground"
+            className={cn(
+              'text-[12px] text-muted-foreground',
+              wetSurface ? 'visible' : 'invisible'
+            )}
+            aria-hidden={!wetSurface}
           >
             {t('form_overall_wet_hint')}
           </p>
-        )}
-      </section>
-
-      {/* Trail Surface */}
-      <section>
-        <h2
-          id={surfaceLabelId}
-          className="text-[11px] font-bold tracking-[1.2px] uppercase text-muted-foreground mb-3"
-        >
-          {t('form_surface_label')}
-        </h2>
-        <div
-          role="radiogroup"
-          aria-labelledby={surfaceLabelId}
-          className="grid grid-cols-3 gap-2"
-        >
-          {SURFACE_OPTIONS.map((opt) => {
-            const Icon = surfaceIcons[opt.value];
-            const active = surface === opt.value;
-            return (
-              <button
-                key={opt.value}
-                ref={(el) => {
-                  surfaceRefs.current[opt.value] = el;
-                }}
-                type="button"
-                role="radio"
-                aria-checked={active}
-                tabIndex={active ? 0 : -1}
-                onClick={() => selectSurface(opt.value)}
-                onKeyDown={(e) => {
-                  const next = moveRadioSelection(surfaceValues, surface, e.key);
-                  if (!next) return;
-                  e.preventDefault();
-                  selectSurface(next);
-                  // Focus after state update — next tick so disabled overall radios settle.
-                  requestAnimationFrame(() => surfaceRefs.current[next]?.focus());
-                }}
-                className={cn(
-                  'h-[78px] border-[1.5px] flex flex-col items-center justify-center gap-1 transition-colors rounded-[20px]',
-                  active
-                    ? 'text-primary-foreground'
-                    : 'bg-card border-border text-foreground'
-                )}
-                style={
-                  active
-                    ? {
-                        backgroundColor: STATUS_DOT[opt.status],
-                        borderColor: STATUS_DOT[opt.status],
-                      }
-                    : undefined
-                }
-              >
-                <Icon className="size-5" />
-                <span className="text-[11px] font-bold">{t(surfaceKeyMap[opt.value])}</span>
-              </button>
-            );
-          })}
+          <p
+            id={overallLiveId}
+            role="status"
+            aria-live="polite"
+            className="sr-only"
+          >
+            {overallAnnounce}
+          </p>
         </div>
       </section>
 
-      {/* Hazards — multi-select */}
+      {/* Hazards — multi-select; Ninguno clears the rest */}
       <section>
         <div className="flex items-center justify-between mb-3">
-          <h2
-            id={hazardsLabelId}
-            className="text-[11px] font-bold tracking-[1.2px] uppercase text-muted-foreground"
-          >
+          <h2 id={hazardsLabelId} className={sectionLabelClass}>
             {t('form_hazards_label')}
           </h2>
-          <span className="text-[12px] text-muted-foreground">{t('form_select_hazards')}</span>
+          <span id={hazardsHintId} className="text-[12px] text-muted-foreground">
+            {t('form_select_hazards')}
+          </span>
         </div>
         <div
           className="flex flex-wrap gap-2"
           role="group"
           aria-labelledby={hazardsLabelId}
+          aria-describedby={hazardsHintId}
         >
           <button
             type="button"
@@ -291,18 +320,30 @@ export function ReportForm({ onSubmit, isSubmitting }: ReportFormProps) {
 
       {/* Notes */}
       <section>
-        <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-muted-foreground mb-3">
+        <label
+          id={notesLabelId}
+          htmlFor={notesFieldId}
+          className={cn(sectionLabelClass, 'mb-3 block')}
+        >
           {t('form_notes_label')}
-        </h2>
+        </label>
         <div className="bg-card rounded-[14px] border-[1.5px] border-border p-4">
           <textarea
+            id={notesFieldId}
             value={notes}
             onChange={(e) => setNotes(e.target.value.slice(0, 250))}
             placeholder={t('form_notes_submit_placeholder')}
+            aria-describedby={notesCounterId}
             className="w-full min-h-[100px] text-[16px] text-foreground placeholder:text-muted-foreground resize-none outline-none"
             maxLength={250}
           />
-          <p className="text-right text-[12px] text-muted-foreground mt-2">{notes.length}/250</p>
+          <p
+            id={notesCounterId}
+            className="text-right text-[12px] text-muted-foreground mt-2"
+            aria-live="polite"
+          >
+            {notes.length}/250
+          </p>
         </div>
       </section>
 

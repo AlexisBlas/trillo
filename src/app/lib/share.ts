@@ -8,7 +8,7 @@ export type ShareHazard = {
   label: string;
   detail?: string | null;
   note?: string | null;
-  kind?: 'downed-trees' | 'broken-bridge' | 'maintenance';
+  kind?: 'downed-trees' | 'broken-bridge' | 'maintenance' | 'slippery' | 'other';
 };
 
 export type SharePayload = {

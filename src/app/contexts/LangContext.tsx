@@ -88,6 +88,8 @@ const translations = {
     form_condition_label: 'Overall condition',
     form_surface_label: 'Trail surface',
     form_overall_wet_hint: 'Wet or muddy trails can only be Fair or Poor.',
+    form_overall_auto_fair:
+      'Overall condition changed to Fair because the surface is wet or muddy.',
     form_hazards_label: 'Hazards',
     form_notes_label: 'Notes (optional)',
     form_notes_placeholder: 'Anything else hikers should know?',
@@ -248,6 +250,8 @@ const translations = {
     hazard_note_broken_bridge: 'A bridge is damaged or impassable. Use an alternate route if needed.',
     hazard_maintenance: 'Needs maintenance',
     hazard_note_maintenance: 'Overgrowth, erosion, or worn sections. Expect slower riding.',
+    hazard_note_slippery: 'The trail is slick. Watch your footing and take it slow.',
+    hazard_note_other: 'Another hazard was reported. Read the notes for details.',
     report_overall: 'Overall',
     hazard_reported_on: 'Reported on',
     // Common
@@ -346,6 +350,8 @@ const translations = {
     form_condition_label: 'Condición general',
     form_surface_label: 'Superficie del sendero',
     form_overall_wet_hint: 'Con superficie húmeda o enlodada, solo puede ser Regular o Malo.',
+    form_overall_auto_fair:
+      'Condición general cambiada a Regular porque la superficie está húmeda o enlodada.',
     form_hazards_label: 'Peligros',
     form_notes_label: 'Notas (opcional)',
     form_notes_placeholder: '¿Algo más que los senderistas deberían saber?',
@@ -506,6 +512,8 @@ const translations = {
     hazard_note_broken_bridge: 'Un puente está dañado o intransitable. Busca una ruta alterna si es necesario.',
     hazard_maintenance: 'Necesita mantenimiento',
     hazard_note_maintenance: 'Maleza, erosión o tramos desgastados. Espera un recorrido más lento.',
+    hazard_note_slippery: 'El sendero está resbaladizo. Cuida tus pasos y ve con calma.',
+    hazard_note_other: 'Se reportó otro peligro. Lee las notas para más detalles.',
     report_overall: 'General',
     hazard_reported_on: 'Reportado en',
     // Common
