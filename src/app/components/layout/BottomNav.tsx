@@ -15,7 +15,10 @@ export function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border md:hidden">
+    <nav
+      aria-label={t('nav_aria_bottom')}
+      className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border md:hidden"
+    >
       <div className="flex items-center h-[79px] px-2 pb-5 pt-0.5">
         {navItems.map((item) => {
           const isActive = location.pathname === item.to;

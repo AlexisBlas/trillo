@@ -8,7 +8,7 @@ const NEAR =
   'M406 29.5L339 25L280 36L198.5 25L130 35.75L101 31L69.5 44.5L13.5 25L-26 31V260.5H406L406 29.5Z';
 
 export function HomeHeroArt({ theme }: { theme: Theme }) {
-  const sky = theme === 'light' ? '#F9F7F2' : '#141C17';
+  const sky = theme === 'light' ? '#F9F7F2' : '#0E1510';
   const blend = theme === 'light' ? 'multiply' : 'soft-light';
 
   return (

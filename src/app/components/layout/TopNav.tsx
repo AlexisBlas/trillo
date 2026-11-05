@@ -401,6 +401,7 @@ export function TopNav() {
   return (
     <>
       <nav
+        aria-label={t('nav_aria_top')}
         className={cn(
           'sticky top-0 z-40 flex items-center justify-between h-[60px] px-5 transition-colors duration-200',
           scrolled

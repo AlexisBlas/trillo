@@ -18,7 +18,7 @@
   --font-weight-normal: 400;
 
   /* Dark forest night — cream inverted, mint primary */
-  --background: #141c17;
+  --background: #0E1510;
   --foreground: #f3f0e8;
   --card: #1c2620;
   --card-foreground: #f3f0e8;
@@ -26,7 +26,7 @@
   --popover-foreground: #f3f0e8;
 
   --primary: #2FCA6A;
-  --primary-foreground: #141c17;
+  --primary-foreground: #0E1510;
   --primary-dark: #28B35C;
 
   --secondary: #24302a;
@@ -44,10 +44,10 @@
   --destructive: #c96b6b;
   --destructive-foreground: #ffffff;
 
-  /* ~3:1 vs page #141c17 and cards #1c2620 (was #2f3c34 at ~1.5:1) */
-  --border: #5b6a60;
-  --border-light: #5b6a60;
-  --input: #5b6a60;
+  /* ≥3:1 vs page #0E1510 and cards #1c2620 (was #2f3c34 / #5b6a60) */
+  --border: #6a7a70;
+  --border-light: #6a7a70;
+  --input: #6a7a70;
   --input-background: #1c2620;
   --switch-background: #3a4840;
 
@@ -77,13 +77,13 @@
   --radius-md: 1rem;
   --radius-lg: 1.5rem;
 
-  --sidebar: #141c17;
+  --sidebar: #0E1510;
   --sidebar-foreground: #f3f0e8;
   --sidebar-primary: #2FCA6A;
-  --sidebar-primary-foreground: #141c17;
+  --sidebar-primary-foreground: #0E1510;
   --sidebar-accent: #24302a;
   --sidebar-accent-foreground: #2FCA6A;
-  --sidebar-border: #5b6a60;
+  --sidebar-border: #6a7a70;
   --sidebar-ring: #2FCA6A;
 
   --chart-1: #2FCA6A;
@@ -222,7 +222,7 @@
     @apply border-border;
   }
 
-  /* Solid focus ring ≥3:1 on page (#141c17) and cards (#1c2620); no /50 opacity. */
+  /* Solid focus ring ≥3:1 on page (#0E1510) and cards (#1c2620); no /50 opacity. */
   :focus {
     outline: none;
   }

@@ -9,6 +9,8 @@ const translations = {
     nav_trails: 'Trails',
     nav_reports: 'Reports',
     nav_profile: 'Profile',
+    nav_aria_top: 'Top navigation',
+    nav_aria_bottom: 'Bottom navigation',
     // Desktop blocker
     desktop_title: 'Trillo is mobile only',
     desktop_body: 'This app is designed for phones in the field. Please open Trillo on a mobile device, or resize your browser window to 768px or narrower to continue.',
@@ -271,6 +273,8 @@ const translations = {
     nav_trails: 'Senderos',
     nav_reports: 'Reportes',
     nav_profile: 'Perfil',
+    nav_aria_top: 'Navegación superior',
+    nav_aria_bottom: 'Navegación inferior',
     // Desktop blocker
     desktop_title: 'Trillo es solo para móviles',
     desktop_body: 'Esta app está diseñada para usar en el campo. Por favor abre Trillo en un dispositivo móvil, o reduce tu ventana del navegador a 768px o menos para continuar.',
