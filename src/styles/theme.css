@@ -44,10 +44,9 @@
   --destructive: #c96b6b;
   --destructive-foreground: #ffffff;
 
-  /* ≥3:1 vs page #0E1510 and cards #1c2620 (was #2f3c34 / #5b6a60) */
-  --border: #6a7a70;
-  --border-light: #6a7a70;
-  --input: #6a7a70;
+  --border: #2f3c34;
+  --border-light: #2f3c34;
+  --input: #2f3c34;
   --input-background: #1c2620;
   --switch-background: #3a4840;
 
@@ -83,7 +82,7 @@
   --sidebar-primary-foreground: #0E1510;
   --sidebar-accent: #24302a;
   --sidebar-accent-foreground: #2FCA6A;
-  --sidebar-border: #6a7a70;
+  --sidebar-border: #2f3c34;
   --sidebar-ring: #2FCA6A;
 
   --chart-1: #2FCA6A;
