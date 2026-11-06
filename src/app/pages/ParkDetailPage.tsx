@@ -288,52 +288,47 @@ export function ParkDetailPage() {
           </div>
         )}
 
-        {/* Conditions: large status | update · notes below */}
+        {/* Conditions: status + overall, then updated · notes below */}
         <section
           className="mt-4 bg-card rounded-[24px] border border-border overflow-hidden"
           aria-label={t('park_current_conditions')}
         >
-          <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-0 px-5 pt-5 pb-5">
-            <div className="pr-4 min-w-0">
-              <p className="text-[13px] text-muted-foreground leading-none">
-                {t('park_current_conditions')}
+          <div className="px-5 pt-5 pb-5">
+            <p className="text-[13px] text-muted-foreground leading-none">
+              {t('park_current_conditions')}
+            </p>
+            <div className="mt-3 flex items-center gap-2.5 min-w-0">
+              <StatusCircle
+                status={effectiveStatus}
+                reported={statusSource === 'report'}
+                className="shrink-0"
+              />
+              <p
+                className="text-[clamp(1.75rem,8.2vw,2.75rem)] font-bold tracking-[-1.2px] leading-none truncate"
+                style={{ color: statusText ?? 'var(--foreground)' }}
+              >
+                {effectiveStatus ? t(STATUS_LABEL[effectiveStatus]) : '—'}
               </p>
-              <div className="mt-3 flex items-center gap-2.5 min-w-0">
-                <StatusCircle
-                  status={effectiveStatus}
-                  reported={statusSource === 'report'}
-                  className="shrink-0"
-                />
-                <p
-                  className="text-[clamp(1.75rem,8.2vw,2.75rem)] font-bold tracking-[-1.2px] leading-none whitespace-nowrap"
-                  style={{ color: statusText ?? 'var(--foreground)' }}
-                >
-                  {effectiveStatus ? t(STATUS_LABEL[effectiveStatus]) : '—'}
-                </p>
-              </div>
+            </div>
+            <div className="mt-2.5 space-y-1">
               <OverallRatingLabel
                 conditions={reportSummary?.conditions}
-                className="block mt-2.5 text-[13px] text-muted-foreground"
+                className="block text-[13px] text-muted-foreground"
               />
-              <ConditionSourceLegend className="mt-3" />
-            </div>
-
-            <div className="pl-4 border-l border-border flex flex-col justify-center shrink-0 max-w-[38%]">
               {updateMeta ? (
-                <div>
-                  <p className="text-[13px] font-normal text-muted-foreground leading-none">
-                    {updateMeta.label}
-                  </p>
-                  <p className="mt-1.5 text-[18px] sm:text-[20px] font-bold tracking-[-0.4px] text-foreground leading-none tabular-nums whitespace-nowrap">
+                <p className="text-[13px] text-muted-foreground leading-snug">
+                  {updateMeta.label}{' '}
+                  <span className="font-bold text-foreground tabular-nums">
                     {updateMeta.value}
-                  </p>
-                </div>
+                  </span>
+                </p>
               ) : (
-                <p className="text-[13px] font-normal text-muted-foreground leading-snug max-w-[7.5rem]">
+                <p className="text-[13px] text-muted-foreground leading-snug">
                   {t('park_report_to_update')}
                 </p>
               )}
             </div>
+            <ConditionSourceLegend className="mt-3" />
           </div>
 
           {trailHazardSlides.length > 0 ? (
