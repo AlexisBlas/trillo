@@ -299,11 +299,12 @@ export function ParkDetailPage() {
             </p>
 
             <div
-              className="mt-4 flex items-center gap-3 min-w-0 rounded-[18px] px-4 py-4 border border-border/60"
+              className="mt-4 flex items-center gap-3 min-w-0 rounded-[18px] px-4 py-4 border"
               style={{
                 backgroundColor: statusText
-                  ? `color-mix(in srgb, ${statusText} 16%, transparent)`
+                  ? `color-mix(in srgb, ${statusText} 28%, transparent)`
                   : 'var(--secondary)',
+                borderColor: statusText ?? 'var(--border)',
               }}
             >
               <StatusCircle

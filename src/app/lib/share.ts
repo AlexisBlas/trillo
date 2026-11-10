@@ -37,15 +37,15 @@ export function shareUrlFor(path: string): string {
 }
 
 const STATUS_DOT: Record<ShareStatus, string> = {
-  green: '#2FCA6A',
-  yellow: '#E5B820',
-  red: '#E85A5A',
+  green: '#1FE070',
+  yellow: '#F5C400',
+  red: '#FF4D4D',
 };
 
 const STATUS_TEXT: Record<ShareStatus, string> = {
-  green: '#2FCA6A',
-  yellow: '#E5B820',
-  red: '#E85A5A',
+  green: '#1FE070',
+  yellow: '#F5C400',
+  red: '#FF4D4D',
 };
 
 function wrapLines(

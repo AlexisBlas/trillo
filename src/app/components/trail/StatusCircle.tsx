@@ -5,9 +5,9 @@ type Status = 'green' | 'yellow' | 'red';
 
 /** Community trail-condition colors: Dry / Wet / Muddy */
 export const STATUS_DOT: Record<Status, string> = {
-  green: '#2FCA6A',
-  yellow: '#E5B820',
-  red: '#E85A5A',
+  green: '#1FE070',
+  yellow: '#F5C400',
+  red: '#FF4D4D',
 };
 
 const UNKNOWN_DOT = '#d1d5db';
@@ -69,7 +69,7 @@ export function StatusCircle({
           )}
         >
           <User
-            className={cn(reportIconSize[size], 'text-white')}
+            className={cn(reportIconSize[size], 'text-foreground')}
             strokeWidth={2.75}
             aria-hidden
           />

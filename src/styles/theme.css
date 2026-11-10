@@ -50,16 +50,16 @@
   --input-background: #1c2620;
   --switch-background: #3a4840;
 
-  --ring: #2FCA6A;
+  --ring: #1FE070;
 
-  --status-green: #1a2e22;
-  --status-green-foreground: #2FCA6A;
+  --status-green: #143525;
+  --status-green-foreground: #1FE070;
   --status-blue: #1a2832;
   --status-blue-foreground: #7db3d4;
-  --status-yellow: #2e2618;
-  --status-yellow-foreground: #d9b068;
-  --status-red: #2e1a1a;
-  --status-red-foreground: #d48888;
+  --status-yellow: #33280f;
+  --status-yellow-foreground: #F5C400;
+  --status-red: #3a1515;
+  --status-red-foreground: #FF4D4D;
 
   --icon-green: #2d4739;
   --icon-blue: #2563eb;
