@@ -457,7 +457,7 @@ export function SearchPage() {
               <p className="text-[11px] font-bold tracking-[1.2px] uppercase text-muted-foreground">
                 {parks.length} {parks.length === 1 ? t('park_singular') : t('park_plural')}
               </p>
-              <ConditionSourceLegend className="justify-end" />
+              <ConditionSourceLegend className="items-end text-right" />
             </div>
             <div className="flex flex-col gap-[10px]">
               {parks.map((park) => {

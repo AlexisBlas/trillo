@@ -288,7 +288,7 @@ export function ParkDetailPage() {
           </div>
         )}
 
-        {/* Conditions: status + overall, then updated · notes below */}
+        {/* Conditions: tinted status, meta band, legend · hazards/notes below */}
         <section
           className="mt-4 bg-card rounded-[24px] border border-border overflow-hidden"
           aria-label={t('park_current_conditions')}
@@ -297,7 +297,15 @@ export function ParkDetailPage() {
             <p className="text-[13px] text-muted-foreground leading-none">
               {t('park_current_conditions')}
             </p>
-            <div className="mt-3 flex items-center gap-2.5 min-w-0">
+
+            <div
+              className="mt-4 flex items-center gap-3 min-w-0 rounded-[18px] px-4 py-4 border border-border/60"
+              style={{
+                backgroundColor: statusText
+                  ? `color-mix(in srgb, ${statusText} 16%, transparent)`
+                  : 'var(--secondary)',
+              }}
+            >
               <StatusCircle
                 status={effectiveStatus}
                 reported={statusSource === 'report'}
@@ -310,40 +318,56 @@ export function ParkDetailPage() {
                 {effectiveStatus ? t(STATUS_LABEL[effectiveStatus]) : '—'}
               </p>
             </div>
-            <div className="mt-2.5 space-y-1">
-              <OverallRatingLabel
-                conditions={reportSummary?.conditions}
-                className="block text-[13px] text-muted-foreground"
-              />
-              {updateMeta ? (
-                <p className="text-[13px] text-muted-foreground leading-snug">
-                  {updateMeta.label}{' '}
-                  <span className="font-bold text-foreground tabular-nums">
-                    {updateMeta.value}
-                  </span>
-                </p>
-              ) : (
-                <p className="text-[13px] text-muted-foreground leading-snug">
-                  {t('park_report_to_update')}
-                </p>
-              )}
+
+            <div className="mt-4 rounded-[16px] border border-border bg-secondary/50 px-4 py-3.5">
+              <div className="flex divide-x divide-border">
+                <div className="min-w-0 flex-1 pr-4 flex flex-col justify-center">
+                  <OverallRatingLabel
+                    conditions={reportSummary?.conditions}
+                    className="block text-[13px] text-muted-foreground"
+                  />
+                </div>
+                <div className="min-w-0 flex-1 pl-4">
+                  {updateMeta ? (
+                    <>
+                      <p className="text-[12px] text-muted-foreground leading-none">
+                        {updateMeta.label}
+                      </p>
+                      <p className="mt-1.5 text-[15px] font-bold text-foreground leading-none tabular-nums">
+                        {updateMeta.value}
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-[13px] text-muted-foreground leading-snug">
+                      {t('park_report_to_update')}
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
-            <ConditionSourceLegend className="mt-3" />
+          </div>
+
+          <div className="border-t border-border px-5 py-4 bg-secondary/25">
+            <ConditionSourceLegend />
           </div>
 
           {trailHazardSlides.length > 0 ? (
-            <HazardTrailCarousel slides={trailHazardSlides} className="mx-4 mb-3" />
+            <div className="border-t border-border px-4 py-3">
+              <HazardTrailCarousel slides={trailHazardSlides} />
+            </div>
           ) : summaryHazards.length > 0 ? (
-            <div className="mx-4 mb-3">
+            <div className="border-t border-border px-4 py-3">
               <HazardNotice conditions={reportSummary?.conditions} />
             </div>
           ) : null}
 
           {summaryNotes ? (
-            <div className="mx-4 mb-4 rounded-[16px] border-[1.5px] border-border bg-card px-4 py-3.5">
-              <p className="text-[14px] leading-[21px] text-muted-foreground text-pretty">
-                {summaryNotes}
-              </p>
+            <div className="border-t border-border px-4 py-3">
+              <div className="rounded-[16px] border border-border bg-background/40 px-4 py-3.5">
+                <p className="text-[14px] leading-[21px] text-muted-foreground text-pretty">
+                  {summaryNotes}
+                </p>
+              </div>
             </div>
           ) : null}
         </section>

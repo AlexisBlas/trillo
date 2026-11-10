@@ -225,6 +225,16 @@ export function TopNav() {
                     <p className="text-[11px] text-muted-foreground mt-3">
                       {t('menu_version')} 1.0.0
                     </p>
+                    <p className="text-[11px] text-muted-foreground mt-2">
+                      <a
+                        href="https://open-meteo.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline underline-offset-2 hover:text-foreground transition-colors"
+                      >
+                        {t('powered_by_open_meteo')}
+                      </a>
+                    </p>
                   </div>
                 </section>
               </div>

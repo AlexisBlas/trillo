@@ -213,7 +213,7 @@ export function Home() {
 
       {/* Following + Recently Reported */}
       <div className="px-[20px] pt-[32px] pb-[40px]">
-        <ConditionSourceLegend className="mb-5 px-1" />
+        <ConditionSourceLegend className="mb-7 px-1" />
         <div className="mb-8">
           <div className="flex items-center justify-between mx-[4px] mt-[0px] mb-[12px]">
             <h2 className="text-[11px] font-bold tracking-[1.2px] uppercase text-muted-foreground">
