@@ -123,17 +123,28 @@ export function TrailDetailPage() {
           subtitle={parkName}
           url={shareUrlFor(`/trails/${trail.id}`)}
           text={t('share_report_text').replace('{name}', trailDisplayName)}
-          status={latestReport?.status ?? null}
+          status={estimatedStatus}
           statusLabel={
-            latestReport ? t(statusShareLabel(latestReport.status)) : null
+            estimatedStatus ? t(statusShareLabel(estimatedStatus)) : null
           }
           notes={cleanNotes(latestReport?.notes)}
           conditions={latestReport?.conditions ?? null}
           hazardTrailName={trailDisplayName}
+          updatedLabel={
+            rainAdjusted
+              ? t('condition_rain_adjusted')
+              : statusSource === 'estimate'
+                ? t('condition_estimated')
+                : latestReport
+                  ? t('park_updated')
+                  : null
+          }
           updatedValue={
-            latestReport
-              ? formatRelativeTime(latestReport.created_at, lang)
-              : null
+            rainAdjusted || statusSource === 'estimate'
+              ? t('condition_from_rain')
+              : latestReport
+                ? formatRelativeTime(latestReport.created_at, lang)
+                : null
           }
         />
       </div>

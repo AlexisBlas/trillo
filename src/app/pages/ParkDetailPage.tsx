@@ -221,9 +221,9 @@ export function ParkDetailPage() {
           subtitle={parkMeta?.city}
           url={shareUrlFor(`/parks/${encodeURIComponent(decoded)}`)}
           text={t('share_report_text').replace('{name}', decoded)}
-          status={reportSummary?.status ?? null}
+          status={effectiveStatus}
           statusLabel={
-            reportSummary ? t(STATUS_LABEL[reportSummary.status]) : null
+            effectiveStatus ? t(STATUS_LABEL[effectiveStatus]) : null
           }
           notes={summaryNotes}
           conditions={reportSummary?.conditions ?? null}
